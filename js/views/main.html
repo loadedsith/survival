@@ -7,17 +7,20 @@ ui-keydown="{ 13:'keyDown.enter($event)', 38:'keyDown.up($event)', 40:'keyDown.d
       <h2 class="subheader">Three.js</h2>
     </div>
     <div class="small-3 columns">
-      <p class="subheader">Tiles: {{tileManager.tiles.length}}</p>
+      <p class="subheader">Tiles: {{tileManager.tiles.length||0}}</p>
+      <p class="subheader">Tile Sets: {{ tileSets.length||0}}</p>
     </div>
     <div class="small-3 columns">
-      <p class="button" ng-click="toolManager.show('createTile');">createTile</p>
-      <p class="button" ng-click="toolManager.show('getTileAtCoord');">getTileAtCoord(row,column)</p>
-      
+      <a class="button" ng-click="tileManager.dumpTiles('');">dump</a>
+      <a class="button" ng-click="tileManager.saveTiles();">save</a>
+      <a class="button" ng-click="toolManager.loadTiles();">load</a>
+      <a class="button" ng-click="toolManager.show('createTile');">createTile</a>
 
     </div>
     <div class="small-3 columns">
       <p></p>
       <!-- <p class="button" ng-click="value = value-1;echoValue()">[-]</p> -->
+      <p class="button" ng-click="toolManager.show('getTileAtCoord');">getTileAtCoord(row,column)</p>
     </div>
 
   </div>

@@ -195,6 +195,41 @@ angular.module('threejs')
      }
      throw "invalid Tile"
    },
+   loadTiles: function (tiles){
+     if(typeof tiles!=="undefined"){
+       for (var i = tiles.length - 1; i >= 0; i--) {
+         var tile = tiles[i];
+         $scope.tileManager.createTile(tile);
+       }
+       console.log('Smarty Spur-winged Goose',tiles);
+     }
+   },
+   getTiles: function () {
+     var theTiles = "["
+     for (var i = $scope.tileManager.tiles.length - 1; i >= 0; i--) {
+       var tile = $scope.tileManager.tiles[i];
+       // console.log('tile.id:'+tile.id+' === '+id);
+       var object = {
+        tileId:tile.id,
+        row:tile.row,
+        column:tile.column,
+        rotation:{'x':tile.rotation.x,'y':tile.rotation.y,'z':tile.rotation.z},
+        scale:{'x':tile.scale.x,'y':tile.scale.y,'z':tile.scale.z},
+        position:{'x':tile.position.x,'y':tile.position.y,'z':tile.position.z},
+        callback:tile.callback,
+        positionCallback:tile.positionCallback,
+        color:tile.color
+      };
+
+      console.log('Smarty Indigo Macaw',object);
+      theTiles += JSON.stringify(object);
+      if(i !== 0){
+       theTiles += ",";
+      }
+    }
+    theTiles += "]";
+    return JSON.parse( theTiles );
+   },
     tileGrid : function (rows,columns){
       console.log('tileGrid('+rows+','+columns+')');
       var column=0;
@@ -334,7 +369,29 @@ angular.module('threejs')
       }
     }
   };
-
+  
+  
+  $scope.tileManager.dumpTiles = function (attribute){
+     console.log('Dump', $scope.tileManager.getTiles() );
+  };
+    
+  $scope.tileManager.saveTiles = function (){
+    if(typeof $scope.tileSets === "undefined"){      
+      $scope.tileSets = [$scope.tileManager.getTiles()];
+    }else{          
+      $scope.tileSets.push($scope.tileManager.getTiles());
+    }
+  };
+  
+  $scope.toolManager.loadTiles = function (){
+    if(typeof $scope.tileSets !== "undefined"){      
+      $scope.tileManager.loadTiles($scope.tileSets[0]);
+    }else{          
+      console.log('No tiles to load');
+    }
+  };
+  
+  
   $scope.init = function () {
     console.log('MainCtrl Init');
     if( !Detector.webgl ){
@@ -393,12 +450,12 @@ angular.module('threejs')
   	//		Camera Controls							//
   	//////////////////////////////////////////////////////////////////////////////////
   	var mouse	= {x : 0, y : 0, down:false}
-  	document.addEventListener('mouseup', function(event){
-  	  mouse.down=false;
-  	});
-  	document.addEventListener('mousedown', function(event){
-  	  mouse.down=true;
-  	});
+  	// document.addEventListener('mouseup', function(event){
+//       mouse.down=false;
+//     });
+//     document.addEventListener('mousedown', function(event){
+//       mouse.down=true;
+//     });
   	document.addEventListener('mousemove', function(event){
   		mouse.x	= (event.clientX / window.innerWidth ) - 0.5
   		mouse.y	= (event.clientY / window.innerHeight) - 0.5

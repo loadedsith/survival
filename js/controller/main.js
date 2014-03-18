@@ -106,6 +106,11 @@ angular.module('threejs')
       $event.preventDefault();
       $scope.cameraMovement = {x:0,y:0,z:0};
       $scope.cameraLoopInit();
+    },
+    c: function ($event){//c up
+      $event.preventDefault();
+      $scope.cameraMovement = {x:0,y:0,z:0};
+      $scope.cameraLoopInit();
     }
   };
   $scope.doOnce = true;

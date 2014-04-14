@@ -16,8 +16,8 @@ output_style = :nested
 # relative_assets = true
 
 # To disable debugging comments that display the original location of your selectors. Uncomment:
- line_comments = true
 color_output = false
+ line_comments = true
 
 
 # If you prefer the indented syntax, you might want to regenerate this

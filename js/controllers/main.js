@@ -1,14 +1,14 @@
 /*jshint white:false */
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
-angular.module('threejs')
+angular.module('survivalApp')
 	.controller('MainCtrl', function ($scope, $http) {
 	'use strict';
   $scope.cameraMovement = {x:0,y:0,z:0};
   $scope.driveCamera = function (delta,time) {
-    $scope.camera.position.x =     $scope.camera.position.x + $scope.cameraMovement.x*delta; 
-    $scope.camera.position.y =     $scope.camera.position.y + $scope.cameraMovement.y*delta; 
-    $scope.camera.position.z =     $scope.camera.position.z + $scope.cameraMovement.z*delta; 
+    $scope.camera.position.x = $scope.camera.position.x + $scope.cameraMovement.x * delta; 
+    $scope.camera.position.y = $scope.camera.position.y + $scope.cameraMovement.y * delta; 
+    $scope.camera.position.z = $scope.camera.position.z + $scope.cameraMovement.z * delta; 
   };
   $scope.shouldAddCameraLoopFunction = true;
   $scope.cameraLoopInit = function () {

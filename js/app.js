@@ -1,5 +1,5 @@
 
-angular.module('threejs', [ 'ngRoute', 'ngCookies', 'ngResource', 'ngSanitize', 'ui'])
+angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ui'])// 'ngCookies', 'ngSanitize',
   .config(function ($routeProvider) {
   'use strict';
 

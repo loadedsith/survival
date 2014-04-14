@@ -65,3 +65,6 @@ ui-keydown="{ 13:'keyDown.enter($event)', 38:'keyDown.up($event)', 40:'keyDown.d
   </div>
   <div id="renderer" ng-click="mouseDown($event)">Loading Three.js</div>
 </div>
+<!-- @if NODE_ENV='development' -->
+<div ng-include="templates.debug" id="debug"></div>
+<!-- @endif -->

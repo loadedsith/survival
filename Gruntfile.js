@@ -69,7 +69,7 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.app %>/data/{,*/}*.json']
       },
       compass: {
-        files: ['<%= yeoman.app %>/css/{,*/}*.scss'],
+        files: ['<%= yeoman.app %>/{scss,sass}/{,*/}*.scss'],
         tasks: ['compass']
       },
       gruntfile: {
@@ -89,6 +89,7 @@ module.exports = function (grunt) {
       preprocess: {
         files: [//comment these files during profiling to avoid accidentally resetting the profiler
           '<%= yeoman.app %>/{,*/}*.html',
+          '<%= yeoman.app %>/js/views/{,*/}*.html',
           '<%= yeoman.app %>/js/{,*/}*.js',
           '<%= yeoman.app %>/css/{,*/}*.scss',
           '<%= yeoman.app %>/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'

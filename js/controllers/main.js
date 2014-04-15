@@ -2,7 +2,7 @@
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http) {
+	.controller('MainCtrl', function ($scope, $http, TemplatesService, StringsService, ThreeJSConfigService) {
 	'use strict';
   $scope.cameraMovement = {x:0,y:0,z:0};
   $scope.driveCamera = function (delta,time) {
@@ -17,6 +17,18 @@ angular.module('survivalApp')
       $scope.shouldAddCameraLoopFunction = false;
     }  
   };
+  
+  ThreeJSConfigService.retrieve().$promise.then(function (data) {
+    $scope.config = data;
+    $scope.init();
+  });
+  TemplatesService.retrieve().$promise.then(function (data) {
+    $scope.templates = data;
+  });
+  StringsService.retrieve().$promise.then(function (data) {
+    $scope.strings = data;
+  });
+  
   $scope.noiseSeed = noise.seed(Math.random());
   $scope.keyDown=//scope.scene
   {
@@ -533,9 +545,5 @@ angular.module('survivalApp')
   	})
   };
 
-	$http.get('/threejs.json').success(function(data) {
-		$scope.config = data;
-    $scope.init();
-		// $scope.templates = data.templates;
-	});
+  
 });

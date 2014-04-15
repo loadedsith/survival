@@ -1,7 +1,8 @@
-angular.module('survivalApp').factory('Templates', function ($resource) {
+angular.module('survivalApp').factory('ThreeJSConfigService', function ($resource) {
   'use strict';
   // This asset contains store:floors[]
-  return $resource('/data/templates.json', {}, {
+  return $resource('/threejs.json', {}, {
     retrieve : {method: 'GET', isArray: false}
   });
 });
+

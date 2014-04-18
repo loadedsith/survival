@@ -2,7 +2,7 @@
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http, TemplatesService, StringsService, ThreeJSConfigService) {
+	.controller('MainCtrl', function ($scope, $http, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService) {
 	'use strict';
   $scope.cameraMovement = {x:0,y:0,z:0};
   $scope.driveCamera = function (delta,time) {
@@ -28,103 +28,15 @@ angular.module('survivalApp')
   StringsService.retrieve().$promise.then(function (data) {
     $scope.strings = data;
   });
-  
+  $scope.$on('cameraMovement',function (event, attributes) {
+    console.log('Indigo Greenish Grass-dart frog',event, attributes);
+    $scope.cameraMovement = attributes;
+    $scope.cameraLoopInit();
+  })
   $scope.noiseSeed = noise.seed(Math.random());
-  $scope.keyDown=//scope.scene
-  {
-    enter : function($event) {
-      $event.preventDefault();
-    },
-    up : function ($event){//up
-      $scope.cameraMovement = {x:0,y:0,z:-1};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    },
-    down: function ($event){//down
-      $scope.cameraMovement = {x:0,y:0,z:1};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    },
-    left: function ($event){//left
-      $scope.cameraMovement = {x:-1,y:0,z:0};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    },
-    right: function ($event){//right
-      $scope.cameraMovement = {x:1,y:0,z:0};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    },
-    space: function ($event){//space
-      $scope.cameraMovement = {x:0,y:1,z:0};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    },
-    e: function ($event){//e
-      $scope.cameraMovement = {x:0,y:1,z:0};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    },
-    f: function ($event){//f
-      $scope.cameraMovement = {x:0,y:-1,z:0};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    },
-    c: function ($event){//c
-      $scope.cameraMovement = {x:0,y:-1,z:0};
-      $scope.cameraLoopInit();
-      $event.preventDefault();
-    }
-  };
-  $scope.keyUp=
-  {
-    enter : function($event) {//scope.scene
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    up : function ($event){//up up
-      console.log('Orange domestic cat');
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    down: function ($event){//down up
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    left: function ($event){//left up
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    right: function ($event){//right up
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    space: function ($event){//space up
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    e: function ($event){//e up
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    f: function ($event){//f up
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    },
-    c: function ($event){//c up
-      $event.preventDefault();
-      $scope.cameraMovement = {x:0,y:0,z:0};
-      $scope.cameraLoopInit();
-    }
-  };
+  KeyboardService.setScope($scope);
+  $scope.keyUp = KeyboardService.keyUp;
+  $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
   // $scope.mouseDown = function ($event) {
  // 

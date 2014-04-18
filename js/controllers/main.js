@@ -2,8 +2,9 @@
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
+	.controller('MainCtrl', function ($scope, $http,DEBUG, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
 	'use strict';
+  $scope.DEBUG = DEBUG;
   $scope.showTools = false;
   $scope.cameraMovement = {x:0,y:0,z:0};
   $scope.driveCamera = function (delta,time) {

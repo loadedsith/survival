@@ -1,5 +1,4 @@
-
-angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ui'])// 'ngCookies', 'ngSanitize',
+var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ui'])// 'ngCookies', 'ngSanitize',
   .config(function ($routeProvider) {
   'use strict';
 
@@ -13,3 +12,5 @@ angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ui'])// 'ngCookies', '
       });
   
 });
+
+app.constant("DEBUG", /* @echo DEBUG */ || false);

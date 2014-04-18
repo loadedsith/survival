@@ -7,6 +7,8 @@
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
 
+var debug = true;
+
 module.exports = function (grunt) {
   'use strict';
   // Load grunt tasks automatically
@@ -34,13 +36,22 @@ module.exports = function (grunt) {
     preprocess: {
       options: {
         context: {
-          revision: '<%= meta.revision %>'
+          DEBUG : debug,
+          revision : '<%= meta.revision %>'
         }
       },
-      html : {
-          src : 'index.html',
-          dest : 'dist/index.html'
-      },
+      multifile : {
+        files:{
+          'dist/js/views/main.html' : 'js/views/main.html',
+          'dist/index.html' : 'index.html',
+          'dist/js/app.js' : 'js/app.js'
+        }
+      }
+      
+      // html : {
+      //     src : 'index.html',
+      //     dest : 'dist/index.html'
+      // },
     },
     protractor: {
       options: {
@@ -52,22 +63,49 @@ module.exports = function (grunt) {
     },
     // Watches files for changes and runs tasks based on the changed files
     watch: {
+      copy:{
+        files: [
+            'bower_components/angular/angular.js',
+            'bower_components/angular-animate/angular-animate.js',
+            'bower_components/angular-resource/angular-resource.js',
+            'bower_components/angular-ui/build/angular-ui.js',
+            'bower_components/angular-touch/angular-touch.js',
+            'bower_components/angular-route/angular-route.js',
+            'bower_components/jquery/jquery.js',
+            'bower_components/normalize.css/normalize.css',
+            'vendor/three.js/build/three.js',
+            'vendor/three.js/examples/js/Detector.js',
+            'vendor/threex.windowresize.js',
+            'vendor/threex.domevent.js',
+            'vendor/perlin.js',
+            'vendor/require.js/require.js',
+            '*.htm*',
+            '*.js*',
+            'favicon.ico',
+            'images/**/*',
+            'fonts/**/*',
+            'views/**/*',
+            'js/**/*',
+            'css/**/*.css',
+            'assets/**/*',
+            'data/**/*'
+          ],
+        tasks : ['copy:dist', 'revision', 'preprocess']
+        
+      },
       js: {
         files: ['<%= yeoman.app %>/js/{,*/}{,*/}*.js'],
         tasks: ['newer:jshint:all']
       },
-      testable: {
-        files: [
-          '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
-          '<%= yeoman.app %>/protractor*.js',
-          '<%= yeoman.app %>/test/e2e/{,*/}{,*/}*.js',
-          '<%= yeoman.app %>/test/spec/{,*/}{,*/}*.js'
-        ],
-        tasks: ['karma:unit']// 'protractor'
-      },
-      json: {
-        files: ['<%= yeoman.app %>/data/{,*/}*.json']
-      },
+      // testable: {
+  //       files: [
+  //         '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
+  //         '<%= yeoman.app %>/protractor*.js',
+  //         '<%= yeoman.app %>/test/e2e/{,*/}{,*/}*.js',
+  //         '<%= yeoman.app %>/test/spec/{,*/}{,*/}*.js'
+  //       ],
+  //       tasks: ['karma:unit']// 'protractor'
+  //     },
       compass: {
         files: ['<%= yeoman.app %>/{scss,sass}/{,*/}*.scss'],
         tasks: ['compass']
@@ -80,22 +118,12 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [//comment these files during profiling to avoid accidentally resetting the profiler
-          // '<%= yeoman.app %>/{,*/}*.html',
-          // '!<%= yeoman.app %>/dist/*.html',
+          '!<%= yeoman.app %>/dist/*.html',
+          '<%= yeoman.app %>/{,*/}*.html',
           '<%= yeoman.app %>/js/{,*/}*.js',
           '<%= yeoman.app %>/css/{,*/}*.scss',
           '<%= yeoman.app %>/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
-      },
-      preprocess: {
-        files: [//comment these files during profiling to avoid accidentally resetting the profiler
-          '<%= yeoman.app %>/{,*/}*.html',
-          '<%= yeoman.app %>/js/views/{,*/}*.html',
-          '<%= yeoman.app %>/js/{,*/}*.js',
-          '<%= yeoman.app %>/css/{,*/}*.scss',
-          '<%= yeoman.app %>/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
-        ],
-        tasks: ['revision','preprocess']
       }
     },
 
@@ -103,7 +131,7 @@ module.exports = function (grunt) {
     connect: {
       options: {
         port: 9000,
-        base: 'site',
+        base: '<%= yeoman.dist %>',
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: '0.0.0.0',
         livereload: 35729
@@ -112,7 +140,7 @@ module.exports = function (grunt) {
         options: {
           open: true,
           base: [
-            '<%= yeoman.app %>'
+            '<%= yeoman.dist %>'
           ]
         }
       },
@@ -126,7 +154,7 @@ module.exports = function (grunt) {
           port: 9001,
           base: [
             'test',
-            '<%= yeoman.app %>'
+            '<%= yeoman.dist %>'
           ]
         }
       }
@@ -205,6 +233,12 @@ module.exports = function (grunt) {
             'bower_components/angular-route/angular-route.js',
             'bower_components/jquery/jquery.js',
             'bower_components/normalize.css/normalize.css',
+            'vendor/three.js/build/three.js',
+            'vendor/three.js/examples/js/Detector.js',
+            'vendor/threex.windowresize.js',
+            'vendor/threex.domevent.js',
+            'vendor/perlin.js',
+            'vendor/require.js/require.js',
             '*.htm*',
             '*.js*',
             'favicon.ico',
@@ -231,22 +265,6 @@ module.exports = function (grunt) {
       dist: [
         'compass'
       ]
-    },
-    compress: {
-      main: {
-        options: {
-          archive: function () {
-            var dateFormat = require('dateformat'),
-                now = new Date();
-            return 'builds/build' + dateFormat(now, 'yy-mm-dd_HHMMtt') + '.zip';
-          }
-        },
-        files: [
-          {src: ['**'], cwd: 'dist/', dest: '/'}//, // includes files in path and its subdirs
-          // {expand: true, cwd: 'path/', src: ['**'], dest: 'internal_folder3/'}, // makes all src relative to cwd
-          // {flatten: true, src: ['path/**'], dest: 'internal_folder4/', filter: 'isFile'} // flattens results to a single level
-        ]
-      }
     }
   });
 
@@ -256,20 +274,21 @@ module.exports = function (grunt) {
       return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
       grunt.task.run([
-      'revision',
-      'preprocess',
-      'clean:server',
-      'concurrent:server',
-      'connect:livereload',
-      // 'karma',
-      'watch'
-    ]);
+       'revision',
+       'copy',
+       'preprocess',
+       'clean:server',
+       'concurrent:server',
+       'connect:livereload',
+       // 'karma',
+       'watch'
+     ]);
   });
   
   grunt.loadNpmTasks('grunt-git-revision');
   grunt.loadNpmTasks('grunt-preprocess');
-  grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-contrib-compress');
+  // grunt.loadNpmTasks('grunt-karma');
+
   grunt.loadNpmTasks('grunt-protractor-runner');
 
   grunt.registerTask('server', function () {
@@ -281,18 +300,10 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'connect:test',
-    'karma',
+    'karma'//,
     // 'protractor:run'
   ]);
 
-  grunt.registerTask('build', [
-    'clean:dist',
-    'concurrent:dist',
-    // 'concat',
-    'copy:dist',
-    'rev',
-    'compress'
-  ]);
 
   grunt.registerTask('default', [
     'newer:jshint',

@@ -80,7 +80,8 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [//comment these files during profiling to avoid accidentally resetting the profiler
-          '<%= yeoman.app %>/{,*/}*.html',
+          // '<%= yeoman.app %>/{,*/}*.html',
+          // '!<%= yeoman.app %>/dist/*.html',
           '<%= yeoman.app %>/js/{,*/}*.js',
           '<%= yeoman.app %>/css/{,*/}*.scss',
           '<%= yeoman.app %>/assets/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'

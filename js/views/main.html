@@ -4,27 +4,27 @@ ui-keydown="{ 13:'keyDown($event).enter($event)', 38:'keyDown($event).up($event)
   ui-keyup="{ 13:'keyUp($event).enter($event)',   38:'keyUp($event).up($event)',   40:'keyUp($event).down($event)',   37:'keyUp($event).left($event)',     39:'keyUp($event).right($event)',   87:'keyUp($event).up($event)',   65:'keyUp($event).left($event)',   83:'keyUp($event).down($event)',  68:'keyUp($event).right($event)',   32:'keyUp($event).space($event)',   69:'keyUp($event).e($event)',    70:'keyUp($event).f($event)',   67:'keyUp($event).c($event)'}" tabindex="0">
   <div class="row collapse">
     <div class="small-3 columns">
-      <h2 class="subheader">Three.js</h2>
+      <h2 class="subheader">Survival</h2>
     </div>
-    <div class="small-3 columns">
+    <div ng-show="showTools" class="small-3 columns">
       <p class="subheader">Tiles: {{tileManager.tiles.length||0}}</p>
       <p class="subheader">Tile Sets: {{ tileSets.length||0}}</p>
     </div>
-    <div class="small-3 columns">
+    <div ng-show="showTools" class="small-3 columns">
       <a class="button" ng-click="tileManager.dumpTiles('');">dump</a>
       <a class="button" ng-click="tileManager.saveTiles();">save</a>
       <a class="button" ng-click="toolManager.loadTiles();">load</a>
       <a class="button" ng-click="toolManager.show('createTile');">createTile</a>
 
     </div>
-    <div class="small-3 columns">
+    <div ng-show="showTools" class="small-3 columns">
       <p></p>
       <!-- <p class="button" ng-click="value = value-1;echoValue()">[-]</p> -->
       <p class="button" ng-click="toolManager.show('getTileAtCoord');">getTileAtCoord(row,column)</p>
     </div>
 
   </div>
-  <div class="row collapse" ng-show="toolManager.tools.getTileAtCoord.show" id="getTileAtCoord">
+  <div ng-show="showTools" class="row collapse" ng-show="toolManager.tools.getTileAtCoord.show" id="getTileAtCoord">
     <div class="small-3 columns">
       getTileAtCoord(
     </div>
@@ -40,7 +40,7 @@ ui-keydown="{ 13:'keyDown($event).enter($event)', 38:'keyDown($event).up($event)
 
     </div>
   </div>
-  <div class="row collapse" ng-show="toolManager.tools.createTile.show" id="createTile">
+  <div ng-show="showTools" class="row collapse" ng-show="toolManager.tools.createTile.show" id="createTile">
     <div class="small-3 columns">
       createTile({
     </div>
@@ -58,7 +58,7 @@ ui-keydown="{ 13:'keyDown($event).enter($event)', 38:'keyDown($event).up($event)
       {{toolManager.tools.createTile.values.column}}
     </div>
   </div>
-  <div class="row collapse">
+  <div ng-show="showTools" class="row collapse">
     <div class="small-12 columns">
             {{aTile}}
     </div>

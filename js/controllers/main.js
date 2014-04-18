@@ -4,6 +4,7 @@ var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
 	.controller('MainCtrl', function ($scope, $http, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService) {
 	'use strict';
+  $scope.showTools = false;
   $scope.cameraMovement = {x:0,y:0,z:0};
   $scope.driveCamera = function (delta,time) {
     $scope.camera.position.x = $scope.camera.position.x + $scope.cameraMovement.x * delta; 

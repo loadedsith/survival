@@ -39,25 +39,7 @@ angular.module('survivalApp')
   $scope.keyUp = KeyboardService.keyUp;
   $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
-  // $scope.mouseDown = function ($event) {
- // 
- //    var vector = new THREE.Vector3( 
- //        ( event.clientX / window.innerWidth ) * 2 - 1, 
- //        - ( event.clientY / window.innerHeight ) * 2 + 1, 
- //        0.5 );
- //    var projector = new THREE.Projector();
- //    projector.unprojectVector( vector, $scope.camera );
- // 
- //    var ray = new THREE.Raycaster( $scope.camera.position, vector.sub( $scope.camera.position ).normalize() );
- // 
- //    var intersects = ray.intersectObjects( $scope.scene.children );    
- // 
- //    if ( intersects.length > 0 ) {
- //        intersects[0].object.callback(intersects[0].object.id);
- // 
- //    }
- //    
- //  }
+
   $scope.shouldAddedValueFunction = true;
   $scope.toolManager = {
     show: function (toolName){
@@ -129,26 +111,6 @@ angular.module('survivalApp')
   	backLight.position.set(-0.5, -0.5, -2)
   	$scope.scene.add( backLight )		
 
-  	//////////////////////////////////////////////////////////////////////////////////
-  	//		add an object and make it move					//
-  	//////////////////////////////////////////////////////////////////////////////////	
-  
-  	// var geometry  = new THREE.CubeGeometry( 1, 1, 1);
-//     var material  = new THREE.MeshPhongMaterial();
-//     $scope.mesh  = new THREE.Mesh( geometry, material );
-//   
-//   
-//   
-//     scene.add( $scope.mesh );
-	
-  
-    //   
-    // $scope.onRenderFcts.push(function(delta, now){
-    //   $scope.mesh.rotateX(0.0 * delta);
-    //   $scope.mesh.rotateY(0.1 * delta);    
-    //   $scope.mesh.rotateZ(0.0 * delta);    
-    // })
-
     TileManagerService.makeTileGrid(8,8).then(function(newTiles){
       for (var i = newTiles.length - 1; i >= 0; i--) {
         $scope.scene.add(newTiles[i].tile.mesh);
@@ -165,36 +127,16 @@ angular.module('survivalApp')
   	//		Camera Controls							//
   	//////////////////////////////////////////////////////////////////////////////////
   	var mouse	= {x : 0, y : 0, down:false}
-  	// document.addEventListener('mouseup', function(event){
-//       mouse.down=false;
-//     });
-//     document.addEventListener('mousedown', function(event){
-//       mouse.down=true;
-//     });
+
   	document.addEventListener('mousemove', function(event){
   		mouse.x	= (event.clientX / window.innerWidth ) - 0.5
   		mouse.y	= (event.clientY / window.innerHeight) - 0.5
 
   	}, false)
   	$scope.camera.rotation.set( 0, 0, 0 );
-    
-    // $scope.pitchObject = new THREE.Object3D();
-    // $scope.pitchObject.add( $scope.camera );
-// 
-//     $scope.yawObject = new THREE.Object3D();
-//     $scope.yawObject.position.y = 0;
-//     $scope.yawObject.add( $scope.pitchObject )
-//     
-    // var velocity = new THREE.Vector3();
+  
     
     $scope.onRenderFcts.push(function(delta, now){
-      // $scope.camera.rotation.x += (mouse.x*5 - $scope.camera.rotation.x) * (delta*3);
-      // $scope.camera.rotation.y += (mouse.y*5 - $scope.camera.rotation.y) * (delta*3);
-      // $scope.camera.lookAt( $scope.scene.position );
-
-      // var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-      // var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-
 
 
       // $scope.yawObject.rotation.y -= mouse.x * 0.002;
@@ -205,17 +147,7 @@ angular.module('survivalApp')
         $scope.camera.rotation.y = Math.max( - PI_2, Math.min( PI_2, $scope.camera.rotation.y ) );
       }
 
-      // 
-      // $scope.yawObject.translateX( $scope.yawObject.translateX + (($scope.cameraMovement.x * 12 )* delta ));
-      // $scope.yawObject.translateY( $scope.yawObject.translateY + (($scope.cameraMovement.y * 12 )* delta )); 
-      // $scope.yawObject.translateZ( $scope.yawObject.translateZ + (($scope.cameraMovement.z * 12 )* delta ));
-// console.log('cameraMovement:',$scope.cameraMovement.x,$scope.cameraMovement.y,$scope.cameraMovement.z);
-      // if ( $scope.yawObject.position.y < 10 ) {
-      //         console.log('wide American eel',$scope.yawObject.position.y);
-      //   $scope.cameraMovement.y = 0;
-      //   $scope.yawObject.position.y = 14;
-      // 
-      // }
+
     })
 
   	//////////////////////////////////////////////////////////////////////////////////

@@ -47,11 +47,6 @@ module.exports = function (grunt) {
           'dist/js/app.js' : 'js/app.js'
         }
       }
-      
-      // html : {
-      //     src : 'index.html',
-      //     dest : 'dist/index.html'
-      // },
     },
     protractor: {
       options: {

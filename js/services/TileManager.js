@@ -17,18 +17,19 @@ angular.module('survivalApp')
     };
     
     this.getTileAtCoord = function (row,column){
-     for (var i = tileManager.tiles.length - 1; i >= 0; i--) {
-       var tile = tileManager.tiles[i];
-       console.log('tile.row:'+tile.row+' === '+row+', tile.column:'+tile.column+' === '+column);
-       if( Number(tile.row) === Number(row) && Number(tile.column) === Number(column) ){
-         console.log('yep');
-         return tileManager.getTileInfo(tile);
-       }else{
-         console.log('nope');
-       }
-     }
-     throw "invalid Tile"
-   }
+      for (var i = tileManager.tiles.length - 1; i >= 0; i--) {
+        var tile = tileManager.tiles[i];
+        console.log('tile.row:'+tile.row+' === '+row+', tile.column:'+tile.column+' === '+column);
+        if( Number(tile.row) === Number(row) && Number(tile.column) === Number(column) ){
+          console.log('yep');
+          return tileManager.getTileInfo(tile);
+        }else{
+          console.log('nope');
+        }
+      }
+      throw "invalid Tile"
+    };
+    
     this.getTileById = function (id){
      for (var i = tileManager.tiles.length - 1; i >= 0; i--) {
        var tile = tileManager.tiles[i];
@@ -76,72 +77,60 @@ angular.module('survivalApp')
     theTiles += "]";
     return JSON.parse( theTiles );
    };
-   this.makeTileGrid = function (rows,columns){
-      console.log('tileGrid('+rows+','+columns+')');
-      var column=0;
-      var xOffset = -0.4;
-      var yOffset = -0.5;
-      var gridWidth=0.1;
-      var gridHeight=0.1;
-      var tiles = [];
+   this.makeTileGrid = function (config) {
+     if( config.rows === undefined || config.columns === undefined){
+       throw new Error('gotta have rows and columns for a grid');
+     }
+     var rows = parseInt(config.rows),
+       columns = parseInt(config.columns);
+     var column=0;
+     var xOffset = -0.4;
+     var yOffset = -0.5;
+     var gridWidth=0.1;
+     var gridHeight=0.1;
+     var tiles = [];
+     var positionCallback,
+       defaultPositionCallback = function (delta, time, tile) {
+       // #### perlinCallback
+       // noise.simplex2 and noise.perlin2 return values between -1 and 1.
+       var value = noise.simplex3(tile.row / 10, tile.column / 10, time/4);
+       var valuer = noise.simplex3(tile.row / 10, tile.column / 10,time/4+100 );
+       var valueg = noise.simplex3(tile.row / 10, tile.column / 10,time/4+1000 );
+       var valueb = noise.simplex3(tile.row / 10, tile.column / 10,time/4+10000 );
+
+       tile.material.color.r = value;
+       tile.material.color.g = value;
+       tile.material.color.b = value;
+     
+       tile.mesh.position.z = value;
+     };
       for (var row = 1; row <= rows; row++) {
-        for (var column = 1; column <= columns; column++) {
-          // console.log('createTile({"row":'+row+',"column":'+column+'})');
-          var tile = tileManager.createTile({
-            "row":row,
-            "column":column,
-            "callback": function (id) {
+       for (var column = 1; column <= columns; column++) {
+         console.log('clumsy American jackal');
+         if(typeof config.positionCallback === 'function') {
+           positionCallback = function(delta,time,tile){
+             config.positionCallback(delta, time, tile);
+           };
+         }else{
+           positionCallback = defaultPositionCallback;
+         }
+         var tile = tileManager.createTile({
+          'row':row,
+            'column':column,
+            'callback': function (id) {
               var tile = tileManager.getTileById(id);
               if(tile){
                 // console.log('Yellow Pacific Barracuda',tile);
                 tile.material.color = new THREE.Color('#000000');
               }
             },
-            positionCallback: function (delta,time) {
-            
-              // #### perlinCallback
-              // noise.simplex2 and noise.perlin2 return values between -1 and 1.
-              var value = noise.simplex3(this.row / 10, this.column / 10, time/4);
-              var valuer = noise.simplex3(this.row / 10, this.column / 10,time/4+100 );
-              var valueg = noise.simplex3(this.row / 10, this.column / 10,time/4+1000 );
-              var valueb = noise.simplex3(this.row / 10, this.column / 10,time/4+10000 );
-
-              // var newZ = 0+Math.abs(value);
-              this.material.color.r = value;
-              this.material.color.g = value;
-              this.material.color.b = value;
-              // this.material.color.r = valuer*0.7;
-              // this.material.color.g = 0;
-              // this.material.color.b = valueb*0.7;
-            
-              this.mesh.position.z = value;
-            
-            
-            
-                       //#### jiggle callback
-              // var newX = this.mesh.position.x + (( (Math.random()-0.5) * 0.5 ) * delta);
-              // var newY = this.mesh.position.y + (( (Math.random()-0.5) * 0.5 ) * delta);
-              // var newZ = this.mesh.position.z + (( (Math.random()-0.5) * 0.5 ) * delta);
-              // 
-              // if( newX > (row * gridWidth)-gridWidth && 
-                  // newX < (row * gridWidth)+gridWidth){
-                    // this.mesh.position.x = newX;
-              // }
-              // if( newY > (row * gridWidth)-gridWidth && 
-                  // newY < (row * gridWidth)+gridWidth){
-                    // this.mesh.position.y = newY;
-              // }
-              // if( newZ > (row * gridWidth)-gridWidth && 
-                  // newZ < (row * gridWidth)+gridWidth){
-                    // this.mesh.position.z = newZ;
-              // }
-
-            },
+            'positionCallback': function(delta, time, tile){positionCallback(delta, time, tile)},
             'scale':
               {'x':0.2,'y':0.2,'z':0.3},
             'position':
               {'x':(row*gridHeight)+xOffset,'y':(column*gridHeight)+yOffset,'z':0}
             });
+            
           tiles.push(tile);
         }
         column++;
@@ -161,9 +150,8 @@ angular.module('survivalApp')
         tile.mesh.rotateY(tile.rotation.y * delta);
         tile.mesh.rotateZ(tile.rotation.z * delta);
         if(typeof tile.positionCallback !== "undefined"){
-          tile.positionCallback(delta,time);
+          tile.positionCallback(delta, time, tile);
         }
-      
       }
     
     };

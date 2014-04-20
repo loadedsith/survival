@@ -114,8 +114,9 @@ angular.module('survivalApp')
 
     $scope.tms = TileManagerService;
     $scope.tms.makeTileGrid({
-      "rows" : 8,
-      "columns" : 8
+      'rows' : 8,
+      'columns' : 8,
+      'sewMesh':true
       }).then(function(newTiles){
         for (var i = newTiles.length - 1; i >= 0; i--) {
           $scope.scene.add(newTiles[i].tile.mesh);
@@ -124,38 +125,13 @@ angular.module('survivalApp')
     
     $scope.tms2 = TileManagerService;
     $scope.doOnce = true;
-    $scope.theJiggle = function (delta, time, tile) {
-      //#### jiggle callback
-      var column=0;
-      var xOffset = -0.4;
-      var yOffset = -0.5;
-      var gridWidth=0.1;
-      var gridHeight=0.1;
-       var newX = tile.mesh.position.x + (( (Math.random()-0.5) * 1 ) * delta);
-       var newY = tile.mesh.position.y + (( (Math.random()-0.5) * 1 ) * delta);
-       var newZ = tile.mesh.position.z + (( (Math.random()-0.5) * 1 ) * delta);
-       
-       if( newX > (tile.row * gridWidth)-gridWidth && 
-           newX < (tile.row * gridWidth)+gridWidth){
-             tile.mesh.position.x = newX;
-       }
-       if( newY > (tile.row * gridWidth)-gridWidth && 
-           newY < (tile.row * gridWidth)+gridWidth){
-             tile.mesh.position.y = newY;
-       }
-       if( newZ > (tile.row * gridWidth)-gridWidth && 
-           newZ < (tile.row * gridWidth)+gridWidth){
-             tile.mesh.position.z = newZ;
-       }
-      
-    }
     $scope.smallPerlin = function (delta, time, tile) {
       // #### perlinCallback
+      if(tile.seed===undefined){
+        tile.seed = Math.random();
+      }
       // noise.simplex2 and noise.perlin2 return values between -1 and 1.
-      var value =  noise.simplex3(tile.row / 20, tile.column / 20, time/8);
-      var valuer = noise.simplex3(tile.row / 20, tile.column / 20, time/8+100 );
-      var valueg = noise.simplex3(tile.row / 20, tile.column / 20, time/8+1000 );
-      var valueb = noise.simplex3(tile.row / 20, tile.column / 20, time/8+10000 );
+      var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed/8);
       tile.mesh.position.z = value;
     }
     $scope.tms2.makeTileGrid({

@@ -126,9 +126,17 @@ angular.module('survivalApp')
             },
             'positionCallback': function(delta, time, tile){positionCallback(delta, time, tile)},
             'scale':
-              {'x':0.2,'y':0.2,'z':0.3},
+              {
+                'x':0.2,
+                'y':0.2,
+                'z':0.3
+              },
             'position':
-              {'x':(row*gridHeight)+xOffset,'y':(column*gridHeight)+yOffset,'z':0}
+              {
+                'x':(row*gridHeight)+xOffset,
+                'y':(column*gridHeight)+yOffset,
+                'z':0
+              }
             });
             
           tiles.push(tile);

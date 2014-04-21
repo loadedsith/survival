@@ -2,27 +2,16 @@
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http,DEBUG, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
+	.controller('MainCtrl', function ($scope, $http, DEBUG, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
 	'use strict';
   $scope.DEBUG = DEBUG;
   $scope.showTools = false;
   $scope.cameraMovement = {x:0,y:0,z:0};
-  $scope.driveCamera = function (delta,time) {
-    $scope.camera.position.x = $scope.camera.position.x + $scope.cameraMovement.x * delta; 
-    $scope.camera.position.y = $scope.camera.position.y + $scope.cameraMovement.y * delta; 
-    $scope.camera.position.z = $scope.camera.position.z + $scope.cameraMovement.z * delta; 
-  };
-  $scope.shouldAddCameraLoopFunction = true;
-  $scope.cameraLoopInit = function () {
-    if($scope.shouldAddCameraLoopFunction){
-      $scope.onRenderFcts.push($scope.driveCamera);
-      $scope.shouldAddCameraLoopFunction = false;
-    }  
-  };
-  
+
+
   ThreeJSConfigService.retrieve().$promise.then(function (data) {
     $scope.config = data;
-    $scope.init();
+    ThreeJSRendererService.init();
   });
   TemplatesService.retrieve().$promise.then(function (data) {
     $scope.templates = data;
@@ -30,16 +19,29 @@ angular.module('survivalApp')
   StringsService.retrieve().$promise.then(function (data) {
     $scope.strings = data;
   });
-  $scope.$on('cameraMovement',function (event, attributes) {
-    console.log('Indigo Greenish Grass-dart frog',event, attributes);
-    $scope.cameraMovement = attributes;
-    $scope.cameraLoopInit();
-  })
+  
   $scope.noiseSeed = noise.seed(Math.random());
   KeyboardService.setScope($scope);
   $scope.keyUp = KeyboardService.keyUp;
   $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
+
+  $scope.driveCamera = function (delta,time) {
+    ThreeJSRendererService.camera.position.x = ThreeJSRendererService.camera.position.x + $scope.cameraMovement.x * delta; 
+    ThreeJSRendererService.camera.position.y = ThreeJSRendererService.camera.position.y + $scope.cameraMovement.y * delta; 
+    ThreeJSRendererService.camera.position.z = ThreeJSRendererService.camera.position.z + $scope.cameraMovement.z * delta; 
+  };
+  
+  $scope.shouldAddCameraLoopFunction = true;
+  $scope.$on('cameraMovement',function (event, attributes) {
+    //Key binding is defined in the keyboad service, which emits this event
+    $scope.cameraMovement = attributes;
+    if($scope.shouldAddCameraLoopFunction){
+      $scope.onRenderFcts.push($scope.driveCamera);
+      $scope.shouldAddCameraLoopFunction = false;
+    }
+  });
+  
 
   $scope.shouldAddedValueFunction = true;
   $scope.toolManager = {
@@ -70,48 +72,7 @@ angular.module('survivalApp')
     }
   }
 
-  $scope.toolManager.loadTiles = function (){
-    if(typeof $scope.tileSets !== "undefined"){      
-      TileManagerService.loadTiles($scope.tileSets[0]);
-    }else{          
-      console.log('No tiles to load');
-    }
-  };
-  
-  
-  $scope.init = function () {
-    console.log('MainCtrl Init');
-    if( !Detector.webgl ){
-      Detector.addGetWebGLMessage();
-      $scope.noWebGl = $scope.config.noWebGl;
-      throw $scope.config.noWebGl;
-    }
-  	var renderer	= new THREE.WebGLRenderer();
-  	renderer.setSize( window.innerWidth, window.innerHeight );
-  	$('#renderer').empty().append( renderer.domElement );
-  	// setup a scene and camera
-  	$scope.scene	= new THREE.Scene();
-  	$scope.camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight*.8, 0.01, 1000);
-  	$scope.camera.position.z = 4;
-  	// declare the rendering loop
-  	$scope.onRenderFcts= [];
-
-  	// handle window resize events
-  	var winResize	= new THREEx.WindowResize(renderer, $scope.camera)
-
-  	//////////////////////////////////////////////////////////////////////////////////
-  	//		default 3 points lightning					//
-  	//////////////////////////////////////////////////////////////////////////////////
-	
-  	var ambientLight= new THREE.AmbientLight( 0x020202 )
-  	$scope.scene.add( ambientLight)
-  	var frontLight	= new THREE.DirectionalLight('white', 1)
-  	frontLight.position.set(0.5, 0.5, 2)
-  	$scope.scene.add( frontLight )
-  	var backLight	= new THREE.DirectionalLight('white', 0.75)
-  	backLight.position.set(-0.5, -0.5, -2)
-  	$scope.scene.add( backLight )		
-
+  $scope.addTilesToScene = function () {
     $scope.tms = TileManagerService;
     $scope.tms.makeTileGrid({
       'rows' : 8,
@@ -119,9 +80,11 @@ angular.module('survivalApp')
       'sewMesh':true
       }).then(function(newTiles){
         for (var i = newTiles.length - 1; i >= 0; i--) {
-          $scope.scene.add(newTiles[i].tile.mesh);
+          console.log('ThreeJSRendererService', ThreeJSRendererService);
+          ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
         }
     });
+    
     
     $scope.tms2 = TileManagerService;
     $scope.doOnce = true;
@@ -140,68 +103,28 @@ angular.module('survivalApp')
       "positionCallback" : $scope.smallPerlin
     }).then(function(newTiles){
       for (var i = newTiles.length - 1; i >= 0; i--) {
-        $scope.scene.add(newTiles[i].tile.mesh);
+        ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
     });
     console.log('TileManagerService', TileManagerService);
 
-  
+
     if($scope.shouldAddedValueFunction){
-      $scope.onRenderFcts.push(TileManagerService.updateTiles);
+      console.log('ThreeJSRendererService', ThreeJSRendererService);
+      ThreeJSRendererService.onRenderFcts.push(TileManagerService.updateTiles);
       $scope.shouldAddedValueFunction=false;
     }
-  
-  	//////////////////////////////////////////////////////////////////////////////////
-  	//		Camera Controls							//
-  	//////////////////////////////////////////////////////////////////////////////////
-  	var mouse	= {x : 0, y : 0, down:false}
-
-  	document.addEventListener('mousemove', function(event){
-  		mouse.x	= (event.clientX / window.innerWidth ) - 0.5
-  		mouse.y	= (event.clientY / window.innerHeight) - 0.5
-
-  	}, false)
-  	$scope.camera.rotation.set( 0, 0, 0 );
-  
-    
-    $scope.onRenderFcts.push(function(delta, now){
-
-
-      // $scope.yawObject.rotation.y -= mouse.x * 0.002;
-      if(mouse.down){
-        $scope.camera.rotation.x -= mouse.y * 0.02;
-        $scope.camera.rotation.x = Math.max( - PI_2, Math.min( PI_2, $scope.camera.rotation.x ) );
-        $scope.camera.rotation.y -= mouse.x * 0.02;
-        $scope.camera.rotation.y = Math.max( - PI_2, Math.min( PI_2, $scope.camera.rotation.y ) );
-      }
-
-
-    })
-
-  	//////////////////////////////////////////////////////////////////////////////////
-  	//		render the scene						//
-  	//////////////////////////////////////////////////////////////////////////////////
-  	$scope.onRenderFcts.push(function(){
-  		renderer.render( $scope.scene, $scope.camera );		
-  	})
-	
-  	//////////////////////////////////////////////////////////////////////////////////
-  	//		Rendering Loop runner						//
-  	//////////////////////////////////////////////////////////////////////////////////
-  	var lastTimeMsec= null
-  	requestAnimationFrame(function animate(nowMsec){
-  		// keep looping
-  		requestAnimationFrame( animate );
-  		// measure time
-  		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
-  		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
-  		lastTimeMsec	= nowMsec
-  		// call each update function
-  		$scope.onRenderFcts.forEach(function(onRenderFct){
-  			onRenderFct(deltaMsec/1000, nowMsec/1000)
-  		})
-  	})
   };
-
+  
+  ThreeJSRendererService.ready($scope.addTilesToScene);
+  
+  
+  $scope.toolManager.loadTiles = function (){
+    if(typeof $scope.tileSets !== "undefined"){      
+      TileManagerService.loadTiles($scope.tileSets[0]);
+    }else{          
+      console.log('No tiles to load');
+    }
+  };
   
 });

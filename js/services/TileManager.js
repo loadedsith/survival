@@ -106,7 +106,6 @@ angular.module('survivalApp')
      };
       for (var row = 1; row <= rows; row++) {
        for (var column = 1; column <= columns; column++) {
-         console.log('clumsy American jackal');
          if(typeof config.positionCallback === 'function') {
            positionCallback = function(delta,time,tile){
              config.positionCallback(delta, time, tile);
@@ -120,7 +119,6 @@ angular.module('survivalApp')
             'callback': function (id) {
               var tile = tileManager.getTileById(id);
               if(tile){
-                // console.log('Yellow Pacific Barracuda',tile);
                 tile.material.color = new THREE.Color('#000000');
               }
             },
@@ -133,8 +131,8 @@ angular.module('survivalApp')
               },
             'position':
               {
-                'x':(row*gridHeight)+xOffset,
-                'y':(column*gridHeight)+yOffset,
+                'x':(row * gridHeight) + xOffset,
+                'y':(column * gridHeight) + yOffset,
                 'z':0
               }
             });

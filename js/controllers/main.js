@@ -139,11 +139,9 @@ angular.module('survivalApp')
 
 		$scope.foodSource.mesh = new THREE.Mesh( geometry, material ); 
 
-    $scope.foodSource.mesh.geometry.positionX = -0.57;
-    $scope.foodSource.mesh.geometry.positionY = 0.52 ;
-    $scope.foodSource.mesh.geometry.positionZ = 0.4;
-
 		ThreeJSRendererService.scene.add( $scope.foodSource.mesh );
+
+    $scope.foodSource.mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
 
     if($scope.shouldAddFoodSourceToRenderUpdates){
       $scope.shouldAddFoodSourceToRenderUpdates=false;

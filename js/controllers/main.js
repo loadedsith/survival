@@ -2,7 +2,7 @@
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http, DEBUG, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
+	.controller('MainCtrl', function ($scope, $http, DEBUG, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService, FoodManagerService) {
 	'use strict';
   $scope.DEBUG = DEBUG;
   $scope.showTools = false;
@@ -122,36 +122,15 @@ angular.module('survivalApp')
       $scope.shouldAddTilesToRenderUpdates=false;
     }
   };
-  $scope.foodSource = {
-    update : function (delta, time) {
-      $scope.foodSource.mesh.rotateX(Math.cos(time)*delta);
-    }
-  };
-
-  
+ 
   $scope.shouldAddFoodSourceToRenderUpdates = true;
   $scope.addFoodSource = function () {
     console.log('addFoodSource');
     console.log('THREE', THREE);
-    var radius = 0.3;
-    var geometry = new THREE.CubeGeometry(0.8 * radius, 0.8 * radius, 0.8 * radius, 10, 10, 10);
-                                                               
-    $scope.foodSource.texture = THREE.ImageUtils.loadTexture( 'textures/foodSource.png' );
-    $scope.foodSource.texture.anisotropy = ThreeJSRendererService.renderer.getMaxAnisotropy();
-
-		var material = new THREE.MeshBasicMaterial( { map: $scope.foodSource.texture } );
-
-    // var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading });
-
-		$scope.foodSource.mesh = new THREE.Mesh( geometry, material ); 
-
-		ThreeJSRendererService.scene.add( $scope.foodSource.mesh );
-
-    $scope.foodSource.mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
-
+    FoodManagerService.init();
     if($scope.shouldAddFoodSourceToRenderUpdates){
       $scope.shouldAddFoodSourceToRenderUpdates=false;
-      ThreeJSRendererService.onRenderFcts.push($scope.foodSource.update);
+      ThreeJSRendererService.onRenderFcts.push(FoodManagerService.foodSource.update);
     }  
   };
   $scope.createGameBoard = function () {

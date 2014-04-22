@@ -1,5 +1,6 @@
 angular.module('survivalApp')
   .service('KeyboardService', function () {//$interval, $timeout
+    'use strict';
     var keyboard = this,
       $scope = {},
       preventDefault = function ($event) {
@@ -8,37 +9,37 @@ angular.module('survivalApp')
       
     keyboard.setScope = function (scope) {
       $scope = scope;
-    }
+    };
     
-    keyboard.keyDown=function ($event) {
+    keyboard.keyDown = function ($event) {
       preventDefault($event);
-      return{
-        enter : function($event) {
+      return {
+        enter : function ($event) {
 
         },
-        up : function ($event){//up
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:-1})
+        up : function ($event) {//up
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, -1))
         },
-        down: function ($event){//down
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:1})
+        down: function ($event) {//down
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 1))
         },
-        left: function ($event){//left
-          $scope.$broadcast('cameraMovement',{x:-1,y:0,z:0})
+        left: function ($event) {//left
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(-1,  0, 0))
         },
-        right: function ($event){//right
-          $scope.$broadcast('cameraMovement',{x:1,y:0,z:0})
+        right: function ($event) {//right
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(1, 0, 0))
         },
-        space: function ($event){//space
-          $scope.$broadcast('cameraMovement',{x:0,y:1,z:0})
+        space: function ($event) {//space
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 1, 0))
         },
-        e: function ($event){//e
-          $scope.$broadcast('cameraMovement',{x:0,y:1,z:0})
+        e: function ($event) {//e
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 1, 0))
         },
-        f: function ($event){//f
-          $scope.$broadcast('cameraMovement',{x:0,y:-1,z:0})
+        f: function ($event) {//f
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, -1,  0))
         },
-        c: function ($event){//c
-          $scope.$broadcast('cameraMovement',{x:0,y:-1,z:0})
+        c: function ($event) {//c
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, -1,  0))
         }
       };
     }
@@ -48,39 +49,39 @@ angular.module('survivalApp')
       return {
         enter : function($event) {//scope.scene
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        up : function ($event){//up up
+        up : function ($event) {//up up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        down: function ($event){//down up
+        down: function ($event) {//down up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        left: function ($event){//left up
+        left: function ($event) {//left up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        right: function ($event){//right up
+        right: function ($event) {//right up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        space: function ($event){//space up
+        space: function ($event) {//space up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        e: function ($event){//e up
+        e: function ($event) {//e up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        f: function ($event){//f up
+        f: function ($event) {//f up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         },
-        c: function ($event){//c up
+        c: function ($event) {//c up
           $event.preventDefault();
-          $scope.$broadcast('cameraMovement',{x:0,y:0,z:0})
+          $scope.$broadcast('keyboardMovementEvent', new THREE.Vector3(0, 0, 0))
         }
       };
     };

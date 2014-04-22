@@ -2,14 +2,14 @@
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
+	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, FoodManagerService, CellManagerService, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
 	'use strict';
   
   
   
   $scope.DEBUG = DEBUG;
   $scope.showTools = false;
-  $scope.cameraMovement = {x:0,y:0,z:0};
+  $scope.movementVector = {x:0,y:0,z:0};
 
   DebugLessService.init();
   
@@ -29,25 +29,41 @@ angular.module('survivalApp')
   $scope.keyUp = KeyboardService.keyUp;
   $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
-  $scope.driveCamera = function (delta,time) {
-    var camera = ThreeJSRendererService.camera,
-    movement = new THREE.Vector3($scope.cameraMovement.x, $scope.cameraMovement.y, $scope.cameraMovement.z),
+  
+  $scope.driveThis = 'cell';
+  
+  $scope.keyboardMovement = function (delta,time) {
+    var movement = new THREE.Vector3($scope.movementVector.y, $scope.movementVector.x, $scope.movementVector.z),
     deltaV = new THREE.Vector3(delta,delta,delta);
-
     movement.multiply(deltaV);
-    camera.position.add(movement);    
-    
-    var foodMesh = FoodManagerService.foodSource.mesh;
-    foodMesh.position.add(movement)
-    
+    DebugLessService.msg = ['keyboardMovement',movement];
+
+    switch ($scope.driveThis){
+      case 'camera':
+        var camera = ThreeJSRendererService.camera;
+        camera.position.add(movement);
+      break;
+      case 'food':
+        var foodMesh = FoodManagerService.foodSource.mesh;
+        foodMesh.position.add(movement);
+      break;
+      case 'cell':
+        var cellMesh = CellManagerService.cell.mesh;
+        cellMesh.position.add(movement);
+      break;
+      default:
+        camera.position.add(movement);    
+      break;
+    }
   };
   
   $scope.shouldAddCameraLoopFunction = true;
-  $scope.$on('cameraMovement',function (event, attributes) {
+  $scope.$on('keyboardMovementEvent',function (event, attributes) {
     //Key binding is defined in the keyboad service, which emits this event
-    $scope.cameraMovement = attributes;
+    console.log('attributes', attributes);
+    $scope.movementVector = attributes;
     if($scope.shouldAddCameraLoopFunction){
-      ThreeJSRendererService.onRenderFcts.push($scope.driveCamera);
+      ThreeJSRendererService.onRenderFcts.push($scope.keyboardMovement);
       $scope.shouldAddCameraLoopFunction = false;
     }
   });

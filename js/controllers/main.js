@@ -4,6 +4,9 @@ var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
 	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
 	'use strict';
+  
+  
+  
   $scope.DEBUG = DEBUG;
   $scope.showTools = false;
   $scope.cameraMovement = {x:0,y:0,z:0};
@@ -26,18 +29,16 @@ angular.module('survivalApp')
   $scope.keyUp = KeyboardService.keyUp;
   $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
-  
- 
   $scope.driveCamera = function (delta,time) {
-    // ThreeJSRendererService.camera.position.x = ThreeJSRendererService.camera.position.x + $scope.cameraMovement.x * delta; 
-    // ThreeJSRendererService.camera.position.y = ThreeJSRendererService.camera.position.y + $scope.cameraMovement.y * delta; 
-    // ThreeJSRendererService.camera.position.z = ThreeJSRendererService.camera.position.z + $scope.cameraMovement.z * delta; 
+    var camera = ThreeJSRendererService.camera,
+    movement = new THREE.Vector3($scope.cameraMovement.x, $scope.cameraMovement.y, $scope.cameraMovement.z),
+    deltaV = new THREE.Vector3(delta,delta,delta);
 
-    $scope.foodSource.mesh.position.x = $scope.foodSource.mesh.position.x + $scope.cameraMovement.x * delta; 
-    $scope.foodSource.mesh.position.y = $scope.foodSource.mesh.position.y + $scope.cameraMovement.y * delta; 
-    $scope.foodSource.mesh.position.z = $scope.foodSource.mesh.position.z + $scope.cameraMovement.z * delta; 
-    var position = $scope.foodSource.mesh.position;
-    DebugLessService.msg = ['position.x,position.y,position.z', position.x,position.y,position.z];
+    movement.multiply(deltaV);
+    camera.position.add(movement);    
+    
+    var foodMesh = FoodManagerService.foodSource.mesh;
+    foodMesh.position.add(movement)
     
   };
   
@@ -124,36 +125,31 @@ angular.module('survivalApp')
       $scope.shouldAddTilesToRenderUpdates=false;
     }
   };
-  $scope.foodSource = {
-    update : function (delta, time) {
-      $scope.foodSource.mesh.rotateX(Math.cos(time)*delta);
-    }
-  };
-  
+ 
   $scope.shouldAddFoodSourceToRenderUpdates = true;
   $scope.addFoodSource = function () {
     console.log('addFoodSource');
-    var radius = 0.3;
-    var geometry = new THREE.CubeGeometry(0.8 * radius, 0.8 * radius, 0.8 * radius, 10, 10, 10);
-
-    var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading });
-
-		$scope.foodSource.mesh = new THREE.Mesh( geometry, material ); 
-
-    
-		var thing = ThreeJSRendererService.scene.add( $scope.foodSource.mesh );
-    
-    $scope.foodSource.mesh.position = new THREE.Vector3(-0.518, 0.486 , 0.712);
-    
-    
+    FoodManagerService.init();
     if($scope.shouldAddFoodSourceToRenderUpdates){
       $scope.shouldAddFoodSourceToRenderUpdates=false;
-      ThreeJSRendererService.onRenderFcts.push($scope.foodSource.update);
+      ThreeJSRendererService.onRenderFcts.push(FoodManagerService.foodSource.update);
     }  
   };
+  
+  $scope.shouldAddCellToRenderUpdates = true;
+  $scope.addCell = function () {
+    console.log('addCell');
+    CellManagerService.init();
+    if($scope.shouldAddCellToRenderUpdates){
+      $scope.shouldAddCellToRenderUpdates=false;
+      ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell.update);
+    }  
+  };
+  
   $scope.createGameBoard = function () {
     $scope.addTilesToScene();
     $scope.addFoodSource();
+    $scope.addCell();
   };
   
   ThreeJSRendererService.ready($scope.createGameBoard);

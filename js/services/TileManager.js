@@ -1,8 +1,12 @@
 angular.module('survivalApp')
-  .service('TileManagerService', function () {//$interval, $timeout
+  .service('TileManagerService', function (ThreeJSRendererService) {//$interval, $timeout
     var tileManager = this;
     
     this.tiles = [];
+    
+    this.shouldAddTilesToRenderUpdates = true;
+    
+    
     
     this.getTileInfo = function (tile){
       var object = {
@@ -207,6 +211,12 @@ angular.module('survivalApp')
         newTile.positionCallback = function (delta,time) {};
       }else{
         newTile.positionCallback = config.positionCallback;
+      }
+      
+      if(tileManager.shouldAddTilesToRenderUpdates){
+        console.log('tileManager.shouldAddTilesToRenderUpdates');
+        ThreeJSRendererService.onRenderFcts.push(tileManager.updateTiles);
+        tileManager.shouldAddTilesToRenderUpdates = false;
       }
       
       tileManager.tiles.push(newTile);

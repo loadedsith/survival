@@ -119,11 +119,11 @@ angular.module('survivalApp')
     console.log('TileManagerService', TileManagerService);
 
 
-    if($scope.shouldAddTilesToRenderUpdates){
-      console.log('ThreeJSRendererService', ThreeJSRendererService);
-      ThreeJSRendererService.onRenderFcts.push(TileManagerService.updateTiles);
-      $scope.shouldAddTilesToRenderUpdates=false;
-    }
+    // if($scope.shouldAddTilesToRenderUpdates){
+    //   console.log('ThreeJSRendererService', ThreeJSRendererService);
+    //   ThreeJSRendererService.onRenderFcts.push(TileManagerService.updateTiles);
+    //   $scope.shouldAddTilesToRenderUpdates=false;
+    // }
   };
  
   $scope.shouldAddFoodSourceToRenderUpdates = true;

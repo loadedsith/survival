@@ -1,0 +1,33 @@
+windowTitle = "$windowTitle ${TM_DIRECTORY/\A(?:\/Users\/$USER\/Sites\/[\w-]+\/?(.*)|(.+))\z/${2:? – ${2/\/Users\/$USER/~/}:${1/\A(?=.)/ – /}}/}"
+
+myExtraIncludes = ".tm_properties,.gitignore"
+fileBrowserGlob  = "{*,$myExtraIncludes}"
+include = "{$include,$myExtraIncludes}"
+
+myExtraExcludes = "log,vendor,tmp,dist"
+
+excludeInFileChooser  = "{$excludeInFileChooser,$myExtraExcludes}"
+excludeInFolderSearch = "{$excludeInFolderSearch,$myExtraExcludes,bower_components,node_modules,phonegap,platforms,www,plugin}"
+
+excludeInBrowser      = "{$excludeInBrowser,log,tmp,dist}"
+
+softWrap         = true
+softTabs         = true
+tabSize          = 2
+
+spellChecking    = true
+spellingLanguage = 'en'
+
+[ *.{icns,ico,jpg,jpeg,m4v,nib,pdf,png,psd,pyc,rtf,tif,tiff,xib} ]
+binary           = true
+
+[ source ]
+softTabs         = true
+tabSize          = 2
+
+[ source.python ]
+softTabs         = true
+tabSize          = 4
+
+[ "{README,INSTALL,LICENSE,TODO}" ]
+fileType         = "text.plain"

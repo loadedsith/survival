@@ -2,13 +2,14 @@
 /* global angular:false, Detector:false, console:false */
 var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http, DEBUG, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
+	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
 	'use strict';
   $scope.DEBUG = DEBUG;
   $scope.showTools = false;
   $scope.cameraMovement = {x:0,y:0,z:0};
 
-
+  DebugLessService.init();
+  
   ThreeJSConfigService.retrieve().$promise.then(function (data) {
     $scope.config = data;
     ThreeJSRendererService.init();
@@ -25,7 +26,8 @@ angular.module('survivalApp')
   $scope.keyUp = KeyboardService.keyUp;
   $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
-
+  
+ 
   $scope.driveCamera = function (delta,time) {
     // ThreeJSRendererService.camera.position.x = ThreeJSRendererService.camera.position.x + $scope.cameraMovement.x * delta; 
     // ThreeJSRendererService.camera.position.y = ThreeJSRendererService.camera.position.y + $scope.cameraMovement.y * delta; 
@@ -35,7 +37,7 @@ angular.module('survivalApp')
     $scope.foodSource.mesh.position.y = $scope.foodSource.mesh.position.y + $scope.cameraMovement.y * delta; 
     $scope.foodSource.mesh.position.z = $scope.foodSource.mesh.position.z + $scope.cameraMovement.z * delta; 
     var position = $scope.foodSource.mesh.position;
-    console.log('position.x,position.y,position.z', position.x,position.y,position.z);
+    DebugLessService.msg = ['position.x,position.y,position.z', position.x,position.y,position.z];
     
   };
   
@@ -131,7 +133,6 @@ angular.module('survivalApp')
   $scope.shouldAddFoodSourceToRenderUpdates = true;
   $scope.addFoodSource = function () {
     console.log('addFoodSource');
-    console.log('THREE', THREE);
     var radius = 0.3;
     var geometry = new THREE.CubeGeometry(0.8 * radius, 0.8 * radius, 0.8 * radius, 10, 10, 10);
 
@@ -139,12 +140,12 @@ angular.module('survivalApp')
 
 		$scope.foodSource.mesh = new THREE.Mesh( geometry, material ); 
 
-    $scope.foodSource.mesh.geometry.positionX = -0.57;
-    $scope.foodSource.mesh.geometry.positionY = 0.52 ;
-    $scope.foodSource.mesh.geometry.positionZ = 0.4;
-
-		ThreeJSRendererService.scene.add( $scope.foodSource.mesh );
-
+    
+		var thing = ThreeJSRendererService.scene.add( $scope.foodSource.mesh );
+    
+    $scope.foodSource.mesh.position = new THREE.Vector3(-0.518, 0.486 , 0.712);
+    
+    
     if($scope.shouldAddFoodSourceToRenderUpdates){
       $scope.shouldAddFoodSourceToRenderUpdates=false;
       ThreeJSRendererService.onRenderFcts.push($scope.foodSource.update);

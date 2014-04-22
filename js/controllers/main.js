@@ -127,6 +127,7 @@ angular.module('survivalApp')
       $scope.foodSource.mesh.rotateX(Math.cos(time)*delta);
     }
   };
+
   
   $scope.shouldAddFoodSourceToRenderUpdates = true;
   $scope.addFoodSource = function () {
@@ -134,8 +135,13 @@ angular.module('survivalApp')
     console.log('THREE', THREE);
     var radius = 0.3;
     var geometry = new THREE.CubeGeometry(0.8 * radius, 0.8 * radius, 0.8 * radius, 10, 10, 10);
+                                                               
+    $scope.foodSource.texture = THREE.ImageUtils.loadTexture( 'textures/foodSource.png' );
+    $scope.foodSource.texture.anisotropy = ThreeJSRendererService.renderer.getMaxAnisotropy();
 
-    var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading });
+		var material = new THREE.MeshBasicMaterial( { map: $scope.foodSource.texture } );
+
+    // var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading });
 
 		$scope.foodSource.mesh = new THREE.Mesh( geometry, material ); 
 

@@ -59,7 +59,7 @@ module.exports = function (grunt) {
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       copy:{
-        files: [
+        files: [//changing something here not working? You might be looking for the copy task
             'bower_components/angular/angular.js',
             'bower_components/angular-animate/angular-animate.js',
             'bower_components/angular-resource/angular-resource.js',
@@ -78,6 +78,8 @@ module.exports = function (grunt) {
             '*.js*',
             'favicon.ico',
             'images/**/*',
+            'textures/**/*',
+            'models/**/*',
             'fonts/**/*',
             'views/**/*',
             'js/**/*',
@@ -238,6 +240,8 @@ module.exports = function (grunt) {
             '*.js*',
             'favicon.ico',
             'images/**/*',
+            'textures/**/*',
+            'models/**/*',
             'fonts/**/*',
             'views/**/*',
             'js/**/*',

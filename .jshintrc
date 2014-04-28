@@ -26,6 +26,8 @@
     "AnalyticsService": false,
     "IdleManagerService": false,
     "$": false,
+    "noise": false,
+    "THREE": false,
 	"$scope":true
   }
 }

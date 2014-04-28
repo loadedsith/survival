@@ -1,6 +1,3 @@
-/*jshint white:false */
-/* global angular:false, Detector:false, console:false */
-var PI_2 = Math.PI / 2;
 angular.module('survivalApp')
 	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, FoodManagerService, CellManagerService, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
 	'use strict';
@@ -13,10 +10,7 @@ angular.module('survivalApp')
 
   DebugLessService.init();
   
-  ThreeJSConfigService.retrieve().$promise.then(function (data) {
-    $scope.config = data;
-    ThreeJSRendererService.init();
-  });
+
   TemplatesService.retrieve().$promise.then(function (data) {
     $scope.templates = data;
   });
@@ -32,7 +26,7 @@ angular.module('survivalApp')
   
   $scope.driveThis = 'cell';
   
-  $scope.keyboardMovement = function (delta,time) {
+  $scope.keyboardMovement = function (delta) {
     var movement = new THREE.Vector3($scope.movementVector.y, $scope.movementVector.x, $scope.movementVector.z),
     deltaV = new THREE.Vector3(delta,delta,delta);
     movement.multiply(deltaV);
@@ -42,18 +36,18 @@ angular.module('survivalApp')
       case 'camera':
         var camera = ThreeJSRendererService.camera;
         camera.position.add(movement);
-      break;
+        break;
       case 'food':
         var foodMesh = FoodManagerService.foodSource.mesh;
         foodMesh.position.add(movement);
-      break;
+        break;
       case 'cell':
         var cellMesh = CellManagerService.cell.mesh;
         cellMesh.position.add(movement);
-      break;
+        break;
       default:
         camera.position.add(movement);    
-      break;
+        break;
     }
   };
   
@@ -84,19 +78,19 @@ angular.module('survivalApp')
       getTileAtCoord:{
         show:false,
         values:{
-          "row":0,
-          "column":0
+          'row': 0,
+          'column': 0
         }
       },
       createTile:{
         show:false,
         values:{
-          "row":0,
-          "column":0
+          'row': 0,
+          'column': 0
         }
       }
     }
-  }
+  };
 
   $scope.addTilesToScene = function () {
     $scope.tms = TileManagerService;
@@ -104,11 +98,10 @@ angular.module('survivalApp')
       'rows' : 8,
       'columns' : 8,
       'sewMesh':true
-      }).then(function(newTiles){
-        for (var i = newTiles.length - 1; i >= 0; i--) {
-          console.log('ThreeJSRendererService', ThreeJSRendererService);
-          ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
-        }
+    }).then(function (newTiles) {
+      for (var i = newTiles.length - 1; i >= 0; i--) {
+        ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
+      }
     });
     
     
@@ -122,29 +115,20 @@ angular.module('survivalApp')
       // noise.simplex2 and noise.perlin2 return values between -1 and 1.
       var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed/8);
       tile.mesh.position.z = value;
-    }
+    };
     $scope.tms2.makeTileGrid({
-      "rows" : 8,
-      "columns" : 8,
-      "positionCallback" : $scope.smallPerlin
+      'rows' : 8,
+      'columns' : 8,
+      'positionCallback' : $scope.smallPerlin
     }).then(function(newTiles){
       for (var i = newTiles.length - 1; i >= 0; i--) {
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
     });
-    console.log('TileManagerService', TileManagerService);
-
-
-    // if($scope.shouldAddTilesToRenderUpdates){
-    //   console.log('ThreeJSRendererService', ThreeJSRendererService);
-    //   ThreeJSRendererService.onRenderFcts.push(TileManagerService.updateTiles);
-    //   $scope.shouldAddTilesToRenderUpdates=false;
-    // }
   };
  
   $scope.shouldAddFoodSourceToRenderUpdates = true;
   $scope.addFoodSource = function () {
-    console.log('addFoodSource');
     FoodManagerService.init();
     if($scope.shouldAddFoodSourceToRenderUpdates){
       $scope.shouldAddFoodSourceToRenderUpdates=false;
@@ -153,26 +137,32 @@ angular.module('survivalApp')
   };
   
   $scope.shouldAddCellToRenderUpdates = true;
+  
+  
   $scope.addCell = function () {
-    console.log('addCell');
     CellManagerService.init();
     if($scope.shouldAddCellToRenderUpdates){
-      $scope.shouldAddCellToRenderUpdates=false;
+      $scope.shouldAddCellToRenderUpdates = false;
       ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell.update);
     }  
   };
-  
+
+  $scope.createWebworker = function () {
+    
+  };
+
+ 
   $scope.createGameBoard = function () {
-    $scope.addTilesToScene();
-    $scope.addFoodSource();
-    $scope.addCell();
+    // $scope.addTilesToScene();
+    // $scope.addFoodSource();
+    // $scope.addCell();
   };
   
-  ThreeJSRendererService.ready($scope.createGameBoard);
+  ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);
   
   
   $scope.toolManager.loadTiles = function (){
-    if(typeof $scope.tileSets !== "undefined"){      
+    if(typeof $scope.tileSets !== 'undefined'){      
       TileManagerService.loadTiles($scope.tileSets[0]);
     }else{          
       console.log('No tiles to load');

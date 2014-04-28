@@ -1,6 +1,6 @@
 var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ui'])// 'ngCookies', 'ngSanitize',
   .config(function ($routeProvider) {
-  'use strict';
+    'use strict';
 
     $routeProvider
       .when('/', {
@@ -10,7 +10,7 @@ var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ui'])// 'ngC
       .otherwise({
         redirectTo: '/'
       });
-  
-});
 
-app.constant("DEBUG", /* @echo DEBUG */ || false);
+  });
+
+app.constant('DEBUG', /* @echo  DEBUG */ || false);// jshint ignore:line

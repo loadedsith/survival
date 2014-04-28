@@ -153,9 +153,9 @@ angular.module('survivalApp')
 
  
   $scope.createGameBoard = function () {
-    // $scope.addTilesToScene();
-    // $scope.addFoodSource();
-    // $scope.addCell();
+    $scope.addTilesToScene();
+    $scope.addFoodSource();
+    $scope.addCell();
   };
   
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);

@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, FoodManagerService, CellManagerService, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, ThreeJSConfigService, KeyboardService, TileManagerService) {
+	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, FoodManagerService, CellManagerService, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, KeyboardService, TileManagerService) {
 	'use strict';
   
   

@@ -6,11 +6,10 @@ angular.module('survivalApp')
   
   $scope.DEBUG = DEBUG;
   $scope.showTools = false;
-  $scope.movementVector = {x:0,y:0,z:0};
+  $scope.movementVector = new THREE.Vector3(0, 0, 0);
 
   DebugLessService.init();
   
-
   TemplatesService.retrieve().$promise.then(function (data) {
     $scope.templates = data;
   });

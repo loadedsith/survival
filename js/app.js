@@ -20,4 +20,4 @@ if (debug === '' || debug === 'false') {
   debug = true;
 }
 
-app.constant('DEBUG', debug || false); // jshint ignore:line 
+app.constant('DEBUG', debug || false);

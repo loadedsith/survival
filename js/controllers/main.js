@@ -27,35 +27,34 @@ angular.module('survivalApp')
   
   $scope.keyboardMovement = function (delta) {
     var movement = new THREE.Vector3($scope.movementVector.y, $scope.movementVector.x, $scope.movementVector.z),
-    deltaV = new THREE.Vector3(delta,delta,delta);
+    deltaV = new THREE.Vector3(delta, delta, delta);
     movement.multiply(deltaV);
-    DebugLessService.msg = ['keyboardMovement',movement];
+    DebugLessService.msg = ['keyboardMovement', movement];
 
-    switch ($scope.driveThis){
-      case 'camera':
-        var camera = ThreeJSRendererService.camera;
-        camera.position.add(movement);
-        break;
-      case 'food':
-        var foodMesh = FoodManagerService.foodSource.mesh;
-        foodMesh.position.add(movement);
-        break;
-      case 'cell':
-        var cellMesh = CellManagerService.cell.mesh;
-        cellMesh.position.add(movement);
-        break;
-      default:
-        camera.position.add(movement);    
-        break;
+    switch ($scope.driveThis) {
+    case 'camera':
+      var camera = ThreeJSRendererService.camera;
+      camera.position.add(movement);
+      break;
+    case 'food':
+      var foodMesh = FoodManagerService.foodSource.mesh;
+      foodMesh.position.add(movement);
+      break;
+    case 'cell':
+      var cellMesh = CellManagerService.cell.mesh;
+      cellMesh.position.add(movement);
+      break;
+    default:
+      camera.position.add(movement);    
+      break;
     }
   };
   
   $scope.shouldAddCameraLoopFunction = true;
-  $scope.$on('keyboardMovementEvent',function (event, attributes) {
+  $scope.$on('keyboardMovementEvent', function (event, attributes) {
     //Key binding is defined in the keyboad service, which emits this event
-    console.log('attributes', attributes);
     $scope.movementVector = attributes;
-    if($scope.shouldAddCameraLoopFunction){
+    if ($scope.shouldAddCameraLoopFunction) {
       ThreeJSRendererService.onRenderFcts.push($scope.keyboardMovement);
       $scope.shouldAddCameraLoopFunction = false;
     }
@@ -64,26 +63,26 @@ angular.module('survivalApp')
 
   $scope.shouldAddTilesToRenderUpdates = true;
   $scope.toolManager = {
-    show: function (toolName){
-      angular.forEach($scope.toolManager.tools, function(aTool, theToolsName){
-        if(theToolsName === toolName){
+    show: function (toolName) {
+      angular.forEach($scope.toolManager.tools, function (aTool, theToolsName) {
+        if (theToolsName === toolName) {
           aTool.show = true;
-        }else{
+        } else {
           aTool.show = false;
         }
       });
     },
-    tools:{
-      getTileAtCoord:{
-        show:false,
-        values:{
+    tools: {
+      getTileAtCoord: {
+        show: false,
+        values: {
           'row': 0,
           'column': 0
         }
       },
-      createTile:{
-        show:false,
-        values:{
+      createTile: {
+        show: false,
+        values: {
           'row': 0,
           'column': 0
         }
@@ -94,9 +93,9 @@ angular.module('survivalApp')
   $scope.addTilesToScene = function () {
     $scope.tms = TileManagerService;
     $scope.tms.makeTileGrid({
-      'rows' : 8,
-      'columns' : 8,
-      'sewMesh':true
+      'rows': 8,
+      'columns': 8,
+      'sewMesh': true
     }).then(function (newTiles) {
       for (var i = newTiles.length - 1; i >= 0; i--) {
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
@@ -108,18 +107,18 @@ angular.module('survivalApp')
     $scope.doOnce = true;
     $scope.smallPerlin = function (delta, time, tile) {
       // #### perlinCallback
-      if(tile.seed===undefined){
+      if (tile.seed === undefined) {
         tile.seed = Math.random();
       }
       // noise.simplex2 and noise.perlin2 return values between -1 and 1.
-      var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed/8);
+      var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
       tile.mesh.position.z = value;
     };
     $scope.tms2.makeTileGrid({
       'rows' : 8,
       'columns' : 8,
       'positionCallback' : $scope.smallPerlin
-    }).then(function(newTiles){
+    }).then(function (newTiles) {
       for (var i = newTiles.length - 1; i >= 0; i--) {
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
@@ -129,8 +128,8 @@ angular.module('survivalApp')
   $scope.shouldAddFoodSourceToRenderUpdates = true;
   $scope.addFoodSource = function () {
     FoodManagerService.init();
-    if($scope.shouldAddFoodSourceToRenderUpdates){
-      $scope.shouldAddFoodSourceToRenderUpdates=false;
+    if ($scope.shouldAddFoodSourceToRenderUpdates) {
+      $scope.shouldAddFoodSourceToRenderUpdates = false;
       ThreeJSRendererService.onRenderFcts.push(FoodManagerService.foodSource.update);
     }  
   };
@@ -140,7 +139,7 @@ angular.module('survivalApp')
   
   $scope.addCell = function () {
     CellManagerService.init();
-    if($scope.shouldAddCellToRenderUpdates){
+    if ($scope.shouldAddCellToRenderUpdates) {
       $scope.shouldAddCellToRenderUpdates = false;
       ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell.update);
     }  
@@ -160,10 +159,10 @@ angular.module('survivalApp')
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);
   
   
-  $scope.toolManager.loadTiles = function (){
-    if(typeof $scope.tileSets !== 'undefined'){      
+  $scope.toolManager.loadTiles = function () {
+    if (typeof $scope.tileSets !== 'undefined') { 
       TileManagerService.loadTiles($scope.tileSets[0]);
-    }else{          
+    } else {
       console.log('No tiles to load');
     }
   };

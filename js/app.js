@@ -13,4 +13,11 @@ var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ui'])// 'ngC
 
   });
 
-app.constant('DEBUG', /* @echo  DEBUG */ || false);// jshint ignore:line
+var debug = '/* @echo DEBUG */';
+if (debug === '' || debug === 'false') {
+  debug = false;
+} else {
+  debug = true;
+}
+
+app.constant('DEBUG', debug || false); // jshint ignore:line 

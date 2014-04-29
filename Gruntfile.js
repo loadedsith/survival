@@ -94,15 +94,15 @@ module.exports = function (grunt) {
           files: ['<%= yeoman.app %>/js/{,*/}{,*/}*.js'],
           tasks: ['newer:jshint:all']
         },
-      // testable: {
-  //       files: [
-  //         '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
-  //         '<%= yeoman.app %>/protractor*.js',
-  //         '<%= yeoman.app %>/test/e2e/{,*/}{,*/}*.js',
-  //         '<%= yeoman.app %>/test/spec/{,*/}{,*/}*.js'
-  //       ],
-  //       tasks: ['karma:unit']// 'protractor'
-  //     },
+        testable: {
+          files: [
+            '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
+            '<%= yeoman.app %>/protractor*.js',
+            '<%= yeoman.app %>/test/e2e/{,*/}{,*/}*.js',
+            '<%= yeoman.app %>/test/spec/{,*/}{,*/}*.js'
+          ],
+          tasks: ['karma:unit']// 'protractor'
+        },
         compass: {
           files: ['<%= yeoman.app %>/{scss,sass}/{,*/}*.scss'],
           tasks: ['compass']
@@ -279,14 +279,14 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'connect:livereload',
-      // 'karma',
+      'karma',
       'watch'
     ]);
   });
   
   grunt.loadNpmTasks('grunt-git-revision');
   grunt.loadNpmTasks('grunt-preprocess');
-  // grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-karma');
 
   grunt.loadNpmTasks('grunt-protractor-runner');
 

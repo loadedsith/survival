@@ -18,8 +18,15 @@ module.exports = function (grunt) {
   require('time-grunt')(grunt);
 
   // Define the configuration for all the tasks
+  /**
+   * @doc overview
+   * @name survival.gruntfile
+   * @description #gruntfile
+    The project is maintained using a gruntfile.
+  
+   */
+  
   grunt.initConfig({
-
     docular: {
       groups: [
         {
@@ -33,7 +40,7 @@ module.exports = function (grunt) {
               id: 'survivalcode',
               title: 'Code',
               showSource: false,
-              scripts: ['js/'],
+              scripts: ['js/', 'Gruntfile.js'],
               docs: ['docs/']
             }
           ],
@@ -43,6 +50,7 @@ module.exports = function (grunt) {
       showAngularDocs: true,
       docular_webapp_target : 'documentation' // jshint ignore:line      
     },
+
     // Project settings
     yeoman: {
       // configurable paths
@@ -121,7 +129,8 @@ module.exports = function (grunt) {
           files: [
             '<%= yeoman.app %>/docs/{,*/}{,*/}*.ngdoc',
             '<%= yeoman.app %>/docs/{,*/}{,*/}*.doc',
-            '<%= yeoman.app %>/js/{,*/}{,*/}*.js'
+            '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
+            '<%= yeoman.app %>/Gruntfile.js'
           ],
           tasks: ['docular']
         },
@@ -164,15 +173,6 @@ module.exports = function (grunt) {
           hostname: '0.0.0.0',
           livereload: 35729
         },
-        // documentation: {
- //          options:{
- //            port: 9002,
- //            base: '<%= yeoman.dist %>/documentation',
- //            // Change this to '0.0.0.0' to access the server from outside.
- //            hostname: '0.0.0.0',
- //            livereload: 35728            
- //          }
- //        },
         livereload: {
           options: {
             open: true,
@@ -321,7 +321,6 @@ module.exports = function (grunt) {
       'clean:server',
       'concurrent:server',
       'connect:livereload',
-      // 'connect:documentation',
       'karma',
       'watch'
     ]);

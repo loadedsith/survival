@@ -1,0 +1,60 @@
+@doc overview
+@name survival.roadmap
+@description #Road Map
+
+#Survival Road Map
+1. ~~Fork 3d Perlin Noise With Threejs~~
+* ~~Re-brand~~
+* ~~Tile Service~~
+* ~~Mock a food source~~
+* ~~Create a Cell~~
+* ~~A Level with mock food source~~
+* ~~Add Cell to Level~~
+* Display Manager investigates managers, renders what it sees, rendering separated from action
+* Display Manager tries every function, assert that no genetic code can interact with the scene in any way.
+* Cell movement within level
+* Drive cell to food source, ensure it knows it's there
+* Cell manager
+* Food manager
+* Small group of cells
+* Cells stick together
+* Level Manager
+* Level Manager answers if a movement takes you off the board
+* Level Manager extends board if movement there is requested
+* Level Manager answers if a movement is blocked
+* Level Manager answers how difficult a move is
+* Cells can become hungry
+* Moving a cell makes it more hungry
+* Color code cells to show hunger
+* Simple gui to show cells and hunger
+* Show hunger over cells
+* Keypress toggle hunger displayed over cells
+* Cell Death from hunger
+* Cell Trait #1: Movement: override, any kind
+* Cell Trait #2: Reproduce: override, simple logging of output
+* Colony movement
+* Log Genetic Inheritance [P. Square] swapping of traits on touch
+* Ensure cell triggers correct [P. Square]
+* Create cell with correct genetics
+* Test for fertility:	Consuming a food, should result in hunger going down & Touching another cell should result in genetic exchange
+* Colony Genetics: All cells have all genetic code in the colony
+* Death Causes infected state
+* Giving food while infected infects
+* Being infected harms cell until it dies, comes back as zombie cell
+* Shuffle movement genes on death, if one that works after death is found, map that one, otherwise stop moving
+* Add second mock food source, dangerously rich
+* Cell interact with food source randomly
+* Cell can tell features of food sources
+* Cell can create own cell manager?
+* Cell can poach cells to belong to its manager?
+* Colony Genetics: Cells only have genetic code they've been exposed to
+
+strike throughs powered by 
+        ```js
+		text = text.replace(/~~(.+)~~/ig, function (group, groups) {
+          return '<del>' + groups + '</del>'
+        });
+		```
+		on node_modules/docular/lib/scripts/Doc.js
+        
+		

@@ -3,4 +3,9 @@
 @name Installing the Development Environment
 @description #Your guide to all things development
 
-Hello World
+{@link survival.gruntfile gruntfile}
+ Hello World
+ 
+ * <del>Re-brand</del>
+ * ~~Re-brand~~
+ * ~~Re-brand~~

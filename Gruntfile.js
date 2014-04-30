@@ -20,6 +20,29 @@ module.exports = function (grunt) {
   // Define the configuration for all the tasks
   grunt.initConfig({
 
+    docular: {
+      groups: [
+        {
+          groupTitle: 'Survival',
+          groupId: 'survival',
+          groupIcon: 'icon-beer',
+          showSource: true,
+          sections: [
+            {
+              //section objects ommitted here
+              id: 'survivalcode',
+              title: 'Code',
+              showSource: false,
+              scripts: ['js/'],
+              docs: ['docs/']
+            }
+          ],
+        }
+      ],
+      showDocularDocs: true,
+      showAngularDocs: true,
+      docular_webapp_target : 'documentation' // jshint ignore:line      
+    },
     // Project settings
     yeoman: {
       // configurable paths
@@ -94,6 +117,14 @@ module.exports = function (grunt) {
           files: ['<%= yeoman.app %>/js/{,*/}{,*/}*.js'],
           tasks: ['newer:jshint:all']
         },
+        documentation: {
+          files: [
+            '<%= yeoman.app %>/docs/{,*/}{,*/}*.ngdoc',
+            '<%= yeoman.app %>/docs/{,*/}{,*/}*.doc',
+            '<%= yeoman.app %>/js/{,*/}{,*/}*.js'
+          ],
+          tasks: ['docular']
+        },
         testable: {
           files: [
             '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
@@ -133,6 +164,15 @@ module.exports = function (grunt) {
           hostname: '0.0.0.0',
           livereload: 35729
         },
+        // documentation: {
+ //          options:{
+ //            port: 9002,
+ //            base: '<%= yeoman.dist %>/documentation',
+ //            // Change this to '0.0.0.0' to access the server from outside.
+ //            hostname: '0.0.0.0',
+ //            livereload: 35728            
+ //          }
+ //        },
         livereload: {
           options: {
             open: true,
@@ -241,6 +281,7 @@ module.exports = function (grunt) {
               'favicon.ico',
               'images/**/*',
               'textures/**/*',
+              'documentation/**/*',
               'models/**/*',
               'fonts/**/*',
               'views/**/*',
@@ -274,11 +315,13 @@ module.exports = function (grunt) {
     }
     grunt.task.run([
       'revision',
+      'docular',
       'copy',
       'preprocess',
       'clean:server',
       'concurrent:server',
       'connect:livereload',
+      // 'connect:documentation',
       'karma',
       'watch'
     ]);
@@ -287,7 +330,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-git-revision');
   grunt.loadNpmTasks('grunt-preprocess');
   grunt.loadNpmTasks('grunt-karma');
-
+  grunt.loadNpmTasks('grunt-docular');
   grunt.loadNpmTasks('grunt-protractor-runner');
 
   grunt.registerTask('server', function () {
@@ -305,8 +348,8 @@ module.exports = function (grunt) {
 
 
   grunt.registerTask('default', [
+    'docular',
     'newer:jshint',
-    'test',
-    'build'
+    'test'
   ]);
 };

@@ -3,6 +3,15 @@
 angular.module('survivalApp')
   .service('ThreeJSRendererService', function (ThreeJSConfigService) {//$timeout, $interval, 
     'use strict'; 
+    /**
+     * @doc overview
+     * @name survival.moduleSection:ThreeJSConfigService
+     *
+     * @description This function rules!
+     *
+     */ 
+
+ 
     var threeJSRender = this;
     
     ThreeJSConfigService.retrieve().$promise.then(function (data) {

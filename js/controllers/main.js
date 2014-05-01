@@ -150,11 +150,10 @@ angular.module('survivalApp')
       ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell.update);
     }  
   };
-
+  $scope.message = 0;
   $scope.createWebWorker = function () {
     var worker = new Worker('workers/simpleCell.js');
     worker.addEventListener('message', function (e) {
-        console.log('dusty Proctologist Emperor penguin',e);
       var data = {};
       if (e.data !== undefined) {
         data = e.data;
@@ -163,6 +162,13 @@ angular.module('survivalApp')
         switch (data.cmd) {
         case 'echo':
           console.log('echo', data.msg);
+          break;
+        case 'move':
+          //positions!
+          
+          break;
+        default:
+          $scope.messageCount += 1;
           break;
         }
       }

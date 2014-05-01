@@ -3,7 +3,6 @@ angular.module('survivalApp')
 	'use strict';
   
   
-  
   $scope.DEBUG = DEBUG;
   $scope.showTools = false;
   $scope.movementVector = new THREE.Vector3(0, 0, 0);
@@ -145,22 +144,33 @@ angular.module('survivalApp')
     }  
   };
 
-  $scope.createWebworker = function () {
+  $scope.createWebWorker = function () {
+    var worker = new Worker('workers/simpleCell.js');
+    worker.addEventListener('message', function (e) {
+        console.log('dusty Proctologist Emperor penguin',e);
+      var data = {};
+      if (e.data !== undefined) {
+        data = e.data;
+      }
+      if (data.cmd !== undefined) {
+        switch (data.cmd) {
+        case 'echo':
+          console.log('echo', data.msg);
+          break;
+        }
+      }
+    }, false);
+    
+    worker.postMessage({
+      'cmd': 'echo',
+      'msg': 'Echo from MainCtrl to Cell to MainCtrl'
+    }); // Send data to our worker.
     
   };
 
  
   $scope.createGameBoard = function () {
-    $scope.addTilesToScene();
-    $scope.addFoodSource();
-    $scope.addCell();
-    /**
-     * @doc function
-     * @name survival.moduleSection:createGameBoard
-     *
-     * @description This function rules!
-     *
-     */
+    $scope.createWebWorker();
   };
   
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);

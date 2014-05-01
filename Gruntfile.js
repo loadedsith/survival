@@ -108,8 +108,9 @@ module.exports = function (grunt) {
             '*.htm*',
             '*.js*',
             'favicon.ico',
-            'images/**/*',
+            'images/**/*',//changing something here not working? You might be looking for the copy task
             'textures/**/*',
+            'workers/**/*',
             'models/**/*',
             'fonts/**/*',
             'views/**/*',
@@ -281,6 +282,7 @@ module.exports = function (grunt) {
               'favicon.ico',
               'images/**/*',
               'textures/**/*',
+              'workers/**/*',
               'documentation/**/*',
               'models/**/*',
               'fonts/**/*',

@@ -1,5 +1,6 @@
 /*global Detector: false, THREEx: false, requestAnimationFrame: false */
 
+
 angular.module('survivalApp')
   .service('ThreeJSRendererService', function (ThreeJSConfigService) {//$timeout, $interval, 
     'use strict'; 

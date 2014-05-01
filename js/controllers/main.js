@@ -1,3 +1,10 @@
+/**
+ * @doc function
+ * @name survival.MainCtrl
+ *
+ * @description This is the master controller for the site.
+ *
+ */
 angular.module('survivalApp')
 	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, FoodManagerService, CellManagerService, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, KeyboardService, TileManagerService) {
 	'use strict';
@@ -169,6 +176,13 @@ angular.module('survivalApp')
   };
 
  
+  /**
+   * @doc function
+   * @name survival.MainCtrl:createGameBoard
+   *
+   * @description adds stuff to the game board after the rest of the services are in place.
+   *
+   */
   $scope.createGameBoard = function () {
     $scope.createWebWorker();
   };

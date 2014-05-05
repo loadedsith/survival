@@ -18,8 +18,14 @@ self.addEventListener('message', function (e) {
       if (typeof echo === 'function') {
         echo(data);
       } else {
-        console.log('default echo');
         self.postMessage({cmd:'echo','msg':data.msg});
+      }     
+      break;
+    case "move":
+      if (typeof move === 'function') {
+        move(data);
+      } else {
+        self.postMessage({cmd:'move','position':[1,0,0]});
       }     
       break;
     }

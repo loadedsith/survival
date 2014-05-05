@@ -93,7 +93,12 @@ angular.module('survivalApp')
         threeJSRender.lastTimeMsec = nowMsec;
         // call each update function
         threeJSRender.onRenderFcts.forEach(function (onRenderFct) {
-          onRenderFct(deltaMsec / 1000, nowMsec / 1000);
+          if (typeof onRenderFct === 'function') {
+            onRenderFct(deltaMsec / 1000, nowMsec / 1000);
+          } else {
+            throw new Error('onRenderFct function is not a function: ', onRenderFct);
+          }
+          
         });
       });
       for (var i = threeJSRender.doneFunctions.length - 1; i >= 0; i--) {

@@ -1,10 +1,3 @@
-/**
- * @doc function
- * @name survival.MainCtrl
- *
- * @description This is the master controller for the site.
- *
- */
 angular.module('survivalApp')
 	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, FoodManagerService, CellManagerService, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, KeyboardService, TileManagerService) {
 	'use strict';
@@ -141,44 +134,50 @@ angular.module('survivalApp')
   };
   
   $scope.shouldAddCellToRenderUpdates = true;
-  
-  
+
   $scope.addCell = function () {
     CellManagerService.init();
     if ($scope.shouldAddCellToRenderUpdates) {
       $scope.shouldAddCellToRenderUpdates = false;
-      ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell.update);
-    }  
+      ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell().update);
+    }
+    $scope.createCellWebWorker();
+  };
+  
+  $scope.cellListener = function (e) {
+    var data = {};
+    if (e.data !== undefined) {
+      data = e.data;
+    }
+    if (data.cmd !== undefined) {
+      switch (data.cmd) {
+      case 'echo':
+        console.log('echo: ', data.msg);
+        break;
+      case 'move':
+        //positions!
+        CellManagerService.cell(data.cellId).move(data.position, data);
+        break;
+      default:
+        $scope.messageCount += 1;
+        break;
+      }
+    }
   };
   $scope.message = 0;
-  $scope.createWebWorker = function () {
-    var worker = new Worker('workers/simpleCell.js');
-    worker.addEventListener('message', function (e) {
-      var data = {};
-      if (e.data !== undefined) {
-        data = e.data;
-      }
-      if (data.cmd !== undefined) {
-        switch (data.cmd) {
-        case 'echo':
-          console.log('echo', data.msg);
-          break;
-        case 'move':
-          //positions!
-          
-          break;
-        default:
-          $scope.messageCount += 1;
-          break;
-        }
-      }
-    }, false);
+  $scope.createCellWebWorker = function () {
+    var worker = new Worker('js/workers/simpleCell.js');
+    worker.addEventListener('message', $scope.cellListener);
     
     worker.postMessage({
       'cmd': 'echo',
       'msg': 'Echo from MainCtrl to Cell to MainCtrl'
     }); // Send data to our worker.
-    
+    $interval(function () {
+      worker.postMessage({
+        'cmd': 'move'
+      }); // Send data to our worker.
+    }, 1000);
   };
 
  
@@ -190,7 +189,7 @@ angular.module('survivalApp')
    *
    */
   $scope.createGameBoard = function () {
-    $scope.createWebWorker();
+    $scope.addCell();
   };
   
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);

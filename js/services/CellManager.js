@@ -25,7 +25,6 @@ angular.module('survivalApp')
       ThreeJSRendererService.scene.add(cellManager.cells[cellId].mesh);
 
       cellManager.cells[cellId].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
-
       
     };
     
@@ -38,15 +37,11 @@ angular.module('survivalApp')
       }
       return {
         move: function (position, data) {
-          console.log('cellManager.cells[cellId].mesh.position', cellManager.cells[cellId].mesh.position);
           cellManager.cells[cellId].mesh.position.x = data.position[0];
           cellManager.cells[cellId].mesh.position.y = data.position[1];
           cellManager.cells[cellId].mesh.position.z = data.position[2];
-          // console.log('move: CellId', cellId);
-          // console.log('data', data);
         },
         update : function (delta, time) {
-          // DebugLessService.msg = cellManager;
           cellManager.cells[cellId].mesh.rotateX(Math.sin(time) * delta);
         },
         mesh : function () {

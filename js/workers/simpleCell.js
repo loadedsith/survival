@@ -25,5 +25,14 @@ var move = function () {
   });
 }
 
+setInterval(function () {
+  self.postMessage({
+    'cmd': 'move',
+    'cellId': 42,
+    'position': [0, 0, Math.random() * 1]
+  }); // Send data to the cellManager.
+}, 1000);
 
 importScripts('workerLib.js');
+
+

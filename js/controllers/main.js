@@ -173,11 +173,7 @@ angular.module('survivalApp')
       'cmd': 'echo',
       'msg': 'Echo from MainCtrl to Cell to MainCtrl'
     }); // Send data to our worker.
-    $interval(function () {
-      worker.postMessage({
-        'cmd': 'move'
-      }); // Send data to our worker.
-    }, 1000);
+
   };
 
  

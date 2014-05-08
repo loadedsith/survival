@@ -92,13 +92,9 @@ angular.module('survivalApp')
     });
   };
  
-  $scope.shouldAddFoodSourceToRenderUpdates = true;
   $scope.addFoodSource = function () {
-    FoodManagerService.init();
-    if ($scope.shouldAddFoodSourceToRenderUpdates) {
-      $scope.shouldAddFoodSourceToRenderUpdates = false;
-      ThreeJSRendererService.onRenderFcts.push(FoodManagerService.foodSource.update);
-    }  
+    FoodManagerService.createFoodSource();
+    
   };
   
   $scope.shouldAddCellToRenderUpdates = true;
@@ -150,6 +146,8 @@ angular.module('survivalApp')
    */
   $scope.createGameBoard = function () {
     $scope.addCell();
+    $scope.addTilesToScene();
+    $scope.addFoodSource();
   };
   
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);

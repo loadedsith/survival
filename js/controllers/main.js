@@ -8,7 +8,7 @@ angular.module('survivalApp')
   
   
   $scope.DEBUG = DEBUG;
-  $scope.showTools = false;
+
   $scope.movementVector = new THREE.Vector3(0, 0, 0);
 
   DebugLessService.init();
@@ -65,33 +65,6 @@ angular.module('survivalApp')
   
 
   $scope.shouldAddTilesToRenderUpdates = true;
-  $scope.toolManager = {
-    show: function (toolName) {
-      angular.forEach($scope.toolManager.tools, function (aTool, theToolsName) {
-        if (theToolsName === toolName) {
-          aTool.show = true;
-        } else {
-          aTool.show = false;
-        }
-      });
-    },
-    tools: {
-      getTileAtCoord: {
-        show: false,
-        values: {
-          'row': 0,
-          'column': 0
-        }
-      },
-      createTile: {
-        show: false,
-        values: {
-          'row': 0,
-          'column': 0
-        }
-      }
-    }
-  };
 
   $scope.addTilesToScene = function () {
     $scope.tms = TileManagerService;
@@ -173,10 +146,6 @@ angular.module('survivalApp')
     var worker = new Worker('js/workers/simpleCell.js');
     worker.addEventListener('message', $scope.cellListener);
     
-    worker.postMessage({
-      'cmd': 'echo',
-      'msg': 'Echo from MainCtrl to Cell to MainCtrl'
-    }); // Send data to our worker.
 
   };
 
@@ -195,12 +164,5 @@ angular.module('survivalApp')
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);
   
   
-  $scope.toolManager.loadTiles = function () {
-    if (typeof $scope.tileSets !== 'undefined') { 
-      TileManagerService.loadTiles($scope.tileSets[0]);
-    } else {
-      console.log('No tiles to load');
-    }
-  };
   
 });

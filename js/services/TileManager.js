@@ -7,7 +7,18 @@ angular.module('survivalApp')
     
     this.shouldAddTilesToRenderUpdates = true;
     
-    
+    this.positionCallbacks = {
+      smallPerlin : function (delta, time, tile) {
+        // #### perlinCallback
+        if (tile.seed === undefined) {
+          tile.seed = Math.random();
+        }
+        // noise.simplex2 and noise.perlin2 return values between -1 and 1.
+        var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
+        tile.mesh.position.z = value;
+      }
+    };
+
     
     this.getTileInfo = function (tile) {
       var object = {

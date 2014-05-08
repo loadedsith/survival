@@ -3,7 +3,23 @@
  * @name survival.workerLib 
  * 
  * @description #WorkerLib
-  Makes workers lives easier.
+  WorkerLib is available to all webWorkers using `importScripts('workerLib.js');`. It wraps various
+  command messages. Allowing a worker to simply map to the message's name, eg; `var echo=function () {\/*do some stuff*\/}`
+
+  **Command Messages: ** Echo, Move
+  
+ */
+
+/**
+ * @ngdoc overview
+ * @name survival.workerLib:echo
+ * 
+ * @description 
+    Echo simply asks the cell to repeat what you send it, good for testing but not much else
+    worker.postMessage({
+      'cmd': 'echo',
+      'msg': 'Echo from MainCtrl to Cell to MainCtrl'
+    }); 
  */
 
 'use strict';

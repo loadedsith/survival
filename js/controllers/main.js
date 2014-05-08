@@ -1,5 +1,9 @@
 angular.module('survivalApp')
-	.controller('MainCtrl', function ($scope, $http, $interval, DEBUG, FoodManagerService, CellManagerService, DebugLessService, ThreeJSRendererService, TemplatesService, StringsService, KeyboardService, TileManagerService) {
+	.controller('MainCtrl', function ($scope, $http, $interval,
+                                    DEBUG, FoodManagerService, CellManagerService,
+                                    DebugLessService, ThreeJSRendererService, TemplatesService,
+                                    StringsService, KeyboardService, TileManagerService
+                                  ) {
 	'use strict';
   
   
@@ -10,7 +14,7 @@ angular.module('survivalApp')
   DebugLessService.init();
   
   TemplatesService.retrieve().$promise.then(function (data) {
-    $scope.templates = data;
+    $scope.templates = data.templates;
   });
   StringsService.retrieve().$promise.then(function (data) {
     $scope.strings = data;

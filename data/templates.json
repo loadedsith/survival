@@ -1,0 +1,5 @@
+{
+"templates":{
+  "displayManager" : "/js/views/displayManager.html"
+  }
+}

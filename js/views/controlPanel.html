@@ -1,0 +1,33 @@
+<pre>
+  Food Sources: {{foodSourceCount()}}
+  Cells: {{cellCount()}}
+  Tiles: {{tileCount()}}
+  Render Functions: {{renderFunctionCount()}}
+</pre>
+  <textarea id="workerCode" >
+    setInterval(function(){
+      self.postMessage({
+        'cmd': 'echo',
+        'msg': '42'
+      });
+      console.log('poo');
+    },1000);
+    console.log('Red White-throated Needletail ');
+  </textarea>
+  <input onmousedown="fun()" type="button" value="Do!"/>
+  <script>
+    var worker;
+    var fun = function () {
+      console.log('angry Page house mouse');
+      var blob = new Blob([document.getElementById('workerCode').value]);
+      console.log('document.getElementById(\'workerCode\').textContent', document.getElementById('workerCode').value);
+      var blobURL = window.URL.createObjectURL(blob);
+      if (worker !== undefined) {
+        worker.terminate();
+      }
+      worker = new Worker(blobURL);
+      worker.addEventListener('message', function (e) {
+       console.log('e',e); 
+      });
+    };
+  </script>

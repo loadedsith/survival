@@ -8,7 +8,7 @@ ui-keydown="{ 13:'keyDown($event).enter($event)', 38:'keyDown($event).up($event)
         <h2 class="subheader">Survival</h2>
         <h5 ng-show="DEBUG"><!-- @echo revision --> </h5>
       </div>
-      <div class="small-9 columns" ng-include="templates.displayManager"></div>
+      <div class="small-9 columns" ng-include="templates.controlPanel"></div>
     </div>
   <div id="renderer" ng-click="mouseDown($event)">Loading Three.js</div>
 </div>

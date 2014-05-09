@@ -1,5 +1,5 @@
 {
 "templates":{
-  "displayManager" : "/js/views/displayManager.html"
+  "controlPanel" : "/js/views/controlPanel.html"
   }
 }

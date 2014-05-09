@@ -126,24 +126,24 @@ module.exports = function (grunt) {
           files: ['<%= yeoman.app %>/js/{,*/}{,*/}*.js'],
           tasks: ['newer:jshint:all']
         },
-        documentation: {
-          files: [
-            '<%= yeoman.app %>/docs/{,*/}{,*/}*.ngdoc',
-            '<%= yeoman.app %>/docs/{,*/}{,*/}*.doc',
-            '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
-            '<%= yeoman.app %>/Gruntfile.js'
-          ],
-          tasks: ['docular']
-        },
-        testable: {
-          files: [
-            '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
-            '<%= yeoman.app %>/protractor*.js',
-            '<%= yeoman.app %>/test/e2e/{,*/}{,*/}*.js',
-            '<%= yeoman.app %>/test/spec/{,*/}{,*/}*.js'
-          ],
-          tasks: ['karma:unit']// 'protractor'
-        },
+        // documentation: {
+        //   files: [
+        //     '<%= yeoman.app %>/docs/{,*/}{,*/}*.ngdoc',
+        //     '<%= yeoman.app %>/docs/{,*/}{,*/}*.doc',
+        //     '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
+        //     '<%= yeoman.app %>/Gruntfile.js'
+        //   ],
+        //   tasks: ['docular']
+        // },
+        // testable: {
+        //   files: [
+        //     '<%= yeoman.app %>/js/{,*/}{,*/}*.js',
+        //     '<%= yeoman.app %>/protractor*.js',
+        //     '<%= yeoman.app %>/test/e2e/{,*/}{,*/}*.js',
+        //     '<%= yeoman.app %>/test/spec/{,*/}{,*/}*.js'
+        //   ],
+        //   tasks: ['karma:unit']// 'protractor'
+        // },
         compass: {
           files: ['<%= yeoman.app %>/{scss,sass}/{,*/}*.scss'],
           tasks: ['compass']
@@ -286,6 +286,7 @@ module.exports = function (grunt) {
               'documentation/**/*',
               'models/**/*',
               'fonts/**/*',
+              'js/views/**/*',
               'views/**/*',
               'js/**/*',
               'css/**/*.css',
@@ -317,21 +318,21 @@ module.exports = function (grunt) {
     }
     grunt.task.run([
       'revision',
-      'docular',
+      // 'docular',
+      'clean:server',
       'copy',
       'preprocess',
-      'clean:server',
       'concurrent:server',
       'connect:livereload',
-      'karma',
+      // 'karma',
       'watch'
     ]);
   });
   
   grunt.loadNpmTasks('grunt-git-revision');
   grunt.loadNpmTasks('grunt-preprocess');
-  grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-docular');
+  // grunt.loadNpmTasks('grunt-karma');
+  // grunt.loadNpmTasks('grunt-docular');
   grunt.loadNpmTasks('grunt-protractor-runner');
 
   grunt.registerTask('server', function () {
@@ -343,13 +344,13 @@ module.exports = function (grunt) {
     'clean:server',
     'concurrent:test',
     'connect:test',
-    'karma'//,
+    // 'karma'//,
     // 'protractor:run'
   ]);
 
 
   grunt.registerTask('default', [
-    'docular',
+    // 'docular',
     'newer:jshint',
     'test'
   ]);

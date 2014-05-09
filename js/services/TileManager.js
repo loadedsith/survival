@@ -1,8 +1,15 @@
 angular.module('survivalApp')
-  .service('TileManagerService', function (ThreeJSRendererService) {//$interval, $timeout
+  .service('TileManagerService', function (ThreeJSRendererService,DebugLessService) {//$interval, $timeout
     'use strict';
     var tileManager = this;
-    
+    var landColor = function (value) {
+      DebugLessService.msg = value;
+      return {
+        r: (value * 0.7) + 0.3,
+        g: (value * 0.5) + 0.3,
+        b: (value * 0.1) + 0.1
+      }
+    };
     this.tiles = [];
     
     this.shouldAddTilesToRenderUpdates = true;
@@ -27,9 +34,7 @@ angular.module('survivalApp')
         // noise.simplex2 and noise.perlin2 return values between -1 and 1.
         var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
         tile.mesh.position.z = value;
-        tile.material.color.r = landColor(tile.mesh.position.x);
-        tile.material.color.g = landColor(tile.mesh.position.y);
-        tile.material.color.b = landColor(tile.mesh.position.z);
+        tile.material.color = landColor(value);
       },
       water : function (delta, time, tile) {
         // #### perlinCallback

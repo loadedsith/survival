@@ -69,9 +69,11 @@ angular.module('survivalApp')
   $scope.addTilesToScene = function () {
     $scope.tms = TileManagerService;
     $scope.tms.makeTileGrid({
-      'rows': 8,
-      'columns': 8,
-      'sewMesh': true
+      'rows' : 16,
+      'columns' : 16,
+      'scale':{x: 0.1, y: 0.1, z: 0.1},
+      'gridHeight' : 0.05,
+      'positionCallback' : TileManagerService.positionCallbacks.land
     }).then(function (newTiles) {
       for (var i = newTiles.length - 1; i >= 0; i--) {
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);

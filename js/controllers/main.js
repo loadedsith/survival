@@ -82,9 +82,12 @@ angular.module('survivalApp')
     $scope.tms2 = TileManagerService;
     $scope.doOnce = true;
     $scope.tms2.makeTileGrid({
-      'rows' : 8,
-      'columns' : 8,
-      'positionCallback' : TileManagerService.positionCallbacks.smallPerlin
+      'rows' : 16,
+      'columns' : 16,
+      'scale':{x: 0.1, y: 0.1, z: 0.1},
+      'gridHeight' : 0.05,
+      
+      'positionCallback' : TileManagerService.positionCallbacks.water
     }).then(function (newTiles) {
       for (var i = newTiles.length - 1; i >= 0; i--) {
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
@@ -145,9 +148,9 @@ angular.module('survivalApp')
    *
    */
   $scope.createGameBoard = function () {
-    $scope.addCell();
+    // $scope.addCell();
     $scope.addTilesToScene();
-    $scope.addFoodSource();
+    // $scope.addFoodSource();
   };
   
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);

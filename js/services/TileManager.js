@@ -10,11 +10,50 @@ angular.module('survivalApp')
     this.positionCallbacks = {
       smallPerlin : function (delta, time, tile) {
         // #### perlinCallback
+        
         if (tile.seed === undefined) {
           tile.seed = Math.random();
         }
         // noise.simplex2 and noise.perlin2 return values between -1 and 1.
         var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
+        tile.mesh.position.z = value;
+      },
+      land : function (delta, time, tile) {
+        // #### perlinCallback
+        
+        if (tile.seed === undefined) {
+          tile.seed = Math.random();
+        }
+        // noise.simplex2 and noise.perlin2 return values between -1 and 1.
+        var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
+        tile.mesh.position.z = value;
+        tile.material.color.r = landColor(tile.mesh.position.x);
+        tile.material.color.g = landColor(tile.mesh.position.y);
+        tile.material.color.b = landColor(tile.mesh.position.z);
+      },
+      water : function (delta, time, tile) {
+        // #### perlinCallback
+        if (tile.seed === undefined) {
+          tile.seed = Math.random();
+        }
+        // noise.simplex2 and noise.perlin2 return values between -1 and 1.
+        var value =  noise.simplex3(tile.row / 20, tile.column / 20, (tile.seed + time) / 4);
+
+        // tile.mesh.position.z = value/10;
+        tile.material.color.r = 0;
+        tile.material.color.g = 0;
+        tile.material.color.b = (value * 0.5) + 0.5;
+        
+      },
+      original : function (delta, time, tile) {
+        // #### perlinCallback
+        // noise.simplex2 and noise.perlin2 return values between -1 and 1.
+        var value = noise.simplex3(tile.row / 10, tile.column / 10, time / 4);
+
+        tile.material.color.r = value;
+        tile.material.color.g = value;
+        tile.material.color.b = value;
+
         tile.mesh.position.z = value;
       }
     };
@@ -101,66 +140,95 @@ angular.module('survivalApp')
       theTiles += ']';
       return JSON.parse(theTiles);
     };
+    // Todo: all make blah blah's operate thusly:
+    /*
+        MyNamespace.MyModule = (function () {
+            var my = {}, 
+                username = 'Anonymous',
+                policyId = null,
+                displayRows = 50;
+
+            my.init = function(config) {
+                config = config || {};
+                username = config.username || username;
+                policyId = config.policyId || policyId;
+                displayRows = config.displayRows || displayRows;
+            };
+
+            return my;
+        })();
+    
+    */ 
+    
     this.makeTileGrid = function (config) {
-      if (config.rows === undefined || config.columns === undefined) {
-        throw new Error('gotta have rows and columns for a grid');
-      }
-      var rows = parseInt(config.rows, 10),
-        columns = parseInt(config.columns, 10),
-        xOffset = -0.4,
-        yOffset = -0.5,
-        // gridWidth = 0.1,
-        gridHeight = 0.1,
+      var defaults = {
+        rows : 8,
+        columns : 8,
+        xOffset : -0.4,
+        yOffset : -0.5,
+        gridWidth : 0.1,
+        gridHeight : 0.1,
+        // tiles : [],
+        positionCallback : tileManager.positionCallbacks.original,
+        scale: {
+          'x': 0.2,
+          'y': 0.2,
+          'z': 0.3
+        }
+      };
+
+      var rows = config.rows ? parseInt(config.rows, 10) : defaults.rows,
+        columns = config.columns ? parseInt(config.columns, 10): defaults.columns,
+        xOffset = config.xOffset || defaults.xOffset,
+        yOffset = config.yOffset || defaults.yOffset,
+        scale = config.scale || defaults.scale,
         tiles = [],
-        positionCallback,
-        defaultPositionCallback = function (delta, time, tile) {
-          // #### perlinCallback
-          // noise.simplex2 and noise.perlin2 return values between -1 and 1.
-          var value = noise.simplex3(tile.row / 10, tile.column / 10, time / 4);
-       
-          tile.material.color.r = value;
-          tile.material.color.g = value;
-          tile.material.color.b = value;
-       
-          tile.mesh.position.z = value;
-        },
-        customPositionCallback =  function (delta, time, tile) {
-          config.positionCallback(delta, time, tile);
-        }, 
+        gridWidth = config.gridWidth || defaults.gridWidth,
+        gridHeight = config.gridHeight || defaults.gridHeight,
+        // tiles = config.tiles || defaults.tiles,
+        positionCallback = config.positionCallback || defaults.positionCallback,
         tileCallback = function (id) {
           var tile = tileManager.getTileById(id);
           if (tile) {
             tile.material.color = new THREE.Color('#000000');
           }
         };
+        var customPositionCallback =  function (delta, time, tile) {
+          if(typeof positionCallback === 'function'){
+            positionCallback(delta, time, tile);
+          } else {
+            console.log('positionCallback is not a function')
+          }
+        };
       
-      if (typeof config.positionCallback === 'function') {
-        positionCallback = customPositionCallback;
-      } else {
-        positionCallback = defaultPositionCallback;
-      }
+      defaults.position = function(row, column){
+        // console.log('row', row);
+        // console.log('column', column);
+        return {
+            'x': (row * gridHeight) + xOffset,
+            'y': (column * gridHeight) + yOffset,
+            'z': 0
+          }
+        }
+      var position = config.position || defaults.position;
+      
       
       for (var row = 1; row <= rows; row++) {
         for (var column = 1; column <= columns; column++) {
-          
-          var tile = tileManager.createTile(
-            {
+          var newTile = {
               'row': row,
               'column': column,
               'callback': tileCallback,
-              'positionCallback': positionCallback,
-              'scale': {
-                'x': 0.2,
-                'y': 0.2,
-                'z': 0.3
-              },
-              'position': {
-                'x': (row * gridHeight) + xOffset,
-                'y': (column * gridHeight) + yOffset,
-                'z': 0
-              }
-            });
+              'positionCallback': customPositionCallback,
+              'scale': scale
+            };
+          
+          if (typeof position === 'function') {
+            newTile.position = position(row, column);
+          }
+          var tile = tileManager.createTile(newTile);
             
+
           tiles.push(tile);
         }
         column++;

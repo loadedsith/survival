@@ -5,7 +5,7 @@ angular.module('survivalApp')
     cellManager.cells = [];
     cellManager.createCell = function (options) {
       var settings = options ? options : {};
-      var cellId = settings.id ? settings.id : cellManager.cells.length ;
+      var cellId = settings.id ? settings.id : cellManager.cells.length;
       
       var radius = 0.3;
       
@@ -18,8 +18,16 @@ angular.module('survivalApp')
         shininess: 30
       });
       
-      cellManager.cells[cellId] = {};
+      cellManager.cells[cellId] = {
+        id:cellId,
+        invalidPlacement: settings.invalidPlacement || function (event) {
+          // console.log('invalidCell placement: ', this, event);
+          this.worker.postMessage({'cmd':'invalidPlacement',msg:event.message})
+        }
+      };
       
+      cellManager.cells[cellId].worker = settings.worker;
+       
       cellManager.cells[cellId].mesh = new THREE.Mesh(geometry, material); 
 
       ThreeJSRendererService.scene.add(cellManager.cells[cellId].mesh);
@@ -27,19 +35,105 @@ angular.module('survivalApp')
       cellManager.cells[cellId].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
       
     };
-    
+    cellManager.moveCell = function (cellId, position, data) {
+      /**
+       * @ngdoc moveCell
+       * @name survival.CellManager:moveCell
+       * 
+       * @description #Move cell
+        Moves the cell, using the cellId or chained from cell(cellId) and a position.
+      If the move is invalid it calls the cells.invalidPlacement function, which can be assigned to using the constructor or after the fact
+       */
+      var cell = cellManager.cells[cellId];
+      var newPos = new THREE.Vector3(position[0]||0,position[1]||0,position[2]||0);
+      var cellPos = cell.mesh.position;
+      
+      if (cellManager.land === undefined) {
+
+        cellPos.x = data.position[0];
+        cellPos.y = data.position[1];
+        cellPos.z = data.position[2];
+      }else{
+        //wheres the nearest land?
+        
+        //we start by making a copy of the cell's position
+        var oldV = new THREE.Vector3(0,0,0).copy(cellPos);
+        //Temp move the cell to the new position
+        cellPos.x = data.position[0];
+        cellPos.y = data.position[1];
+        cellPos.z = 0;//data.position[2];
+        //get the nearest land and water for the new position
+        var theNearestLand = cellManager.cell(cellId).closestMesh(cellManager.land);
+        var theNearestWater = cellManager.cell(cellId).closestMesh(cellManager.water);
+        
+        //check for valid placement, is it underwater?
+        if (theNearestLand.position.z < theNearestWater.position.z) {
+          //return the cell to is old position
+          cell.lastMove = 'invalid';
+          // cell.worker.postMessage({cmd:'lastMove',msg:'invalid'})?
+          cellPos.copy(oldV);
+          cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':theNearestWater});
+        }else{
+          cell.lastMove = 'valid';
+          // cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
+          cellPos.x = data.position[0];
+          cellPos.y = data.position[1];
+          cellPos.z = theNearestLand.position.z+0.1;
+        }
+
+      }
+    }
+    cellManager.meshNearestPos = function (pos, meshes, offsetV) {
+      /**
+       * @doc function
+       * @name survival.CellManager:meshNearestPos
+       * 
+       * @returns mesh a mesh
+       * @param vector3 a position vector3
+       * @param array an array of meshes
+       * @param vector3 a position vector3
+       * 
+       * @description <description>
+       */
+      var distance = 10000000;
+      var nearestMesh = {};
+      if (meshes === undefined || !angular.isArray(meshes)) {
+        meshes = cellManager.land;
+      }
+
+      for (var i = meshes.length - 1; i >= 0; i--) {
+        var mesh = meshes[i];
+        if (offsetV) {
+          pos.add(offsetV);
+        }
+        var distanceToMesh = pos.distanceTo(mesh.position);
+        if (distance > distanceToMesh) {
+          distance = distanceToMesh;
+          nearestMesh = mesh;
+        } else if (distanceToMesh === distance) {
+          // console.log('weird, distance = distanceToMesh');
+          distance = distanceToMesh;
+          nearestMesh = mesh;
+        }
+      }
+      return nearestMesh
+    }
     cellManager.cell = function (cellId) {
+
       if (cellId === undefined) {
         cellId = 0; 
       }
       if (cellManager.cells[cellId] === undefined) {
-        cellManager.createCell({id:cellId});
+        console.log('no cell with cellId', cellManager.cells);
+        // cellManager.createCell({id:cellId});
       }
+      var cell = cellManager.cells[cellId];
       return {
+        closestMesh: function (meshes, offsetV) {
+          return cellManager.meshNearestPos(cell.mesh.position, meshes, offsetV);
+        },
         move: function (position, data) {
-          cellManager.cells[cellId].mesh.position.x = data.position[0];
-          cellManager.cells[cellId].mesh.position.y = data.position[1];
-          cellManager.cells[cellId].mesh.position.z = data.position[2];
+          cellManager.moveCell(cellId, position, data)
         },
         update : function (delta, time) {
           cellManager.cells[cellId].mesh.rotateX(Math.sin(time) * delta);
@@ -48,8 +142,5 @@ angular.module('survivalApp')
           return cellManager.cells[cellId].mesh;
         }
       }; 
-    };
-    cellManager.init = function () {
-      cellManager.createCell();
     };
   });

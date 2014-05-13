@@ -37,11 +37,18 @@ self.addEventListener('message', function (e) {
         self.postMessage({cmd:'echo','msg':data.msg});
       }     
       break;
+    case "invalidPlacement":
+      if (typeof invalidPlacement === 'function') {
+        invalidPlacement(data);
+      } else {
+        self.postMessage({cmd:'echo','msg':'worker got ' + invalidPlacement + ' / ' + data.msg});
+      }     
+      break;
     case "move":
       if (typeof move === 'function') {
         move(data);
       } else {
-        self.postMessage({cmd:'move','position':[1,0,0]});
+        self.postMessage({cmd:'move','position':[0,0,0.2]});
       }     
       break;
     }

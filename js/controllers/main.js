@@ -75,44 +75,63 @@ angular.module('survivalApp')
       'gridHeight' : 0.05,
       'positionCallback' : TileManagerService.positionCallbacks.land
     }).then(function (newTiles) {
+      CellManagerService.land = [];
+      // $interval(function () {
+        // console.log('newTiles', newTiles);
+      // },1000)
       for (var i = newTiles.length - 1; i >= 0; i--) {
+        CellManagerService.land[i] = newTiles[i].tile.mesh;
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
     });
     
     
-    $scope.tms2 = TileManagerService;
+    $scope.water = TileManagerService;
     $scope.doOnce = true;
-    $scope.tms2.makeTileGrid({
+    $scope.water.makeTileGrid({
       'rows' : 16,
       'columns' : 16,
       'scale':{x: 0.1, y: 0.1, z: 0.1},
       'gridHeight' : 0.05,
-      
       'positionCallback' : TileManagerService.positionCallbacks.water
     }).then(function (newTiles) {
+      CellManagerService.water = [];
+      
       for (var i = newTiles.length - 1; i >= 0; i--) {
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
+        CellManagerService.water[i] = newTiles[i].tile.mesh;
       }
     });
   };
  
   $scope.addFoodSource = function () {
     FoodManagerService.createFoodSource();
-    
   };
-  
-  $scope.shouldAddCellToRenderUpdates = true;
 
+  $scope.shouldAddCellToRenderUpdates = true;
   $scope.addCell = function () {
-    CellManagerService.init();
+    var worker = new Worker('js/workers/simpleCell.js');
+    worker.addEventListener('message', $scope.cellListener);
+    CellManagerService.createCell({
+      worker:worker//,
+      // invalidPlacement: function (a,b,c) {
+      //   console.log('custom Invalid placement');
+      //   $scope.cellListener({
+      //     data:{
+      //       cmd:'invalidPlacement',
+      //       'a':a,
+      //       'b':b,
+      //       'c':c
+      //     }
+      //   });
+      // }
+    });
     if ($scope.shouldAddCellToRenderUpdates) {
       $scope.shouldAddCellToRenderUpdates = false;
       ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell().update);
     }
-    $scope.createCellWebWorker();
   };
-  
+
   $scope.cellListener = function (e) {
     var data = {};
     if (e.data !== undefined) {
@@ -122,6 +141,11 @@ angular.module('survivalApp')
       switch (data.cmd) {
       case 'echo':
         console.log('echo: ', data.msg);
+        break;
+      case 'invalidPlacement':
+        //positions!
+        console.log('invalidPlacement');
+        
         break;
       case 'move':
         //positions!
@@ -134,12 +158,6 @@ angular.module('survivalApp')
     }
   };
   $scope.message = 0;
-  $scope.createCellWebWorker = function () {
-    var worker = new Worker('js/workers/simpleCell.js');
-    worker.addEventListener('message', $scope.cellListener);
-    
-
-  };
 
  
   /**
@@ -150,7 +168,7 @@ angular.module('survivalApp')
    *
    */
   $scope.createGameBoard = function () {
-    // $scope.addCell();
+    $scope.addCell();
     $scope.addTilesToScene();
     // $scope.addFoodSource();
   };

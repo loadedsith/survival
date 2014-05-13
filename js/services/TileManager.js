@@ -3,7 +3,7 @@ angular.module('survivalApp')
     'use strict';
     var tileManager = this;
     var landColor = function (value) {
-      DebugLessService.msg = value;
+      // DebugLessService.msg = value;
       return {
         r: (value * 0.7) + 0.3,
         g: (value * 0.5) + 0.3,

@@ -66,6 +66,21 @@ angular.module('survivalApp')
         var theNearestLand = cellManager.cell(cellId).closestMesh(cellManager.land);
         var theNearestWater = cellManager.cell(cellId).closestMesh(cellManager.water);
         
+        
+        
+        //check for valid placement, is it on the gameboard?
+        if (theNearestLand.position.x < 0 || theNearestLand.position.x > ThreeJSRendererService.gameboard.max.x) {
+          cell.invalidPlacement({'message':'Invalid Placement: offgameboad', 'cell':cell});
+          
+        }
+        if (theNearestLand.position.y < 0 || theNearestLand.position.y > ThreeJSRendererService.gameboard.max.y) {
+          cell.invalidPlacement({'message':'Invalid Placement: offgameboad', 'cell':cell});
+          
+        }
+        
+        
+        
+        
         //check for valid placement, is it underwater?
         if (theNearestLand.position.z < theNearestWater.position.z) {
           //return the cell to is old position

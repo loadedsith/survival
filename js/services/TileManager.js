@@ -308,6 +308,19 @@ angular.module('survivalApp')
         ThreeJSRendererService.onRenderFcts.push(tileManager.updateTiles);
         tileManager.shouldAddTilesToRenderUpdates = false;
       }
+      if (newTile.mesh.position.x < ThreeJSRendererService.gameboard.min.x) {
+        ThreeJSRendererService.gameboard.min.x = newTile.mesh.position.x;
+      }
+      if (newTile.mesh.position.y < ThreeJSRendererService.gameboard.min.y) {
+        ThreeJSRendererService.gameboard.min.y = newTile.mesh.position.y;
+      }
+      if (newTile.mesh.position.x > ThreeJSRendererService.gameboard.max.x) {
+        ThreeJSRendererService.gameboard.max.x = newTile.mesh.position.x;
+      }
+      if (newTile.mesh.position.y > ThreeJSRendererService.gameboard.max.y) {
+        ThreeJSRendererService.gameboard.max.y = newTile.mesh.position.y;
+      }
+      
       
       tileManager.tiles.push(newTile);
     

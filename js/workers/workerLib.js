@@ -23,6 +23,14 @@
  */
 
 'use strict';
+var getDelta = function () {
+  var newTimeStamp = (new Date()).getTime();
+  var result = newTimeStamp - lastTimeStamp;
+  lastTimeStamp = (new Date()).getTime();
+  return result;
+};
+
+
 self.addEventListener('message', function (e) {
   var data = {};
   if (e.data !== undefined) {

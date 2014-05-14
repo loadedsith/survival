@@ -14,7 +14,18 @@ angular.module('survivalApp')
 
  
     var threeJSRender = this;
-    
+    threeJSRender.gameboard = {
+     max: {
+       x: 0,
+       y: 0,
+       z: 0
+     },
+     min: {
+       x: 0,
+       y: 0,
+       z: 0
+     }
+    }
     ThreeJSConfigService.retrieve().$promise.then(function (data) {
       threeJSRender.config = data;
       threeJSRender.init();

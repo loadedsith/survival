@@ -22,7 +22,11 @@ angular.module('survivalApp')
         id:cellId,
         invalidPlacement: settings.invalidPlacement || function (event) {
           // console.log('invalidCell placement: ', this, event);
-          this.worker.postMessage({'cmd':'invalidPlacement',msg:event.message})
+          this.worker.postMessage({
+            cmd:event.cmd,
+            message:event.message,
+            position:event.position
+          });
         }
       };
       
@@ -57,7 +61,7 @@ angular.module('survivalApp')
         //wheres the nearest land?
         
         //we start by making a copy of the cell's position
-        var oldV = new THREE.Vector3(0,0,0).copy(cellPos);
+        var orignialCellPos = new THREE.Vector3(0,0,0).copy(cellPos);
         //Temp move the cell to the new position
         cellPos.x = data.position[0];
         cellPos.y = data.position[1];
@@ -69,13 +73,17 @@ angular.module('survivalApp')
         
         
         //check for valid placement, is it on the gameboard?
-        if (theNearestLand.position.x < 0 || theNearestLand.position.x > ThreeJSRendererService.gameboard.max.x) {
-          cell.invalidPlacement({'message':'Invalid Placement: offgameboad', 'cell':cell});
-          
+        if (cellPos.x < ThreeJSRendererService.gameboard.min.x || cellPos.x > ThreeJSRendererService.gameboard.max.x) {
+          cell.invalidPlacement({cmd:'invalidPlacement','message':'Invalid Placement: offgamebroad x:' + cellPos.x +'< ThreeJSRendererService.gameboard.min.x || ' + cellPos.x + ' > ThreeJSRendererService.gameboard.max.x', 'position':orignialCellPos, 'cell':cell});
+          cellPos.copy(orignialCellPos);
+          // DebugLessService.msg = cellPos;
+          return;
         }
-        if (theNearestLand.position.y < 0 || theNearestLand.position.y > ThreeJSRendererService.gameboard.max.y) {
-          cell.invalidPlacement({'message':'Invalid Placement: offgameboad', 'cell':cell});
-          
+        if (cellPos.y < ThreeJSRendererService.gameboard.min.y || cellPos.y > ThreeJSRendererService.gameboard.max.y) {
+          cell.invalidPlacement({cmd:'invalidPlacement','message':'Invalid Placement: offgamebroad y:' + cellPos.y +'< ThreeJSRendererService.gameboard.min.y ||' + cellPos.y + ' > ThreeJSRendererService.gameboard.max.y', 'position':orignialCellPos, 'cell':cell});
+          cellPos.copy(orignialCellPos);
+          // DebugLessService.msg = cellPos;
+          return;
         }
         
         
@@ -86,15 +94,17 @@ angular.module('survivalApp')
           //return the cell to is old position
           cell.lastMove = 'invalid';
           // cell.worker.postMessage({cmd:'lastMove',msg:'invalid'})?
-          cellPos.copy(oldV);
+          cellPos.copy(orignialCellPos);
           cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':theNearestWater});
-        }else{
-          cell.lastMove = 'valid';
-          // cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
-          cellPos.x = data.position[0];
-          cellPos.y = data.position[1];
-          cellPos.z = theNearestLand.position.z+0.1;
+          return;
         }
+
+        cell.lastMove = 'valid';
+        // cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
+        cellPos.x = data.position[0];
+        cellPos.y = data.position[1];
+        cellPos.z = theNearestLand.position.z+0.1;
+
 
       }
     }

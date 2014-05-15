@@ -169,8 +169,11 @@ angular.module('survivalApp')
       var defaults = {
         rows : 8,
         columns : 8,
-        xOffset : -0.4,
-        yOffset : -0.5,
+        positionOffset:{
+          x:0,
+          y:0,
+          z:0
+        },
         gridWidth : 0.1,
         gridHeight : 0.1,
         // tiles : [],
@@ -184,13 +187,13 @@ angular.module('survivalApp')
 
       var rows = config.rows ? parseInt(config.rows, 10) : defaults.rows,
         columns = config.columns ? parseInt(config.columns, 10): defaults.columns,
-        xOffset = config.xOffset || defaults.xOffset,
-        yOffset = config.yOffset || defaults.yOffset,
+        positionOffset = config.positionOffset || defaults.positionOffset,
         scale = config.scale || defaults.scale,
         tiles = [],
         gridWidth = config.gridWidth || defaults.gridWidth,
         gridHeight = config.gridHeight || defaults.gridHeight,
         // tiles = config.tiles || defaults.tiles,
+        positionOffset = config.positionOffset || defaults.positionOffset,
         positionCallback = config.positionCallback || defaults.positionCallback,
         tileCallback = function (id) {
           var tile = tileManager.getTileById(id);
@@ -205,14 +208,12 @@ angular.module('survivalApp')
             console.log('positionCallback is not a function')
           }
         };
-      
+        console.log(ThreeJSRendererService.gameboard)
       defaults.position = function(row, column){
-        // console.log('row', row);
-        // console.log('column', column);
         return {
-            'x': (row * gridHeight) + xOffset,
-            'y': (column * gridHeight) + yOffset,
-            'z': 0
+            'x': (row * gridHeight),
+            'y': (column * gridHeight),
+            'z': 0 
           }
         }
       var position = config.position || defaults.position;
@@ -224,6 +225,7 @@ angular.module('survivalApp')
               'row': row,
               'column': column,
               'callback': tileCallback,
+              'positionOffset': positionOffset,
               'positionCallback': customPositionCallback,
               'scale': scale
             };
@@ -284,12 +286,17 @@ angular.module('survivalApp')
           'z': config.position ? (config.position.z || 0) : 0
         }
       };
+      if (config.positionOffset !== undefined) {
+        newTile.position.x += config.positionOffset.x;
+        newTile.position.y += config.positionOffset.y;
+        newTile.position.z += config.positionOffset.z;
+      } 
       newTile.material = new THREE.MeshPhongMaterial({color: newTile.color});
       newTile.geometry = new THREE.CubeGeometry(newTile.scale.x, newTile.scale.y, newTile.scale.z);
       newTile.mesh = new THREE.Mesh(newTile.geometry, newTile.material);
-      newTile.mesh.position.x = 2 * newTile.position.x;
-      newTile.mesh.position.y = 2 * newTile.position.y;
-      newTile.mesh.position.z = 2 * newTile.position.z;
+      newTile.mesh.position.x = newTile.position.x;
+      newTile.mesh.position.y = newTile.position.y;
+      newTile.mesh.position.z = newTile.position.z;
       if (typeof config.callback === 'undefined') {
         newTile.mesh.callback = function (tileId) {
           console.log('clicked tile: ' + tileId);

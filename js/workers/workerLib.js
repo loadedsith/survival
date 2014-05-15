@@ -32,6 +32,7 @@ var getDelta = function () {
 
 
 self.addEventListener('message', function (e) {
+
   var data = {};
   if (e.data !== undefined) {
     data = e.data;

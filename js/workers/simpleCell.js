@@ -2,8 +2,6 @@
  * @doc module
  * @name survival.Workers:SimpleCell
  * 
- * 
- * 
  * @description #Simple Cell
   This web worker is responsible for responding to queries about what the cells are upto.
  */
@@ -28,19 +26,26 @@ var move = function () {
   });
 }
 
-var invalidPlacement = function (a, b, c) {
-  // console.log('SimpleCell.js: invalidPlacement');
-  // self.postMessage({
-  //   'cmd':'move',
-  //   'cellId': 0,
-  //   'position': [-0.5 + Math.random() * 1, -0.5 + Math.random() * 1, 0]
-  // });
-  // deltaMove()
+var invalidPlacement = function (data) {
+  if (data.position !== undefined){
+    // lastPos = data.position;
+    lastPos[0] = Number(data.position.x);
+    lastPos[1] = Number(data.position.y);
+    lastPos[2] = Number(data.position.z);
+    // console.log('Griz');
+    console.log(['data.position.x', data.position.x]);
+    console.log(['lastPos.x', lastPos.x]);
+    console.log(['data.message', JSON.stringify(data.message)]);
+    // console.log(data.position.z);
+  }else{
+    console.log(['data', JSON.stringify(data)]);
+  }
+  deltaMove();
 }
 var lastPos = [-0.5 + Math.random(), -0.5 + Math.random(), 0];
 var deltaMove = function () {
-
-  var delta = (getDelta() + 1) / 100;
+  var delta = (getDelta() + 1) / 1000;
+  delta = delta * 2;
   var newPos = [
     lastPos[0] + ((Math.random()-0.5) * delta),
     lastPos[1] + ((Math.random()-0.5) * delta),
@@ -55,7 +60,7 @@ var deltaMove = function () {
 };
 setInterval(function () {
   deltaMove();
-},1);
+},100);
 
 importScripts('workerLib.js');
 

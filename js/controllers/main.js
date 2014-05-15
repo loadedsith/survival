@@ -67,18 +67,31 @@ angular.module('survivalApp')
   $scope.shouldAddTilesToRenderUpdates = true;
 
   $scope.addTilesToScene = function () {
+    var rows = 16,
+        columns = 16,
+        scale = 0.1,
+        gridHeight = scale,
+        gridWidth = scale;
+    
     $scope.tms = TileManagerService;
     $scope.tms.makeTileGrid({
-      'rows' : 16,
-      'columns' : 16,
-      'scale':{x: 0.1, y: 0.1, z: 0.1},
-      'gridHeight' : 0.05,
+      'rows' : rows,
+      'columns' : columns,
+      'scale':{
+        x: scale,
+        y: scale,
+        z: scale
+      },
+      'gridHeight' : gridHeight,
+      'gridWidth' : gridWidth,
+      'positionOffset': {
+        x: -0.5 * rows * gridHeight,
+        y: -0.5 * columns * gridWidth,
+        z: 0
+      },
       'positionCallback' : TileManagerService.positionCallbacks.land
     }).then(function (newTiles) {
       CellManagerService.land = [];
-      // $interval(function () {
-        // console.log('newTiles', newTiles);
-      // },1000)
       for (var i = newTiles.length - 1; i >= 0; i--) {
         CellManagerService.land[i] = newTiles[i].tile.mesh;
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
@@ -89,14 +102,23 @@ angular.module('survivalApp')
     $scope.water = TileManagerService;
     $scope.doOnce = true;
     $scope.water.makeTileGrid({
-      'rows' : 16,
-      'columns' : 16,
-      'scale':{x: 0.1, y: 0.1, z: 0.1},
-      'gridHeight' : 0.05,
+      'rows' : rows,
+      'columns' : rows,
+      'scale':{
+        x: scale,
+        y: scale,
+        z: scale
+      },
+      'gridHeight' : gridHeight,
+      'gridWidth' : gridWidth,
+      'positionOffset': {
+        x: -0.5 * rows * gridHeight,
+        y: -0.5 * columns * gridWidth,
+        z: -0.2
+      },
       'positionCallback' : TileManagerService.positionCallbacks.water
     }).then(function (newTiles) {
       CellManagerService.water = [];
-      
       for (var i = newTiles.length - 1; i >= 0; i--) {
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
         CellManagerService.water[i] = newTiles[i].tile.mesh;

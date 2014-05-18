@@ -29,10 +29,11 @@ angular.module('survivalApp')
   $scope.driveThis = 'cell';
   
   $scope.keyboardMovement = function (delta) {
+
     var movement = new THREE.Vector3($scope.movementVector.y, $scope.movementVector.x, $scope.movementVector.z),
     deltaV = new THREE.Vector3(delta, delta, delta);
     movement.multiply(deltaV);
-    DebugLessService.msg = ['keyboardMovement', movement];
+    // DebugLessService.msg = ['keyboardMovement', movement];
 
     switch ($scope.driveThis) {
     case 'camera':
@@ -44,8 +45,12 @@ angular.module('survivalApp')
       foodMesh.position.add(movement);
       break;
     case 'cell':
-      var cellMesh = CellManagerService.cell.mesh;
-      cellMesh.position.add(movement);
+      // var cellMesh = CellManagerService.cell.mesh;
+      // cellMesh.position.add(movement);
+      var cellPos = CellManagerService.cells[0].mesh.position;
+      cellPos.x = cellPos.x + movement.y;
+      cellPos.y = cellPos.y - movement.z;
+      cellPos.z = cellPos.z + movement.x;
       break;
     default:
       camera.position.add(movement);    

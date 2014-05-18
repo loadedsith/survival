@@ -66,6 +66,20 @@ angular.module('survivalApp')
   $scope.$on('updateKeyboardBinding', function (event, attributes) {
     $scope.driveThis = attributes;
   });
+  
+  $scope.$on('updateWorker', function (event, attributes) {
+    console.log('yellow antelope');
+
+    $scope.workerBlob = new Blob([attributes]);
+    console.log('attributes', attributes);
+    var blobURL = window.URL.createObjectURL($scope.workerBlob);
+    if ($scope.worker !== undefined) {
+      $scope.worker.terminate();
+    }
+    $scope.worker = new Worker(blobURL);
+    $scope.worker.addEventListener('message', $scope.cellListener);
+    // $scope.worker = attributes;
+  });
     
   $scope.shouldAddCameraLoopFunction = true;
   $scope.$on('keyboardMovementEvent', function (event, attributes) {
@@ -147,11 +161,17 @@ angular.module('survivalApp')
   };
 
   $scope.shouldAddCellToRenderUpdates = true;
+  
   $scope.addCell = function () {
-    var worker = new Worker('js/workers/simpleCell.js');
-    worker.addEventListener('message', $scope.cellListener);
+
+    var blobURL = window.URL.createObjectURL($scope.workerBlob);
+    if ($scope.worker !== undefined) {
+      $scope.worker.terminate();
+    }
+    $scope.worker = new Worker(blobURL);
+    $scope.worker.addEventListener('message', $scope.cellListener);
     CellManagerService.createCell({
-      worker:worker//,
+      worker:$scope.worker//,
       // invalidPlacement: function (a,b,c) {
       //   console.log('custom Invalid placement');
       //   $scope.cellListener({
@@ -206,7 +226,21 @@ angular.module('survivalApp')
    *
    */
   $scope.createGameBoard = function () {
-    $scope.addCell();
+    $http({method: 'GET', url: 'js/workers/simpleCell.js'}).
+      success(function(data, status, headers, config) {
+        // this callback will be called asynchronously
+        // when the response is available
+        console.log('got Worker',data);
+        $scope.workerBlobText = data;
+        $scope.workerBlob = new Blob([data])
+        $scope.addCell();
+      }).
+      error(function(data, status, headers, config) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+        console.log('failed to get Worker');
+      });
+
     $scope.addTilesToScene();
     $scope.addFoodSource();
   };

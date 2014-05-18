@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-  .service('FoodManagerService', function (DEBUG, DebugLessService, ThreeJSRendererService, TileManagerService, $interval) {//, $timeout
+  .service('FoodManagerService', function (DEBUG, DebugLessService, ThreeJSRendererService, TileManagerService, $timeout) {
     'use strict';
     
     var foodManager = this;
@@ -60,7 +60,7 @@ angular.module('survivalApp')
 
 
 
-      $interval(function () {
+      $timeout(function () {
         var newPos = new THREE.Vector3().copy(foodManager.foodSources[index].mesh.position);
         
         foodManager.foodSources[index].raycaster.set(newPos, rays[4].vector, 0, Math.Infinite);

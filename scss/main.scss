@@ -4,10 +4,45 @@
 .debug{
   border:1px solid #f0f;
 }
+h1,h2,h3,h4,h5,h6{
+  font-family: 'Kranky', cursive;
+}
 
+pre,input{
+  font-size:110%;
+  font-family: 'Source Code Pro', monospace, sans-serif;
+}
+.clickable{
+  border:none;
+  border-bottom:1px solid #2278D6;
+}
+input[type="button"],.button,.btn{
+  @extend .clickable;
+  background:none;
+  color:#67c;
+  padding:10px 20px;
+  font-size:125%;
+  transition:background 0.25s ease, color 0.25s ease;
+  
+  &:hover{
+    background:rgba(0, 0, 0, 0.3);
+    color:#fff;
+  }
+}
 .display{
   position: absolute;
   top: 1px;
   left: 1px;
+  padding:15px;
   opacity: 0.6;
+  ul li p{
+    margin:3px 4px;
+  }
+  h2, h5, pre, ul li p, ul li h4{
+    color:#fff;
+  }
+  select#cameraSelect{
+    font-size:20px;
+  }
 }
+

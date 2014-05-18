@@ -4,11 +4,11 @@ ui-keydown="{ 13:'keyDown($event).enter($event)', 38:'keyDown($event).up($event)
   
   <div ng-controller="DisplayManagerCtrl">
     <div class="row collapse display">
-      <div class="small-3 columns">
+      <div class="small-12 large-3 columns">
         <h2 class="subheader">Survival</h2>
         <h5 ng-show="DEBUG"><!-- @echo revision --> </h5>
       </div>
-      <div class="small-9 columns" ng-include="templates.controlPanel"></div>
+      <div class="small-12 large-9 columns" ng-include="templates.controlPanel"></div>
     </div>
   <div id="renderer" ng-click="mouseDown($event)">Loading Three.js</div>
 </div>

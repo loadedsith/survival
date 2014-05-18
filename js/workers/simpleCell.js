@@ -25,6 +25,17 @@ var move = function () {
     'position': [0, 0, Math.random() * 1]
   });
 }
+// for(;
+// {
+// if(::GetAsyncKeyState(VK_ESCAPE))
+// {
+// // Escape key hit
+// }
+// }
+// 
+// 
+
+
 
 var invalidPlacement = function (data) {
   if (data.position !== undefined){
@@ -42,6 +53,7 @@ var invalidPlacement = function (data) {
 }
 var lastPos = [-0.5 + Math.random(), -0.5 + Math.random(), 0];
 var deltaMove = function () {
+
   var delta = (getDelta() + 1) / 1000;
   delta = delta * 2;
   var newPos = [
@@ -49,6 +61,7 @@ var deltaMove = function () {
     lastPos[1] + ((Math.random()-0.5) * delta),
     lastPos[2]
     ];
+
   self.postMessage({
     'cmd': 'move',
     'cellId': 0,
@@ -57,9 +70,9 @@ var deltaMove = function () {
   lastPos = newPos;
 };
 setInterval(function () {
-  // deltaMove();
-},100);
+  deltaMove();
+},1000);
 
-importScripts('workerLib.js');
+importScripts('http://' +'0.0.0.0:9000' + '/js/workers/workerLib.js');
 
 

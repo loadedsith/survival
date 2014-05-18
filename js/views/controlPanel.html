@@ -1,38 +1,38 @@
-<pre>
-  Food Sources: {{foodSourceCount()}}
-  Cells: {{cellCount()}}
-  Tiles: {{tileCount()}}
-  Render Functions: {{renderFunctionCount()}}
-  <select
-    ng-model="driveThis"
-    ng-options="item as item.name for item in driveable"
-    ng-change="updateKeyboardBinding(driveThis)">
-  </select>
-</pre>
-<textarea id="workerCode" >
-  setInterval(function(){
-    self.postMessage({
-      'cmd': 'echo',
-      'msg': '42'
-    });
-    console.log('poo');
-  },1000);
-  console.log('Red White-throated Needletail ');
-</textarea>
-<input onmousedown="fun()" type="button" value="Do!"/>
-<script>
-  var worker;
-  var fun = function () {
-    console.log('angry Page house mouse');
-    var blob = new Blob([document.getElementById('workerCode').value]);
-    console.log('document.getElementById(\'workerCode\').textContent', document.getElementById('workerCode').value);
-    var blobURL = window.URL.createObjectURL(blob);
-    if (worker !== undefined) {
-      worker.terminate();
-    }
-    worker = new Worker(blobURL);
-    worker.addEventListener('message', function (e) {
-     console.log('e',e); 
-    });
-  };
-</script>
+<div class="row">
+  <div class="columns small-12 large-12">
+    <ul class="small-block-grid-2 large-block-grid-3">
+      <li>
+        <p>Food Sources: {{foodSourceCount()}}</p>
+      </li>
+      <li>
+        <p>Cells: {{cellCount()}}</p>
+      </li>
+      <li>
+        <p>Tiles: {{tileCount()}}</p>
+      </li>
+      <li>
+        <p>Render Functions: {{renderFunctionCount()}}</p>
+      </li>
+      <li>
+        <select
+          id="cameraSelect"
+          ng-model="driveThis"
+          ng-options="item as item.name for item in driveable"
+          ng-change="updateKeyboardBinding(driveThis)">
+        </select>
+
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="columns small-12 large-12">
+    <textarea id="workerCode" >
+      {{workerBlobText}}
+    </textarea>
+  </div>
+  <div class="columns small-12 large-12">
+    <input ng-click="runWorker()" type="button" value="Do!"/>
+  </div>
+</div>

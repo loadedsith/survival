@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-  .service('CellManagerService', function (ThreeJSRendererService, FoodManagerService, DebugLessService, TileManagerService) {//$interval, $timeout
+  .service('CellManagerService', function (ThreeJSRendererService, FoodManagerService, DebugLessService, TileManagerService, $timeout) {//$interval, 
     'use strict';
     var cellManager = this;
     cellManager.cells = [];
@@ -40,7 +40,9 @@ angular.module('survivalApp')
 
       cellManager.cells[cellId].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
       cellManager.cells[cellId].raycaster = new THREE.Raycaster();
-      
+      $timeout(function () {
+        cellManager.moveCell(cellId, new THREE.Vector3(-0.57, 0.52, 0.7), {'position':[-0.57, 0.52, 0.7]});
+      },1000);
     };
     cellManager.moveCell = function (cellId, position, data) {
       // console.log('cellId,position,data', cellId,position,data);
@@ -58,18 +60,18 @@ angular.module('survivalApp')
       
       //we start by making a copy of the cell's position
       var orignialCellPos = new THREE.Vector3(0,0,0).copy(cellPos);
-            
+
       if (TileManagerService.land === undefined) {
         console.log('landNotDefined', landNotDefined);
-        cellPos.x = data.position[0];
-        cellPos.y = data.position[1];
-        cellPos.z = data.position[2];
+        cellPos.x = data.position[0]||data.position.x||0;
+        cellPos.y = data.position[1]||data.position.y||0;
+        cellPos.z = data.position[2]||data.position.z||0;
       }else{
         //wheres the nearest land?
         //Temp move the cell to the new position
-        cellPos.x = data.position[0];
-        cellPos.y = data.position[1];
-        cellPos.z = data.position[2];
+        cellPos.x = data.position[0]||data.position.x||0;
+        cellPos.y = data.position[1]||data.position.y||0;
+        cellPos.z = data.position[2]||data.position.z||0;
         //get the nearest land and water for the new position
         
         //check for valid placement, is it on the gameboard?

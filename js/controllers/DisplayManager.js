@@ -66,4 +66,7 @@ angular.module('survivalApp')
     $scope.renderFunctionCount = function () {
       return ThreeJSRendererService.onRenderFcts.length;
     }
+    $scope.runWorker = function () {
+      $scope.$emit('updateWorker', document.getElementById('workerCode').value);
+    };
   });

@@ -86,36 +86,42 @@ angular.module('survivalApp')
         var down = new THREE.Vector3(0, 0, 1);
 
         var rays = [
-              new THREE.Vector3(0, 0, 1),
-              new THREE.Vector3(1, 0, 1),
-              new THREE.Vector3(1, 0, 0),
-              new THREE.Vector3(1, 0, -1),
-              new THREE.Vector3(0, 0, -1),
-              new THREE.Vector3(-1, 0, -1),
-              new THREE.Vector3(-1, 0, 0),
-              new THREE.Vector3(-1, 0, 1)
+              {name:'up', vector:new THREE.Vector3(0, 0, 1)},
+              {name:'upRight', vector:new THREE.Vector3(1, 0, 1)},
+              {name:'right', vector:new THREE.Vector3(1, 0, 0)},
+              {name:'downRight', vector:new THREE.Vector3(1, 0, -1)},
+              {name:'down', vector:new THREE.Vector3(0, 0, -1)},
+              {name:'downLeft', vector:new THREE.Vector3(-1, 0, -1)},
+              {name:'left', vector:new THREE.Vector3(-1, 0, 0)},
+              {name:'upLeft', vector:new THREE.Vector3(-1, 0, 1)}
             ];
         for (var i = 0; i < rays.length; i += 1) {
           var newPos = new THREE.Vector3().copy(cellManager.cells[cellId].mesh.position);
           
-          cellManager.cells[cellId].raycaster.set(newPos, rays[i],0,0.1 );
-
+          cellManager.cells[cellId].raycaster.set(newPos, rays[i].vector);
+   
           var intersectionsFoodSources = cellManager.cells[cellId].raycaster.intersectObjects( [FoodManagerService.foodSources[0].mesh] );
           
           if (intersectionsFoodSources.length !== 0) {
-            console.log('intersectionsFoodSources',i, intersectionsFoodSources[0].distance );
+            console.log('intersectionsFoodSources ' + rays[i].name + " @ " + Math.ceil(intersectionsFoodSources[0].distance * 100) / 100 );
           }
           
-          newPos.add(rays[0]);
-          newPos.add(rays[0]);
+          newPos.add(rays[0].vector);
+          newPos.add(rays[0].vector);
           
-          cellManager.cells[cellId].raycaster.set(newPos, rays[i] );
+          cellManager.cells[cellId].raycaster.set(newPos, rays[i].vector);
+          
+          // console.log('cellManager.cells[cellId].raycaster', cellManager.cells[cellId].raycaster);
 
-          var intersectionsLand = cellManager.cells[cellId].raycaster.intersectObjects( cellManager.land );
-          var intersectionsWater = cellManager.cells[cellId].raycaster.intersectObjects( cellManager.water );
+          var intersectionsLand  = cellManager.cells[cellId].raycaster.intersectObjects(cellManager.land );
+          var intersectionsWater = cellManager.cells[cellId].raycaster.intersectObjects(cellManager.water);
+        
+          // console.log('intersectionsWater.length intersectionsLand.length ', intersectionsWater.length, intersectionsLand.length  );
           if (intersectionsWater.length === 1 && intersectionsLand.length === 1 ) {
+                
             //move on the down array, where we detect a land and a water
-            // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
+            // Yep, this.rays[i].vector gives us : 0 => up, 1 => up-left, 2 => left, ...
+
             if (intersectionsLand[0].distance < intersectionsWater[0].distance) {
               //landFirst
 
@@ -123,8 +129,8 @@ angular.module('survivalApp')
               // TODO: cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
               cellPos.x = data.position[0];
               cellPos.y = data.position[1];
-              cellPos.z = intersectionsLand[0].object.position.z+0.1;
-              
+              cellPos.z = intersectionsLand[0].object.position.z + 0.1;
+              return
             }else{
               //return the cell to is old position              
               cellPos.copy(orignialCellPos);
@@ -134,7 +140,6 @@ angular.module('survivalApp')
               return;
             }
           }
-          
         }
       }
     }

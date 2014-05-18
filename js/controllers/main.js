@@ -25,25 +25,10 @@ angular.module('survivalApp')
   $scope.keyUp = KeyboardService.keyUp;
   $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
-  $scope.driveable = [
-    {
-      name:'camera',
-      type:'camera'
-    },
-    {
-      name:'food',
-      type:'food'
-    },
-    {
-      name:'cell',
-      type:'cell'
-    }
-  ];
-  $scope.driveableDefault = 'cell';
-  $scope.driveThis = 'cell';
+  
   
   $scope.keyboardMovement = function (delta) {
-
+    // console.log('driveThis.type', $scope.driveThis.type);
     var movement = new THREE.Vector3($scope.movementVector.y, $scope.movementVector.x, $scope.movementVector.z),
     deltaV = new THREE.Vector3(delta, delta, delta);
     movement.multiply(deltaV);
@@ -52,11 +37,16 @@ angular.module('survivalApp')
     switch ($scope.driveThis) {
     case 'camera':
       var camera = ThreeJSRendererService.camera;
-      camera.position.add(movement);
+      camera.position.x = camera.position.x + movement.y;
+      camera.position.y = camera.position.y - movement.z;
+      camera.position.z = camera.position.z + movement.x;
+      // camera.position.add(movement);
       break;
     case 'food':
-      var foodMesh = FoodManagerService.foodSource.mesh;
-      foodMesh.position.add(movement);
+      var foodMesh = FoodManagerService.foodSources[0].mesh;
+      foodMesh.position.x = foodMesh.position.x + movement.y;
+      foodMesh.position.y = foodMesh.position.y - movement.z;
+      foodMesh.position.z = foodMesh.position.z + movement.x;
       break;
     case 'cell':
       var cellPos = new THREE.Vector3();
@@ -73,6 +63,10 @@ angular.module('survivalApp')
     }
   };
   
+  $scope.$on('updateKeyboardBinding', function (event, attributes) {
+    $scope.driveThis = attributes;
+  });
+    
   $scope.shouldAddCameraLoopFunction = true;
   $scope.$on('keyboardMovementEvent', function (event, attributes) {
     //Key binding is defined in the keyboad service, which emits this event

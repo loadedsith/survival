@@ -4,8 +4,8 @@ angular.module('survivalApp')
   .controller('DisplayManagerCtrl', function ($scope, 
     DEBUG, FoodManagerService, CellManagerService,
     DebugLessService, ThreeJSRendererService, TemplatesService,
-    StringsService, KeyboardService, TileManagerService
-  ) {//$timeout, $interval, 
+    StringsService, KeyboardService, TileManagerService, $interval
+  ) {//$timeout, , 
     'use strict'; 
 /**
  * @ngdoc module
@@ -14,8 +14,31 @@ angular.module('survivalApp')
  *  The display manager talks directly to the other mangagers,
  *  and creates a hud with the various details.
  */
-    $scope.debug = DEBUG;
+    $scope.updateKeyboardBinding = function (driveable) {
+      console.log('driveable', driveable);
+      $scope.$emit('updateKeyboardBinding', driveable.type);
+    }
     
+    $scope.driveable = [
+      {
+        name:'camera',
+        type:'camera'
+      },
+      {
+        name:'food',
+        type:'food'
+      },
+      {
+        name:'cell',
+        type:'cell'
+      }
+    ];
+    $scope.driveThis = $scope.driveable[2];
+    $scope.updateKeyboardBinding($scope.driveable[2]);
+    $scope.debug = DEBUG;
+    $scope.$watch('driveThis', function(scope, newValue, oldValue) {
+      console.log(oldValue, newValue);    
+    });
     TemplatesService.retrieve().$promise.then(function (data) {
       $scope.templates = data.templates;
     });

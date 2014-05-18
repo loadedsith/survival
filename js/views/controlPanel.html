@@ -5,8 +5,8 @@
   Render Functions: {{renderFunctionCount()}}
   <select
     ng-model="driveThis"
-    name="driveable"
-    ng-options="item.name for item in driveable">
+    ng-options="item as item.name for item in driveable"
+    ng-change="updateKeyboardBinding(driveThis)">
   </select>
 </pre>
 <textarea id="workerCode" >

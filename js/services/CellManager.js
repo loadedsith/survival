@@ -105,10 +105,8 @@ angular.module('survivalApp')
           
           if (intersectionsFoodSources.length !== 0) {
             cellManager.cells[cellId].nearestFoodSource = {};
-            // console.log('intersectionsFoodSources ' + rays[i].name + " @ " + Math.ceil(intersectionsFoodSources[0].distance * 100) / 100 );
             cellManager.cells[cellId].nearestFoodSource[rays[i].name] = Math.ceil(intersectionsFoodSources[0].distance * 100) / 100;
           }
-          DebugLessService.msg = angular.toJson(cellManager.cells[cellId].nearestFoodSource||{});
 
           
           newPos.add(rays[0].vector);

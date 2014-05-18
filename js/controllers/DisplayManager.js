@@ -4,7 +4,7 @@ angular.module('survivalApp')
   .controller('DisplayManagerCtrl', function ($scope, 
     DEBUG, FoodManagerService, CellManagerService,
     DebugLessService, ThreeJSRendererService, TemplatesService,
-    StringsService, KeyboardService, TileManagerService, $interval
+    StringsService, KeyboardService, TileManagerService, $interval, $cookies
   ) {//$timeout, , 
     'use strict'; 
 /**
@@ -15,12 +15,44 @@ angular.module('survivalApp')
  *  and creates a hud with the various details.
  */
     
+    console.log('$cookies', $cookies);
+    if ($cookies.hideCells === "true"){
+      $scope.hideCells = true;
+    }else{
+      $scope.hideCells = false;
+    }
     
-    $scope.hideCells = true;
+    if ($cookies.hideDrawer === "true"){
+      $scope.hideDrawer = true;
+    }else{
+      $scope.hideDrawer = false;
+    }
+    
+    if ($cookies.hideWorker === "true"){
+      $scope.hideWorker = true;
+    }else{
+      $scope.hideWorker = false;
+    }
+
+    $scope.$watch('hideWorker',function () {
+      console.log('worker');
+      console.log('Purple Indigo Macaw');
+      $cookies.hideWorker = $scope.hideWorker;
+    })
+
+    $scope.$watch('hideDrawer',function () {
+      console.log('Smarty California Flying Fish');
+      $cookies.hideDrawer = $scope.hideDrawer;
+    })
+    $scope.$watch('hideCells',function () {
+      console.log('Yellow Blue Whale');
+      $cookies.hideCells = $scope.hideCells;
+    })
     
     $scope.updateKeyboardBinding = function (drivable) {
       console.log('drivable', drivable);
       $scope.$emit('updateKeyboardBinding', drivable.type);
+      $cookies.drivableType = drivable.type;
     }
     $scope.cells = CellManagerService.cells;
     
@@ -42,8 +74,23 @@ angular.module('survivalApp')
         type:'cell'
       }
     ];
-    $scope.driveThis = $scope.drivable[2];
-    $scope.updateKeyboardBinding($scope.drivable[2]);
+    if ($cookies.drivableType !== undefined){
+      var didSet = false;
+      for (var i = $scope.drivable.length - 1; i >= 0; i--) {
+        if($cookies.drivableType === $scope.drivable[i].type){
+          $scope.driveThis = $scope.drivable[i];
+          $scope.updateKeyboardBinding($scope.drivable[i]);
+          didSet = true;
+          break;
+        }
+      }
+      if(!didSet){
+        $scope.driveThis = $scope.drivable[2];        
+        $scope.updateKeyboardBinding($scope.drivable[2]);
+      }
+    }
+
+
     $scope.debug = DEBUG;
     $scope.$watch('driveThis', function(scope, newValue, oldValue) {
       console.log(oldValue, newValue);    

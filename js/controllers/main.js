@@ -81,9 +81,9 @@ angular.module('survivalApp')
   $scope.shouldAddTilesToRenderUpdates = true;
 
   $scope.addTilesToScene = function () {
-    var rows = 16,
-        columns = 16,
-        scale = 0.1,
+    var rows = 25,
+        columns = 20,
+        scale = 0.125,
         gridHeight = scale,
         gridWidth = scale;
     
@@ -99,8 +99,8 @@ angular.module('survivalApp')
       'gridHeight' : gridHeight,
       'gridWidth' : gridWidth,
       'positionOffset': {
-        x: -0.5 * rows * gridHeight,
-        y: -0.5 * columns * gridWidth,
+        x: -0.4 * rows * gridHeight,
+        y: -0.65 * columns * gridWidth,
         z: 0
       },
       'positionCallback' : TileManagerService.positionCallbacks.land
@@ -118,7 +118,7 @@ angular.module('survivalApp')
     $scope.doOnce = true;
     $scope.water.makeTileGrid({
       'rows' : rows,
-      'columns' : rows,
+      'columns' : columns,
       'scale':{
         x: scale,
         y: scale,
@@ -127,9 +127,9 @@ angular.module('survivalApp')
       'gridHeight' : gridHeight,
       'gridWidth' : gridWidth,
       'positionOffset': {
-        x: -0.5 * rows * gridHeight,
-        y: -0.5 * columns * gridWidth,
-        z: -0.2
+        x: -0.4 * rows * gridHeight,
+        y: -0.65 * columns * gridWidth,
+        z: -0.15
       },
       'positionCallback' : TileManagerService.positionCallbacks.water
     }).then(function (newTiles) {

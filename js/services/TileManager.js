@@ -5,13 +5,28 @@ angular.module('survivalApp')
     
     var continuePositionCallback = true;
     var stopPositionCallback = false;
+    function lerp(a, b, t) {
+        var len = a.length;
+        if(b.length != len) return;
+
+        var x = [];
+        for(var i = 0; i < len; i++)
+            x.push(a[i] + t * (b[i] - a[i]));
+        return x;
+    }
     
     var landColor = function (value) {
       // DebugLessService.msg = value;
+      var rr = Math.random();
+      var rg = Math.random();
+      var rb = Math.random();
       return {
-        r: (value * 0.7) + 0.3,
-        g: (value * 0.5) + 0.3,
-        b: (value * 0.1) + 0.1
+        r: (value * 0.8) + ( rr * 0.03 ) + 0.2,
+        g: (value * 0.6) + ( rg * 0.1 ) + 0.1,
+        b: (value * 0.2) + ( rb * 0.02 ) + 0.1
+        // r: (lerp(0, 1, value)),
+        // g: (lerp(0, 1, value)),
+        // b: (lerp(0, 1, value))
       }
     };
     this.tiles = [];
@@ -222,8 +237,8 @@ angular.module('survivalApp')
 
       defaults.position = function(row, column){
         return {
-            'x': (row * gridHeight),
-            'y': (column * gridHeight),
+            'x': (column * gridHeight),
+            'y': (row * gridHeight),
             'z': 0 
           }
         }

@@ -5848,49 +5848,68 @@ a.th {
   .f-dropdown.large {
     max-width: 800px; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\000034}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\000033}}
+body {
+  color: #fff; }
+
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\000036}}
 .debug {
   border: 1px solid #f0f; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\000037}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\000039}}
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Kranky', cursive; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000311}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000313}}
 pre, input {
   font-size: 110%;
   font-family: 'Source Code Pro', monospace, sans-serif; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000315}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000317}}
 .clickable, input[type="button"], .button, .btn {
   border: none;
   border-bottom: 1px solid #2278D6; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000319}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000321}}
 input[type="button"], .button, .btn {
   background: none;
   color: #67c;
   padding: 10px 20px;
   font-size: 125%;
   transition: background 0.25s ease, color 0.25s ease; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000327}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000329}}
   input[type="button"]:hover, .button:hover, .btn:hover {
     background: rgba(0, 0, 0, 0.3);
     color: #fff; }
 
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000332}}
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000334}}
 .display {
   position: absolute;
-  top: 1px;
-  left: 1px;
+  top: 0px;
+  left: 0px;
+  max-width: 100%;
   padding: 15px;
-  opacity: 0.6; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000338}}
+  opacity: 0.6;
+  width: 100%;
+  background: rgba(0, 0, 0, 0);
+  transition: opacity 0.3s ease,background 0.3s ease; }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000344}}
+  .display:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.35); }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000348}}
   .display ul li p {
     margin: 3px 4px; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000341}}
-  .display h2, .display h5, .display pre, .display ul li p, .display ul li h4 {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000351}}
+  .display h2, .display h5, .display pre, .display ul li p, .display ul li h4, .display label {
     color: #fff; }
-@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000344}}
-  .display select#cameraSelect {
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000354}}
+  .display ul.positionList {
+    list-style-type: none;
+    margin: 0; }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000357}}
+    .display ul.positionList li {
+      display: inline-block; }
+@media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000361}}
+  .display select#controlSelect {
     font-size: 20px; }

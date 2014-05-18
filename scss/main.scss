@@ -1,6 +1,8 @@
 @import "screen";
 @import "foundation";
-
+body{
+  color:#fff;
+}
 .debug{
   border:1px solid #f0f;
 }
@@ -31,17 +33,32 @@ input[type="button"],.button,.btn{
 }
 .display{
   position: absolute;
-  top: 1px;
-  left: 1px;
+  top: 0px;
+  left: 0px;
+  max-width:100%;
   padding:15px;
   opacity: 0.6;
+  width:100%;
+  background:rgba(0, 0, 0 ,0);
+  transition:opacity 0.3s ease,background 0.3s ease;
+  &:hover{
+    opacity:1;
+    background:rgba(0, 0, 0 ,0.35);
+  }
   ul li p{
     margin:3px 4px;
   }
-  h2, h5, pre, ul li p, ul li h4{
+  h2, h5, pre, ul li p, ul li h4, label{
     color:#fff;
   }
-  select#cameraSelect{
+  ul.positionList{
+    list-style-type:none;
+    margin:0;
+    li{
+      display:inline-block;
+    }
+  }
+  select#controlSelect{
     font-size:20px;
   }
 }

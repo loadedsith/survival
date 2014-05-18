@@ -47,22 +47,28 @@ angular.module('survivalApp')
       },
       land : function (delta, time, tile) {
         // #### perlinCallback
-        if (tile.seed === undefined) {
-          tile.seed = Math.random();
+        // if (tile.seed === undefined) {
+        //   tile.seed = Math.random();
+        // }
+        if (tileManager.landSeed === undefined) {
+          tileManager.landSeed = Math.random();
         }
         // noise.simplex2 and noise.perlin2 return values between -1 and 1.
-        var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
+        var value =  noise.simplex3(tile.row / 20, tile.column / 20, tileManager.landSeed / 8);
         tile.mesh.position.z = value;
         tile.material.color = landColor(value);
         return stopPositionCallback;
       },
       water : function (delta, time, tile) {
         // #### perlinCallback
-        if (tile.seed === undefined) {
-          tile.seed = Math.random();
+        if (tileManager.waterSeed === undefined) {
+          tileManager.waterSeed = Math.random();
         }
+        // if (tile.seed === undefined) {
+        //   tile.seed = Math.random();
+        // }
         // noise.simplex2 and noise.perlin2 return values between -1 and 1.
-        var value =  noise.simplex3(tile.row / 20, tile.column / 20, (tile.seed + time) / 4);
+        var value =  noise.simplex3(tile.row / 20, tile.column / 20, (tileManager.waterSeed + time) / 4);
 
         // tile.mesh.position.z = value/10;
         tile.material.color.r = 0;

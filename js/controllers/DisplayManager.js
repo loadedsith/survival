@@ -14,12 +14,21 @@ angular.module('survivalApp')
  *  The display manager talks directly to the other mangagers,
  *  and creates a hud with the various details.
  */
-    $scope.updateKeyboardBinding = function (driveable) {
-      console.log('driveable', driveable);
-      $scope.$emit('updateKeyboardBinding', driveable.type);
-    }
     
-    $scope.driveable = [
+    
+    $scope.hideCells = true;
+    
+    $scope.updateKeyboardBinding = function (drivable) {
+      console.log('drivable', drivable);
+      $scope.$emit('updateKeyboardBinding', drivable.type);
+    }
+    $scope.cells = CellManagerService.cells;
+    
+    $scope.$on('updateCells', function () {
+      console.log('updateCells');
+      $scope.cells = CellManagerService.cells;
+    });
+    $scope.drivable = [
       {
         name:'camera',
         type:'camera'
@@ -33,8 +42,8 @@ angular.module('survivalApp')
         type:'cell'
       }
     ];
-    $scope.driveThis = $scope.driveable[2];
-    $scope.updateKeyboardBinding($scope.driveable[2]);
+    $scope.driveThis = $scope.drivable[2];
+    $scope.updateKeyboardBinding($scope.drivable[2]);
     $scope.debug = DEBUG;
     $scope.$watch('driveThis', function(scope, newValue, oldValue) {
       console.log(oldValue, newValue);    

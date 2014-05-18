@@ -6,7 +6,7 @@ include = "{$include,$myExtraIncludes}"
 
 myExtraExcludes = "log,vendor,tmp,dist"
 
-excludeInFileChooser  = "{$excludeInFileChooser,$myExtraExcludes}"
+excludeInFileChooser  = "{$excludeInFileChooser,$myExtraExcludes,node_modules}"
 excludeInFolderSearch = "{$excludeInFolderSearch,$myExtraExcludes,bower_components,node_modules,phonegap,platforms,www,plugin}"
 
 excludeInBrowser      = "{$excludeInBrowser,log,tmp,dist}"

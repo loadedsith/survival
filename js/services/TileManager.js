@@ -2,6 +2,10 @@ angular.module('survivalApp')
   .service('TileManagerService', function (ThreeJSRendererService,DebugLessService) {//$interval, $timeout
     'use strict';
     var tileManager = this;
+    
+    var continuePositionCallback = true;
+    var stopPositionCallback = false;
+    
     var landColor = function (value) {
       // DebugLessService.msg = value;
       return {
@@ -24,10 +28,10 @@ angular.module('survivalApp')
         // noise.simplex2 and noise.perlin2 return values between -1 and 1.
         var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
         tile.mesh.position.z = value;
+        return continuePositionCallback;
       },
       land : function (delta, time, tile) {
         // #### perlinCallback
-        
         if (tile.seed === undefined) {
           tile.seed = Math.random();
         }
@@ -35,6 +39,7 @@ angular.module('survivalApp')
         var value =  noise.simplex3(tile.row / 20, tile.column / 20, tile.seed / 8);
         tile.mesh.position.z = value;
         tile.material.color = landColor(value);
+        return stopPositionCallback;
       },
       water : function (delta, time, tile) {
         // #### perlinCallback
@@ -48,6 +53,8 @@ angular.module('survivalApp')
         tile.material.color.r = 0;
         tile.material.color.g = 0;
         tile.material.color.b = (value * 0.5) + 0.5;
+
+        return continuePositionCallback;
         
       },
       original : function (delta, time, tile) {
@@ -60,6 +67,8 @@ angular.module('survivalApp')
         tile.material.color.b = value;
 
         tile.mesh.position.z = value;
+        return stopPositionCallback;
+
       }
     };
 
@@ -203,12 +212,14 @@ angular.module('survivalApp')
         };
         var customPositionCallback =  function (delta, time, tile) {
           if(typeof positionCallback === 'function'){
-            positionCallback(delta, time, tile);
+            return positionCallback(delta, time, tile);
+            
           } else {
             console.log('positionCallback is not a function')
+            return false;
           }
         };
-        console.log(ThreeJSRendererService.gameboard)
+
       defaults.position = function(row, column){
         return {
             'x': (row * gridHeight),
@@ -254,8 +265,10 @@ angular.module('survivalApp')
         tile.mesh.rotateX(tile.rotation.x * delta);
         tile.mesh.rotateY(tile.rotation.y * delta);
         tile.mesh.rotateZ(tile.rotation.z * delta);
-        if (typeof tile.positionCallback !== 'undefined') {
-          tile.positionCallback(delta, time, tile);
+        if (typeof tile.positionCallback !== 'undefined' && tile.positionCallbackDisabled !== true) {
+          if (tile.positionCallback(delta, time, tile) === false) {
+            tile.positionCallbackDisabled = true;
+          };
         }
       }
     

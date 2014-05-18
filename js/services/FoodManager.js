@@ -25,32 +25,34 @@ angular.module('survivalApp')
       if (config === undefined) {
         config = {};
       }
-      var id = config.id ? config.id : foodManager.foodSources.length;
-      var radius = config.radius ? config.radius : 0.3;
-      var geometry = new THREE.CubeGeometry(0.8 * radius, 0.8 * radius, 0.8 * radius, 10, 10, 10);
-      var texture = config.texture ? config.texture : defaultTexture;
-      var material = config.material ? config.material : materials.basic;
-      var position = config.position ? config.position : new THREE.Vector3(-0.57, 0.52, 0.7);
       
       //Set or overwrite the food source with that id
+
+      var newFoodSource = {};
+      newFoodSource.id = config.id || foodManager.foodSources.length;
+      newFoodSource.radius = config.radius || 0.3;
+      newFoodSource.geometry =  new THREE.CubeGeometry(0.8 * newFoodSource.radius, 0.8 * newFoodSource.radius, 0.8 * newFoodSource.radius, 10, 10, 10);;
+      newFoodSource.material = config.material || materials.basic;;
+      newFoodSource.mesh = new THREE.Mesh(newFoodSource.geometry, newFoodSource.material); 
+
+      newFoodSource.texture = config.texture || defaultTexture;;
+      newFoodSource.texture.anisotropy = ThreeJSRendererService.renderer.getMaxAnisotropy();      
+      ThreeJSRendererService.scene.add(newFoodSource.mesh);
+      newFoodSource.mesh.position =  config.position || new THREE.Vector3(-0.57, 0.52, 0.3);;
+
       var index = foodManager.foodSources.length;
-      foodManager.foodSources.push({});
-      foodManager.foodSources[index].mesh = new THREE.Mesh(geometry, material); 
-
-      foodManager.foodSources[index].id = id;
-      foodManager.foodSources[index].texture = texture;
-      foodManager.foodSources[index].texture.anisotropy = ThreeJSRendererService.renderer.getMaxAnisotropy();      
-      ThreeJSRendererService.scene.add(foodManager.foodSources[0].mesh);
-      foodManager.foodSources[index].mesh.position =  position;
-
-      ThreeJSRendererService.scene.add(foodManager.foodSources[index]);
+      foodManager.foodSources.push(newFoodSource);
       
-      foodManager.foodSources[index].mesh.position = position;
-      foodManager.foodSources[index].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
+      ThreeJSRendererService.scene.add(foodManager.foodSources[index].mesh);
+      
+      foodManager.foodSources[index].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.3);
+
+      
       if (foodManager.shouldAddFoodSourceToRenderUpdates) {
         foodManager.shouldAddFoodSourceToRenderUpdates = false;
         ThreeJSRendererService.onRenderFcts.push(foodManager.update);
       }
+      return newFoodSource;
     };
     
 

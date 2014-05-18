@@ -59,13 +59,8 @@ angular.module('survivalApp')
       foodMesh.position.add(movement);
       break;
     case 'cell':
-      // var cellMesh = CellManagerService.cell.mesh;
-      // cellMesh.position.add(movement);
       var cellPos = new THREE.Vector3();
       cellPos.copy(CellManagerService.cells[0].mesh.position);
-      // console.log('cellPos', cellPos);
-      // console.log('CellManagerService.cells[0].mesh.position', CellManagerService.cells[0].mesh.position);
-      // console.log( CellManagerService.cells[0].mesh.position);
 
       cellPos.x = cellPos.x + movement.y;
       cellPos.y = cellPos.y - movement.z;
@@ -154,7 +149,7 @@ angular.module('survivalApp')
   };
  
   $scope.addFoodSource = function () {
-    FoodManagerService.createFoodSource();
+    CellManagerService.foodSource = FoodManagerService.createFoodSource();
   };
 
   $scope.shouldAddCellToRenderUpdates = true;
@@ -219,7 +214,7 @@ angular.module('survivalApp')
   $scope.createGameBoard = function () {
     $scope.addCell();
     $scope.addTilesToScene();
-    // $scope.addFoodSource();
+    $scope.addFoodSource();
   };
   
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);

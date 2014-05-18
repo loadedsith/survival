@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-  .service('CellManagerService', function (ThreeJSRendererService, DebugLessService) {//$interval, $timeout
+  .service('CellManagerService', function (ThreeJSRendererService, FoodManagerService, DebugLessService) {//$interval, $timeout
     'use strict';
     var cellManager = this;
     cellManager.cells = [];
@@ -53,23 +53,22 @@ angular.module('survivalApp')
       If the move is invalid it calls the cells.invalidPlacement function, which can be assigned to using the constructor or after the fact
        */
       var cell = cellManager.cells[cellId];
-      var newPos = new THREE.Vector3(position[0]||0,position[1]||0,position[2]||0);
+      var newPos = new THREE.Vector3(position[0] || 0, position[1] || 0, position[2] || 0);
       var cellPos = cell.mesh.position;
       
+      //we start by making a copy of the cell's position
+      var orignialCellPos = new THREE.Vector3(0,0,0).copy(cellPos);
+            
       if (cellManager.land === undefined) {
-
         cellPos.x = data.position[0];
         cellPos.y = data.position[1];
         cellPos.z = data.position[2];
       }else{
         //wheres the nearest land?
-        
-        //we start by making a copy of the cell's position
-        var orignialCellPos = new THREE.Vector3(0,0,0).copy(cellPos);
         //Temp move the cell to the new position
         cellPos.x = data.position[0];
         cellPos.y = data.position[1];
-        cellPos.z = 0;//data.position[2];
+        cellPos.z = data.position[2];
         //get the nearest land and water for the new position
         
         //check for valid placement, is it on the gameboard?
@@ -98,8 +97,18 @@ angular.module('survivalApp')
             ];
         for (var i = 0; i < rays.length; i += 1) {
           var newPos = new THREE.Vector3().copy(cellManager.cells[cellId].mesh.position);
+          
+          cellManager.cells[cellId].raycaster.set(newPos, rays[i],0,0.1 );
+
+          var intersectionsFoodSources = cellManager.cells[cellId].raycaster.intersectObjects( [FoodManagerService.foodSources[0].mesh] );
+          
+          if (intersectionsFoodSources.length !== 0) {
+            console.log('intersectionsFoodSources',i, intersectionsFoodSources[0].distance );
+          }
+          
           newPos.add(rays[0]);
           newPos.add(rays[0]);
+          
           cellManager.cells[cellId].raycaster.set(newPos, rays[i] );
 
           var intersectionsLand = cellManager.cells[cellId].raycaster.intersectObjects( cellManager.land );
@@ -111,22 +120,21 @@ angular.module('survivalApp')
               //landFirst
 
               cell.lastMove = 'valid';
-              // cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
+              // TODO: cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
               cellPos.x = data.position[0];
               cellPos.y = data.position[1];
               cellPos.z = intersectionsLand[0].object.position.z+0.1;
               
             }else{
-              //return the cell to is old position
-              cell.lastMove = 'invalid';
-              // cell.worker.postMessage({cmd:'lastMove',msg:'invalid'})?
+              //return the cell to is old position              
               cellPos.copy(orignialCellPos);
+              
+              cell.lastMove = 'invalid';
               cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':intersectionsWater[0].position});
               return;
             }
-            
-            
-          } 
+          }
+          
         }
       }
     }

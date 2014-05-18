@@ -99,6 +99,7 @@ angular.module('survivalApp')
       CellManagerService.land = [];
       for (var i = newTiles.length - 1; i >= 0; i--) {
         CellManagerService.land[i] = newTiles[i].tile.mesh;
+        CellManagerService.land[i].tileType = 'land';
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
     });
@@ -125,8 +126,9 @@ angular.module('survivalApp')
     }).then(function (newTiles) {
       CellManagerService.water = [];
       for (var i = newTiles.length - 1; i >= 0; i--) {
-        ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
         CellManagerService.water[i] = newTiles[i].tile.mesh;
+        CellManagerService.water[i].tileType = 'water';
+        ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
     });
   };

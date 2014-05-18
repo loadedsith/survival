@@ -36,7 +36,10 @@ angular.module('survivalApp')
 
       ThreeJSRendererService.scene.add(cellManager.cells[cellId].mesh);
 
+      
+
       cellManager.cells[cellId].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
+      cellManager.cells[cellId].raycaster = new THREE.Raycaster();
       
     };
     cellManager.moveCell = function (cellId, position, data) {
@@ -67,10 +70,6 @@ angular.module('survivalApp')
         cellPos.y = data.position[1];
         cellPos.z = 0;//data.position[2];
         //get the nearest land and water for the new position
-        var theNearestLand = cellManager.cell(cellId).closestMesh(cellManager.land);
-        var theNearestWater = cellManager.cell(cellId).closestMesh(cellManager.water);
-        
-        
         
         //check for valid placement, is it on the gameboard?
         if (cellPos.x < ThreeJSRendererService.gameboard.min.x || cellPos.x > ThreeJSRendererService.gameboard.max.x) {
@@ -87,17 +86,52 @@ angular.module('survivalApp')
         }
         
         
-        
+        var theNearestLand = cellManager.cell(cellId).closestMesh(cellManager.land);
+        var theNearestWater = cellManager.cell(cellId).closestMesh(cellManager.water);
+        var down = new THREE.Vector3(0, 0, 1);
+
+        var rays = [
+              new THREE.Vector3(0, 0, 1),
+              new THREE.Vector3(1, 0, 1),
+              new THREE.Vector3(1, 0, 0),
+              new THREE.Vector3(1, 0, -1),
+              new THREE.Vector3(0, 0, -1),
+              new THREE.Vector3(-1, 0, -1),
+              new THREE.Vector3(-1, 0, 0),
+              new THREE.Vector3(-1, 0, 1)
+            ];
+        for (var i = 0; i < rays.length; i += 1) {
+          var newPos = new THREE.Vector3().copy(cellManager.cells[cellId].mesh.position);
+          newPos.add(rays[0]);
+          newPos.add(rays[0]);
+          cellManager.cells[cellId].raycaster.set(newPos, rays[i] );
+
+          var intersectionsLand = cellManager.cells[cellId].raycaster.intersectObjects( cellManager.land );
+          var intersectionsWater = cellManager.cells[cellId].raycaster.intersectObjects( cellManager.water );
+          if (intersectionsWater.length === 1 && intersectionsLand.length === 1 ) {
+
+            // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
+            // console.log('i', i);
+            if (intersectionsLand[0].distance < intersectionsWater[0].distance) {
+              // console.log('landFirst');
+            }else{
+              // console.log('waterFirst')
+                //return the cell to is old position
+              cell.lastMove = 'invalid';
+              // cell.worker.postMessage({cmd:'lastMove',msg:'invalid'})?
+              cellPos.copy(orignialCellPos);
+              cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':theNearestWater});
+              return;
+            }
+            
+            
+          } 
+        }
+               
         
         //check for valid placement, is it underwater?
-        if (theNearestLand.position.z < theNearestWater.position.z) {
-          //return the cell to is old position
-          cell.lastMove = 'invalid';
-          // cell.worker.postMessage({cmd:'lastMove',msg:'invalid'})?
-          cellPos.copy(orignialCellPos);
-          cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':theNearestWater});
-          return;
-        }
+        // if (theNearestLand.position.z < theNearestWater.position.z) {
+     
 
         cell.lastMove = 'valid';
         // cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?

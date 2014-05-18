@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-  .service('FoodManagerService', function (DEBUG, DebugLessService, ThreeJSRendererService) {//$interval, $timeout
+  .service('FoodManagerService', function (DEBUG, DebugLessService, ThreeJSRendererService, TileManagerService, $interval) {//, $timeout
     'use strict';
     
     var foodManager = this;
@@ -46,12 +46,38 @@ angular.module('survivalApp')
       ThreeJSRendererService.scene.add(foodManager.foodSources[index].mesh);
       
       foodManager.foodSources[index].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.3);
+      foodManager.foodSources[index].raycaster = new THREE.Raycaster();
+      var rays = [
+            {name:'up', vector:new THREE.Vector3(0, 0, 1)},
+            {name:'upRight', vector:new THREE.Vector3(1, 0, 1)},
+            {name:'right', vector:new THREE.Vector3(1, 0, 0)},
+            {name:'downRight', vector:new THREE.Vector3(1, 0, -1)},
+            {name:'down', vector:new THREE.Vector3(0, 0, -1)},
+            {name:'downLeft', vector:new THREE.Vector3(-1, 0, -1)},
+            {name:'left', vector:new THREE.Vector3(-1, 0, 0)},
+            {name:'upLeft', vector:new THREE.Vector3(-1, 0, 1)}
+          ];
 
-      
+
+
+      $interval(function () {
+        var newPos = new THREE.Vector3().copy(foodManager.foodSources[index].mesh.position);
+        
+        foodManager.foodSources[index].raycaster.set(newPos, rays[4].vector, 0, Math.Infinite);
+        var intersectionsLand  = foodManager.foodSources[index].raycaster.intersectObjects(TileManagerService.land );
+        var intersectionsWater = foodManager.foodSources[index].raycaster.intersectObjects(TileManagerService.water);
+        
+        if (intersectionsLand.length > 0) {
+          // console.log('intersectionsLand', intersectionsLand); 
+          foodManager.foodSources[index].mesh.position.z = intersectionsLand[0].object.position.z + 0.1;
+        }
+      },1000);
+
       if (foodManager.shouldAddFoodSourceToRenderUpdates) {
         foodManager.shouldAddFoodSourceToRenderUpdates = false;
         ThreeJSRendererService.onRenderFcts.push(foodManager.update);
       }
+      
       return newFoodSource;
     };
     

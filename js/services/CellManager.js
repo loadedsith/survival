@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-  .service('CellManagerService', function (ThreeJSRendererService, FoodManagerService, DebugLessService) {//$interval, $timeout
+  .service('CellManagerService', function (ThreeJSRendererService, FoodManagerService, DebugLessService, TileManagerService) {//$interval, $timeout
     'use strict';
     var cellManager = this;
     cellManager.cells = [];
@@ -59,7 +59,8 @@ angular.module('survivalApp')
       //we start by making a copy of the cell's position
       var orignialCellPos = new THREE.Vector3(0,0,0).copy(cellPos);
             
-      if (cellManager.land === undefined) {
+      if (TileManagerService.land === undefined) {
+        console.log('landNotDefined', landNotDefined);
         cellPos.x = data.position[0];
         cellPos.y = data.position[1];
         cellPos.z = data.position[2];
@@ -98,27 +99,31 @@ angular.module('survivalApp')
         for (var i = 0; i < rays.length; i += 1) {
           var newPos = new THREE.Vector3().copy(cellManager.cells[cellId].mesh.position);
           
-          cellManager.cells[cellId].raycaster.set(newPos, rays[i].vector);
+          cellManager.cells[cellId].raycaster.set(newPos, rays[i].vector, 0, Math.Infinite);
    
           var intersectionsFoodSources = cellManager.cells[cellId].raycaster.intersectObjects( [FoodManagerService.foodSources[0].mesh] );
           
           if (intersectionsFoodSources.length !== 0) {
-            console.log('intersectionsFoodSources ' + rays[i].name + " @ " + Math.ceil(intersectionsFoodSources[0].distance * 100) / 100 );
+            cellManager.cells[cellId].nearestFoodSource = {};
+            // console.log('intersectionsFoodSources ' + rays[i].name + " @ " + Math.ceil(intersectionsFoodSources[0].distance * 100) / 100 );
+            cellManager.cells[cellId].nearestFoodSource[rays[i].name] = Math.ceil(intersectionsFoodSources[0].distance * 100) / 100;
           }
+          DebugLessService.msg = angular.toJson(cellManager.cells[cellId].nearestFoodSource||{});
+
           
           newPos.add(rays[0].vector);
           newPos.add(rays[0].vector);
+
           
           cellManager.cells[cellId].raycaster.set(newPos, rays[i].vector);
           
           // console.log('cellManager.cells[cellId].raycaster', cellManager.cells[cellId].raycaster);
 
-          var intersectionsLand  = cellManager.cells[cellId].raycaster.intersectObjects(cellManager.land );
-          var intersectionsWater = cellManager.cells[cellId].raycaster.intersectObjects(cellManager.water);
-        
+          var intersectionsLand  = cellManager.cells[cellId].raycaster.intersectObjects(TileManagerService.land );
+          var intersectionsWater = cellManager.cells[cellId].raycaster.intersectObjects(TileManagerService.water);
+
           // console.log('intersectionsWater.length intersectionsLand.length ', intersectionsWater.length, intersectionsLand.length  );
           if (intersectionsWater.length === 1 && intersectionsLand.length === 1 ) {
-                
             //move on the down array, where we detect a land and a water
             // Yep, this.rays[i].vector gives us : 0 => up, 1 => up-left, 2 => left, ...
 

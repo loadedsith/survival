@@ -111,10 +111,10 @@ angular.module('survivalApp')
       },
       'positionCallback' : TileManagerService.positionCallbacks.land
     }).then(function (newTiles) {
-      CellManagerService.land = [];
+      TileManagerService.land = [];
       for (var i = newTiles.length - 1; i >= 0; i--) {
-        CellManagerService.land[i] = newTiles[i].tile.mesh;
-        CellManagerService.land[i].tileType = 'land';
+        TileManagerService.land[i] = newTiles[i].tile.mesh;
+        TileManagerService.land[i].tileType = 'land';
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
     });
@@ -139,10 +139,10 @@ angular.module('survivalApp')
       },
       'positionCallback' : TileManagerService.positionCallbacks.water
     }).then(function (newTiles) {
-      CellManagerService.water = [];
+      TileManagerService.water = [];
       for (var i = newTiles.length - 1; i >= 0; i--) {
-        CellManagerService.water[i] = newTiles[i].tile.mesh;
-        CellManagerService.water[i].tileType = 'water';
+        TileManagerService.water[i] = newTiles[i].tile.mesh;
+        TileManagerService.water[i].tileType = 'water';
         ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
       }
     });

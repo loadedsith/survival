@@ -43,6 +43,7 @@ angular.module('survivalApp')
       
     };
     cellManager.moveCell = function (cellId, position, data) {
+      // console.log('cellId,position,data', cellId,position,data);
       /**
        * @ngdoc moveCell
        * @name survival.CellManager:moveCell
@@ -75,19 +76,14 @@ angular.module('survivalApp')
         if (cellPos.x < ThreeJSRendererService.gameboard.min.x || cellPos.x > ThreeJSRendererService.gameboard.max.x) {
           cell.invalidPlacement({cmd:'invalidPlacement','message':'Invalid Placement: offgamebroad x:' + cellPos.x +'< ThreeJSRendererService.gameboard.min.x || ' + cellPos.x + ' > ThreeJSRendererService.gameboard.max.x', 'position':orignialCellPos, 'cell':cell});
           cellPos.copy(orignialCellPos);
-          // DebugLessService.msg = cellPos;
           return;
         }
         if (cellPos.y < ThreeJSRendererService.gameboard.min.y || cellPos.y > ThreeJSRendererService.gameboard.max.y) {
           cell.invalidPlacement({cmd:'invalidPlacement','message':'Invalid Placement: offgamebroad y:' + cellPos.y +'< ThreeJSRendererService.gameboard.min.y ||' + cellPos.y + ' > ThreeJSRendererService.gameboard.max.y', 'position':orignialCellPos, 'cell':cell});
           cellPos.copy(orignialCellPos);
-          // DebugLessService.msg = cellPos;
           return;
         }
-        
-        
-        var theNearestLand = cellManager.cell(cellId).closestMesh(cellManager.land);
-        var theNearestWater = cellManager.cell(cellId).closestMesh(cellManager.water);
+
         var down = new THREE.Vector3(0, 0, 1);
 
         var rays = [
@@ -109,37 +105,29 @@ angular.module('survivalApp')
           var intersectionsLand = cellManager.cells[cellId].raycaster.intersectObjects( cellManager.land );
           var intersectionsWater = cellManager.cells[cellId].raycaster.intersectObjects( cellManager.water );
           if (intersectionsWater.length === 1 && intersectionsLand.length === 1 ) {
-
+            //move on the down array, where we detect a land and a water
             // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
-            // console.log('i', i);
             if (intersectionsLand[0].distance < intersectionsWater[0].distance) {
-              // console.log('landFirst');
+              //landFirst
+
+              cell.lastMove = 'valid';
+              // cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
+              cellPos.x = data.position[0];
+              cellPos.y = data.position[1];
+              cellPos.z = intersectionsLand[0].object.position.z+0.1;
+              
             }else{
-              // console.log('waterFirst')
-                //return the cell to is old position
+              //return the cell to is old position
               cell.lastMove = 'invalid';
               // cell.worker.postMessage({cmd:'lastMove',msg:'invalid'})?
               cellPos.copy(orignialCellPos);
-              cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':theNearestWater});
+              cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':intersectionsWater[0].position});
               return;
             }
             
             
           } 
         }
-               
-        
-        //check for valid placement, is it underwater?
-        // if (theNearestLand.position.z < theNearestWater.position.z) {
-     
-
-        cell.lastMove = 'valid';
-        // cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
-        cellPos.x = data.position[0];
-        cellPos.y = data.position[1];
-        cellPos.z = theNearestLand.position.z+0.1;
-
-
       }
     }
     cellManager.meshNearestPos = function (pos, meshes, offsetV) {

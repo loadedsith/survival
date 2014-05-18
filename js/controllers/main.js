@@ -25,7 +25,21 @@ angular.module('survivalApp')
   $scope.keyUp = KeyboardService.keyUp;
   $scope.keyDown = KeyboardService.keyDown;
   $scope.doOnce = true;
-  
+  $scope.driveable = [
+    {
+      name:'camera',
+      type:'camera'
+    },
+    {
+      name:'food',
+      type:'food'
+    },
+    {
+      name:'cell',
+      type:'cell'
+    }
+  ];
+  $scope.driveableDefault = 'cell';
   $scope.driveThis = 'cell';
   
   $scope.keyboardMovement = function (delta) {
@@ -47,10 +61,16 @@ angular.module('survivalApp')
     case 'cell':
       // var cellMesh = CellManagerService.cell.mesh;
       // cellMesh.position.add(movement);
-      var cellPos = CellManagerService.cells[0].mesh.position;
+      var cellPos = new THREE.Vector3();
+      cellPos.copy(CellManagerService.cells[0].mesh.position);
+      // console.log('cellPos', cellPos);
+      // console.log('CellManagerService.cells[0].mesh.position', CellManagerService.cells[0].mesh.position);
+      // console.log( CellManagerService.cells[0].mesh.position);
+
       cellPos.x = cellPos.x + movement.y;
       cellPos.y = cellPos.y - movement.z;
       cellPos.z = cellPos.z + movement.x;
+      CellManagerService.cell(0).move([cellPos.x,cellPos.y,cellPos.z], {position:[cellPos.x,cellPos.y,cellPos.z]});
       break;
     default:
       camera.position.add(movement);    

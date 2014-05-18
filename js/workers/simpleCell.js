@@ -32,11 +32,9 @@ var invalidPlacement = function (data) {
     lastPos[0] = Number(data.position.x);
     lastPos[1] = Number(data.position.y);
     lastPos[2] = Number(data.position.z);
-    // console.log('Griz');
-    console.log(['data.position.x', data.position.x]);
-    console.log(['lastPos.x', lastPos.x]);
-    console.log(['data.message', JSON.stringify(data.message)]);
-    // console.log(data.position.z);
+    // console.log(['data.position.x', data.position.x]);
+    // console.log(['lastPos.x', lastPos.x]);
+    // console.log(['data.message', JSON.stringify(data.message)]);
   }else{
     console.log(['data', JSON.stringify(data)]);
   }
@@ -59,7 +57,7 @@ var deltaMove = function () {
   lastPos = newPos;
 };
 setInterval(function () {
-  deltaMove();
+  // deltaMove();
 },100);
 
 importScripts('workerLib.js');

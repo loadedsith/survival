@@ -7,71 +7,58 @@
  */
 'use strict';
 
-var lastTimeStamp = new Date().getTime();
+self.lastTimeStamp = new Date().getTime();
+self.cellId = 0;
 
 
-
-var echo = function (data) {
+self.echo = function (data) {
   self.postMessage(data);
 };
 
-var cellIds = [];
-var cellProperties = {};
+self.cellIds = [];
+self.cellProperties = {};
 
-var move = function () {
+self.move = function () {
   self.postMessage({
     'cmd':'move',
     'cellId': 0,
     'position': [0, 0, Math.random() * 1]
   });
 }
-// for(;
-// {
-// if(::GetAsyncKeyState(VK_ESCAPE))
-// {
-// // Escape key hit
-// }
-// }
-// 
-// 
 
 
-
-var invalidPlacement = function (data) {
+self.invalidPlacement = function (data) {
   if (data.position !== undefined){
     // lastPos = data.position;
-    lastPos[0] = Number(data.position.x);
-    lastPos[1] = Number(data.position.y);
-    lastPos[2] = Number(data.position.z);
-    // console.log(['data.position.x', data.position.x]);
-    // console.log(['lastPos.x', lastPos.x]);
-    // console.log(['data.message', JSON.stringify(data.message)]);
+    self.lastPos[0] = Number(data.position.x);
+    self.lastPos[1] = Number(data.position.y);
+    self.lastPos[2] = Number(data.position.z);
   }else{
     console.log(['data', JSON.stringify(data)]);
   }
   deltaMove();
 }
-var lastPos = [-0.5 + Math.random(), -0.5 + Math.random(), 0];
-var deltaMove = function () {
+self.lastPos = [-0.5 + Math.random(), -0.5 + Math.random(), 0];
+self.deltaMove = function () {
 
   var delta = (getDelta() + 1) / 1000;
   delta = delta * 2;
   var newPos = [
-    lastPos[0] + ((Math.random()-0.5) * delta),
-    lastPos[1] + ((Math.random()-0.5) * delta),
-    lastPos[2]
+    self.lastPos[0] + ((Math.random()-0.5) * delta),
+    self.lastPos[1] + ((Math.random()-0.5) * delta),
+    self.lastPos[2]
     ];
 
   self.postMessage({
     'cmd': 'move',
-    'cellId': 0,
+    'cellId': cellId,
     'position': newPos
   }); // Send data to the cellManager.
-  lastPos = newPos;
+  self.lastPos = newPos;
 };
 setInterval(function () {
-  deltaMove();
-},1000);
+  self.deltaMove();
+}, 125);
 
 importScripts('http://' +'0.0.0.0:9000' + '/js/workers/workerLib.js');
 

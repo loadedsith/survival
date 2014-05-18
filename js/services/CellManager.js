@@ -3,9 +3,39 @@ angular.module('survivalApp')
     'use strict';
     var cellManager = this;
     cellManager.cells = [];
+    
+    cellManager.cellListener = function (e) {
+      var data = {};
+      if (e.data !== undefined) {
+        data = e.data;
+      }
+      if (data.cmd !== undefined) {
+        switch (data.cmd) {
+        case 'echo':
+          console.log('echo: ', data.msg);
+          break;
+        case 'invalidPlacement':
+          //positions!
+          console.log('invalidPlacement');
+      
+          break;
+        case 'move':
+          //positions!
+          cellManager.cell(data.cellId).move(data.position, data);
+          break;
+        default:
+          //
+          console.log('cellListener', e);
+          break;
+        }
+      }
+    };
+    
+    
     cellManager.createCell = function (options) {
-      var settings = options ? options : {};
-      var cellId = settings.id ? settings.id : cellManager.cells.length;
+
+      var settings = options || {};
+      var cellId = settings.id || cellManager.cells.length;
       
       var radius = 0.3;
       
@@ -29,10 +59,29 @@ angular.module('survivalApp')
           });
         }
       };
+      console.log('options', options);
+      cellManager.cells[cellId].workerBlobText = settings.workerBlobText || '';
       
-      cellManager.cells[cellId].worker = settings.worker;
-       
+      if (cellManager.cells[cellId].worker !== undefined) {
+        cellManager.cells[cellId].worker.terminate();
+      }
+      
+      cellManager.cells[cellId].workerBlob = new Blob([cellManager.cells[cellId].workerBlobText])
+
+      var blobURL = window.URL.createObjectURL( cellManager.cells[cellId].workerBlob );
+      
+      cellManager.cells[cellId].worker = new Worker(blobURL);
+      
+      cellManager.cells[cellId].worker.postMessage({'cmd':'init','cellId':cellId});
+
+      cellManager.cells[cellId].cellListener = cellManager.cellListener; 
+      
+      cellManager.cells[cellId].worker.addEventListener('message', cellManager.cells[cellId].cellListener);
+      
       cellManager.cells[cellId].mesh = new THREE.Mesh(geometry, material); 
+      
+      
+
 
       ThreeJSRendererService.scene.add(cellManager.cells[cellId].mesh);
 
@@ -43,6 +92,7 @@ angular.module('survivalApp')
       $timeout(function () {
         cellManager.moveCell(cellId, new THREE.Vector3(-0.57, 0.52, 0.7), {'position':[-0.57, 0.52, 0.7]});
       },1000);
+      return cellManager.cells[cellId];
     };
     cellManager.moveCell = function (cellId, position, data) {
       // console.log('cellId,position,data', cellId,position,data);

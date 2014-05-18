@@ -39,23 +39,31 @@ self.addEventListener('message', function (e) {
   }
   if (data.cmd !== undefined) {
     switch (data.cmd) {
+    case "init":
+      if (typeof self.init === 'function') {
+        self.init(data);
+      } else {
+        self.postMessage({cmd:'echo','msg':'workerGot init' + JSON.stringify(data)});
+        self.cellId = data.cellId||0;
+      }     
+      break;
     case "echo":
-      if (typeof echo === 'function') {
-        echo(data);
+      if (typeof self.echo === 'function') {
+        self.echo(data);
       } else {
         self.postMessage({cmd:'echo','msg':data.msg});
       }     
       break;
     case "invalidPlacement":
-      if (typeof invalidPlacement === 'function') {
-        invalidPlacement(data);
+      if (typeof self.invalidPlacement === 'function') {
+        self.invalidPlacement(data);
       } else {
         self.postMessage({cmd:'echo','msg':'worker got ' + invalidPlacement + ' / ' + data.msg});
       }     
       break;
     case "move":
-      if (typeof move === 'function') {
-        move(data);
+      if (typeof self.move === 'function') {
+        self.move(data);
       } else {
         self.postMessage({cmd:'move','position':[0,0,0.2]});
       }     

@@ -164,14 +164,9 @@ angular.module('survivalApp')
   
   $scope.addCell = function () {
 
-    var blobURL = window.URL.createObjectURL($scope.workerBlob);
-    if ($scope.worker !== undefined) {
-      $scope.worker.terminate();
-    }
-    $scope.worker = new Worker(blobURL);
-    $scope.worker.addEventListener('message', $scope.cellListener);
-    CellManagerService.createCell({
-      worker:$scope.worker//,
+    
+    var newCell = CellManagerService.createCell({
+      workerBlobText:$scope.workerBlobText//,
       // invalidPlacement: function (a,b,c) {
       //   console.log('custom Invalid placement');
       //   $scope.cellListener({
@@ -184,37 +179,15 @@ angular.module('survivalApp')
       //   });
       // }
     });
+
+    
     if ($scope.shouldAddCellToRenderUpdates) {
       $scope.shouldAddCellToRenderUpdates = false;
       ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell().update);
     }
   };
 
-  $scope.cellListener = function (e) {
-    var data = {};
-    if (e.data !== undefined) {
-      data = e.data;
-    }
-    if (data.cmd !== undefined) {
-      switch (data.cmd) {
-      case 'echo':
-        console.log('echo: ', data.msg);
-        break;
-      case 'invalidPlacement':
-        //positions!
-        console.log('invalidPlacement');
-        
-        break;
-      case 'move':
-        //positions!
-        CellManagerService.cell(data.cellId).move(data.position, data);
-        break;
-      default:
-        $scope.messageCount += 1;
-        break;
-      }
-    }
-  };
+  
   $scope.message = 0;
 
  
@@ -230,9 +203,9 @@ angular.module('survivalApp')
       success(function(data, status, headers, config) {
         // this callback will be called asynchronously
         // when the response is available
-        console.log('got Worker',data);
         $scope.workerBlobText = data;
-        $scope.workerBlob = new Blob([data])
+        $scope.addCell();
+        $scope.addCell();
         $scope.addCell();
       }).
       error(function(data, status, headers, config) {

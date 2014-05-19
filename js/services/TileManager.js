@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-  .service('TileManagerService', function (ThreeJSRendererService,DebugLessService) {//$interval, $timeout
+  .service('TileManagerService', function (ThreeJSRendererService, DebugLessService) {//$interval, $timeout
     'use strict';
     var tileManager = this;
     

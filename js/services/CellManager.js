@@ -160,7 +160,7 @@ angular.module('survivalApp')
        }
 
       if (TileManagerService.land === undefined) {
-        console.log('landNotDefined', landNotDefined);
+        console.log('landNotDefined');
         cellPos.x = data.position[0]||data.position.x||0;
         cellPos.y = data.position[1]||data.position.y||0;
         cellPos.z = data.position[2]||data.position.z||0;

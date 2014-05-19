@@ -2,7 +2,7 @@ angular.module('survivalApp')
 	.controller('MainCtrl', function ($scope, $http, $interval,
                                     DEBUG, FoodManagerService, CellManagerService,
                                     DebugLessService, ThreeJSRendererService, TemplatesService,
-                                    StringsService, KeyboardService, TileManagerService
+                                    StringsService, KeyboardService, TileManagerService, LevelManagerService
                                   ) {
 	'use strict';
   
@@ -67,19 +67,7 @@ angular.module('survivalApp')
     $scope.driveThis = attributes;
   });
   
-  $scope.$on('updateWorker', function (event, attributes) {
-    console.log('yellow antelope');
 
-    $scope.workerBlob = new Blob([attributes]);
-    console.log('attributes', attributes);
-    var blobURL = window.URL.createObjectURL($scope.workerBlob);
-    if ($scope.worker !== undefined) {
-      $scope.worker.terminate();
-    }
-    $scope.worker = new Worker(blobURL);
-    $scope.worker.addEventListener('message', $scope.cellListener);
-    // $scope.worker = attributes;
-  });
     
   $scope.shouldAddCameraLoopFunction = true;
   $scope.$on('keyboardMovementEvent', function (event, attributes) {
@@ -90,104 +78,10 @@ angular.module('survivalApp')
       $scope.shouldAddCameraLoopFunction = false;
     }
   });
-  
-
-  $scope.shouldAddTilesToRenderUpdates = true;
-
-  $scope.addTilesToScene = function () {
-    var rows = 25,
-        columns = 20,
-        scale = 0.125,
-        gridHeight = scale,
-        gridWidth = scale;
-    
-    $scope.tms = TileManagerService;
-    $scope.tms.makeTileGrid({
-      'rows' : rows,
-      'columns' : columns,
-      'scale':{
-        x: scale,
-        y: scale,
-        z: scale
-      },
-      'gridHeight' : gridHeight,
-      'gridWidth' : gridWidth,
-      'positionOffset': {
-        x: -0.4 * rows * gridHeight,
-        y: -0.65 * columns * gridWidth,
-        z: 0
-      },
-      'positionCallback' : TileManagerService.positionCallbacks.land
-    }).then(function (newTiles) {
-      TileManagerService.land = [];
-      for (var i = newTiles.length - 1; i >= 0; i--) {
-        TileManagerService.land[i] = newTiles[i].tile.mesh;
-        TileManagerService.land[i].tileType = 'land';
-        ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
-      }
-    });
-    
-    
-    $scope.water = TileManagerService;
-    $scope.doOnce = true;
-    $scope.water.makeTileGrid({
-      'rows' : rows,
-      'columns' : columns,
-      'scale':{
-        x: scale,
-        y: scale,
-        z: scale
-      },
-      'gridHeight' : gridHeight,
-      'gridWidth' : gridWidth,
-      'positionOffset': {
-        x: -0.4 * rows * gridHeight,
-        y: -0.65 * columns * gridWidth,
-        z: -0.15
-      },
-      'positionCallback' : TileManagerService.positionCallbacks.water
-    }).then(function (newTiles) {
-      TileManagerService.water = [];
-      for (var i = newTiles.length - 1; i >= 0; i--) {
-        TileManagerService.water[i] = newTiles[i].tile.mesh;
-        TileManagerService.water[i].tileType = 'water';
-        ThreeJSRendererService.scene.add(newTiles[i].tile.mesh);
-      }
-    });
-  };
- 
-  $scope.addFoodSource = function () {
-    CellManagerService.foodSource = FoodManagerService.createFoodSource();
-  };
+   
 
   $scope.shouldAddCellToRenderUpdates = true;
   
-  $scope.addCell = function () {
-
-    
-    var newCell = CellManagerService.createCell({
-      workerBlobText:$scope.workerBlobText//,
-      // invalidPlacement: function (a,b,c) {
-      //   console.log('custom Invalid placement');
-      //   $scope.cellListener({
-      //     data:{
-      //       cmd:'invalidPlacement',
-      //       'a':a,
-      //       'b':b,
-      //       'c':c
-      //     }
-      //   });
-      // }
-    });
-
-    
-    if ($scope.shouldAddCellToRenderUpdates) {
-      $scope.shouldAddCellToRenderUpdates = false;
-      ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell().update);
-      
-    }
-  };
-
   
   $scope.message = 0;
 
@@ -200,23 +94,9 @@ angular.module('survivalApp')
    *
    */
   $scope.createGameBoard = function () {
-    $http({method: 'GET', url: 'js/workers/simpleCell.js'}).
-      success(function(data, status, headers, config) {
-        // this callback will be called asynchronously
-        // when the response is available
-        $scope.workerBlobText = data;
-        $scope.addCell();
-        $scope.addCell();
-        $scope.addCell();
-      }).
-      error(function(data, status, headers, config) {
-        // called asynchronously if an error occurs
-        // or server returns response with an error status.
-        console.log('failed to get Worker');
-      });
+ 
+    LevelManagerService.createLevel(0);
 
-    $scope.addTilesToScene();
-    $scope.addFoodSource();
   };
   
   ThreeJSRendererService.doneFunctions.push($scope.createGameBoard);

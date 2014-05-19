@@ -4,6 +4,22 @@ angular.module('survivalApp')
     var cellManager = this;
     cellManager.cells = [];
     
+    
+    cellManager.HealthTextureAnimator = function (texture, cell) 
+    {	
+    	// note: texture passed by reference, will be updated by the update function.
+    	texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+    	texture.repeat.set( 1 , 1/ 15 );
+
+    	this.update = function( milliSec )
+    	{
+        texture.offset.y = Math.floor(cell.health/100 * 15 ) / 15;
+    	};
+    }		
+    
+    
+    cellManager.healthSpriteTexture = new THREE.ImageUtils.loadTexture( 'textures/healthSprite.jpg' );
+    
     cellManager.cellListener = function (e) {
       var data = {};
       if (e.data !== undefined) {
@@ -51,6 +67,7 @@ angular.module('survivalApp')
       cellManager.cells[cellId] = {
         'id': cellId,
         'health': health,
+        'radius':radius,
         'invalidPlacement': settings.invalidPlacement || function (event) {
           // console.log('invalidCell placement: ', this, event);
           this.worker.postMessage({
@@ -60,7 +77,7 @@ angular.module('survivalApp')
           });
         }
       };
-      console.log('options', options);
+
       var newCell = cellManager.cells[cellId];
       cellManager.cells[cellId].workerBlobText = settings.workerBlobText || '';
       
@@ -81,15 +98,34 @@ angular.module('survivalApp')
       cellManager.cells[cellId].worker.addEventListener('message', cellManager.cells[cellId].cellListener);
       
       cellManager.cells[cellId].mesh = new THREE.Mesh(geometry, material); 
+
+    	cellManager.healthSpriteTexture.wrapS = cellManager.healthSpriteTexture.wrapT = THREE.RepeatWrapping; 
+    	cellManager.healthSpriteTexture.repeat.set( 10, 10 );
+      // HealthTextureAnimator(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) 
+      cellManager.cells[cellId].textureAnimator = new cellManager.HealthTextureAnimator( cellManager.healthSpriteTexture, cellManager.cells[cellId]);
       
+      ThreeJSRendererService.onRenderFcts.push(cellManager.cells[cellId].textureAnimator.update);
       
+    	var floorMaterial = new THREE.MeshBasicMaterial( { map: cellManager.healthSpriteTexture, side: THREE.DoubleSide } );
 
 
+
+      cellManager.cells[cellId].hud = {
+        geometry: new THREE.PlaneGeometry( radius, radius / 3.33 ),
+        material: new THREE.MeshBasicMaterial({
+          map: cellManager.healthSpriteTexture, side: THREE.DoubleSide
+        })
+      }
+
+      cellManager.cells[cellId].hud.mesh = new THREE.Mesh(cellManager.cells[cellId].hud.geometry, cellManager.cells[cellId].hud.material); 
+      
+      ThreeJSRendererService.scene.add(cellManager.cells[cellId].hud.mesh);
       ThreeJSRendererService.scene.add(cellManager.cells[cellId].mesh);
 
-      
-
       cellManager.cells[cellId].mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
+      
+      cellManager.cells[cellId].hud.mesh.position = new THREE.Vector3(-0.57, 0.52, 0.7);
+      
       cellManager.cells[cellId].raycaster = new THREE.Raycaster();
       $timeout(function () {
         cellManager.moveCell(cellId, new THREE.Vector3(-0.57, 0.52, 0.7), {'position':[-0.57, 0.52, 0.7]});
@@ -199,13 +235,25 @@ angular.module('survivalApp')
                 cell.health -= 1;
               }
               
+              
               cellPos.x = data.position[0];
               cellPos.y = data.position[1];
               cellPos.z = intersectionsLand[0].object.position.z + 0.1;
+              
+              cellManager.cells[cellId].hud.mesh.position.set(cellPos.x, cellPos.y + 0.2, intersectionsLand[0].object.position.z + 0.3);
+              cellManager.cells[cellId].hud.mesh.scale.z = (cellManager.cells[cellId].health + 1) * cellManager.cells[cellId].radius;
+              
+              
               return
             }else{
               //return the cell to is old position              
               cellPos.copy(orignialCellPos);
+              
+              cellManager.cells[cellId].hud.mesh.position.set(orignialCellPos.x, orignialCellPos.y+0.2, orignialCellPos.z);
+              cellManager.cells[cellId].hud.mesh.scale.z = (cellManager.cells[cellId].health + 1) * cellManager.cells[cellId].radius;
+
+              
+              DebugLessService.msg = cellManager.cells[cellId].hud.mesh.size;
               
               cell.lastMove = 'invalid';
               cell.invalidPlacement({'message':'DeadCell', 'cell':cell});
@@ -265,7 +313,7 @@ angular.module('survivalApp')
           return cellManager.meshNearestPos(cell.mesh.position, meshes, offsetV);
         },
         move: function (position, data) {
-          cellManager.moveCell(cellId, position, data)
+          cellManager.moveCell(cellId, position, data);
         },
         update : function (delta, time) {
           cellManager.cells[cellId].mesh.rotateX(Math.sin(time) * delta);

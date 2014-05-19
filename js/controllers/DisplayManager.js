@@ -33,19 +33,25 @@ angular.module('survivalApp')
     }else{
       $scope.hideWorker = false;
     }
+    
+    if ($cookies.hideStats === "true"){
+      $scope.hideStats = true;
+    }else{
+      $scope.hideStats = false;
+    }
+
+    $scope.$watch('hideStats',function () {
+      $cookies.hideStats = $scope.hideStats;
+    })
 
     $scope.$watch('hideWorker',function () {
-      console.log('worker');
-      console.log('Purple Indigo Macaw');
       $cookies.hideWorker = $scope.hideWorker;
     })
 
     $scope.$watch('hideDrawer',function () {
-      console.log('Smarty California Flying Fish');
       $cookies.hideDrawer = $scope.hideDrawer;
     })
     $scope.$watch('hideCells',function () {
-      console.log('Yellow Blue Whale');
       $cookies.hideCells = $scope.hideCells;
     })
     

@@ -5873,7 +5873,7 @@ pre, input {
 @media -sass-debug-info{filename{font-family:file\:\/\/\/Volumes\/HSF\%20Secondary\/Documents\/Sites\/survival\/scss\/main\.scss}line{font-family:\0000321}}
 input[type="button"], .button, .btn {
   background: none;
-  color: #67c;
+  color: #C6CEF5;
   padding: 10px 20px;
   font-size: 125%;
   transition: background 0.25s ease, color 0.25s ease; }

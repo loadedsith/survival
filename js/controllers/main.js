@@ -184,6 +184,7 @@ angular.module('survivalApp')
     if ($scope.shouldAddCellToRenderUpdates) {
       $scope.shouldAddCellToRenderUpdates = false;
       ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell().update);
+      
     }
   };
 

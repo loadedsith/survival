@@ -58,7 +58,7 @@ self.deltaMove = function () {
 };
 setInterval(function () {
   self.deltaMove();
-}, 1250);
+}, 125);
 
 importScripts('http://' +'0.0.0.0:9000' + '/js/workers/workerLib.js');
 

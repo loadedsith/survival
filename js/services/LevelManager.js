@@ -10,6 +10,28 @@ angular.module('survivalApp')
     console.log('LevelManagerService');
     var levelManager = this;
     
+    $rootScope.$on('newLimitX',function (e, value) {
+
+      if (value < levelManager.gameboard.min.x) {
+        levelManager.gameboard.min.x = value;
+      }
+      
+      if (value > levelManager.gameboard.max.x) {
+        levelManager.gameboard.max.x = value;
+      }
+      
+    });
+    $rootScope.$on('newLimitY',function (e,value) {
+
+      if (value < levelManager.gameboard.min.y) {
+        levelManager.gameboard.min.y = value;
+      }
+      if (value > levelManager.gameboard.max.y) {
+        levelManager.gameboard.max.y = value;
+      }
+
+    });
+    
     levelManager.gameboard = {
      max: {
        x: 0,
@@ -120,8 +142,8 @@ angular.module('survivalApp')
       }).then(function (newTiles) {
         TileManagerService.land = [];
         for (var i = newTiles.length - 1; i >= 0; i--) {
-          var newTile = newTiles[i];
-          if (newTile.position.x < levelManager.gameboard.min.x) {
+          var newTile = newTiles[i].tile;
+          if (newTile.mesh.position.x < levelManager.gameboard.min.x) {
             levelManager.gameboard.min.x = newTile.mesh.position.x;
           }
           if (newTile.mesh.position.y < levelManager.gameboard.min.y) {

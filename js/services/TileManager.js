@@ -1,5 +1,5 @@
 angular.module('survivalApp')
-  .service('TileManagerService', function (ThreeJSRendererService, DebugLessService) {//$interval, $timeout
+  .service('TileManagerService', function ($rootScope, ThreeJSRendererService, DebugLessService) {//$interval, $timeout
     'use strict';
     var tileManager = this;
     
@@ -350,15 +350,19 @@ angular.module('survivalApp')
         tileManager.shouldAddTilesToRenderUpdates = false;
       }
       if (newTile.mesh.position.x < ThreeJSRendererService.gameboard.min.x) {
+        $rootScope.$broadcast('newLimitX', newTile.mesh.position.x);
         ThreeJSRendererService.gameboard.min.x = newTile.mesh.position.x;
       }
       if (newTile.mesh.position.y < ThreeJSRendererService.gameboard.min.y) {
+        $rootScope.$broadcast('newLimitY', newTile.mesh.position.y);
         ThreeJSRendererService.gameboard.min.y = newTile.mesh.position.y;
       }
       if (newTile.mesh.position.x > ThreeJSRendererService.gameboard.max.x) {
+        $rootScope.$broadcast('newLimitX', newTile.mesh.position.x);
         ThreeJSRendererService.gameboard.max.x = newTile.mesh.position.x;
       }
       if (newTile.mesh.position.y > ThreeJSRendererService.gameboard.max.y) {
+        $rootScope.$broadcast('newLimitY', newTile.mesh.position.y);
         ThreeJSRendererService.gameboard.max.y = newTile.mesh.position.y;
       }
       

@@ -40,7 +40,7 @@ angular.module('survivalApp')
       var radius = 0.3;
       
       var geometry = new THREE.CubeGeometry(0.8 * radius, 0.8 * radius, 0.8 * radius, 10, 10, 10);
-                                                             
+      var health = options.health || 100;
       var material = new THREE.MeshPhongMaterial({
         ambient: 0x030303,
         color: 0xdddddd,
@@ -49,8 +49,9 @@ angular.module('survivalApp')
       });
       
       cellManager.cells[cellId] = {
-        id:cellId,
-        invalidPlacement: settings.invalidPlacement || function (event) {
+        'id': cellId,
+        'health': health,
+        'invalidPlacement': settings.invalidPlacement || function (event) {
           // console.log('invalidCell placement: ', this, event);
           this.worker.postMessage({
             cmd:event.cmd,
@@ -60,6 +61,7 @@ angular.module('survivalApp')
         }
       };
       console.log('options', options);
+      var newCell = cellManager.cells[cellId];
       cellManager.cells[cellId].workerBlobText = settings.workerBlobText || '';
       
       if (cellManager.cells[cellId].worker !== undefined) {
@@ -110,6 +112,16 @@ angular.module('survivalApp')
       
       //we start by making a copy of the cell's position
       var orignialCellPos = new THREE.Vector3(0,0,0).copy(cellPos);
+
+      if (cell.health > 0) {
+         cell.health -= 1;
+       }else{
+         cellPos.copy(orignialCellPos);
+
+         cell.lastMove = 'invalid';
+         cell.invalidPlacement({'message':'DeadCell', 'cell':cell});
+         return;
+       }
 
       if (TileManagerService.land === undefined) {
         console.log('landNotDefined', landNotDefined);
@@ -182,6 +194,11 @@ angular.module('survivalApp')
 
               cell.lastMove = 'valid';
               // TODO: cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
+              
+              if (cell.health > 0) {
+                cell.health -= 1;
+              }
+              
               cellPos.x = data.position[0];
               cellPos.y = data.position[1];
               cellPos.z = intersectionsLand[0].object.position.z + 0.1;
@@ -191,7 +208,7 @@ angular.module('survivalApp')
               cellPos.copy(orignialCellPos);
               
               cell.lastMove = 'invalid';
-              cell.invalidPlacement({'message':'Invalid Placement: Underwater', 'cell':cell,'water':intersectionsWater[0].position});
+              cell.invalidPlacement({'message':'DeadCell', 'cell':cell});
               return;
             }
           }

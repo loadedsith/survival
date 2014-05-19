@@ -1,4 +1,4 @@
-var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ngCookies', 'ui'])// 'ngCookies', 'ngSanitize',
+var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ngCookies', 'ngAnimate', 'ui'])// 'ngCookies', 'ngSanitize',
   .config(function ($routeProvider) {
     'use strict';
 

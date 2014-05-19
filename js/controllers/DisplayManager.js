@@ -4,7 +4,7 @@ angular.module('survivalApp')
   .controller('DisplayManagerCtrl', function ($scope, 
     DEBUG, FoodManagerService, CellManagerService,
     DebugLessService, ThreeJSRendererService, TemplatesService,
-    StringsService, KeyboardService, TileManagerService, $interval, $cookies
+    StringsService, KeyboardService, TileManagerService, $interval, $cookies, LevelManagerService
   ) {//$timeout, , 
     'use strict'; 
 /**
@@ -95,7 +95,7 @@ angular.module('survivalApp')
         $scope.updateKeyboardBinding($scope.drivable[2]);
       }
     }
-
+    $scope.workerBlobText = LevelManagerService.workerBlobText;
 
     $scope.debug = DEBUG;
     $scope.$watch('driveThis', function(scope, newValue, oldValue) {

@@ -35,7 +35,11 @@ self.move = function () {
 };
 
 self.getCellInfo = function () {
-  //TODO post mesaage, ask for cell info
+  self.postMessage({
+    'cmd': 'getCellInfo',
+    'cell': self.cell
+  }); // Send data to the cellManager.
+  
 };
 self.invalidPlacement = function (data) {
   //could be an invalid move, or a deadcell
@@ -81,8 +85,8 @@ self.deltaMove = function () {
   }); // Send data to the cellManager.
   self.lastPos = newPos;
 };
+
 self.moveInterval = setInterval(function () {
   self.deltaMove();
   self.getCellInfo();
-  console.log('Orange Model horse');
 }, 125);

@@ -37,16 +37,21 @@ self.addEventListener('message', function (e) {
   }
   if (data.cmd !== undefined) {
     switch (data.cmd) {
+    case 'cellInfo':
+      // console.log('cellgotGetInfo: ' + JSON.stringify(data));
+      self.cell.position = data.cell.position;
+      self.cell.id = data.cell.id||0;
+      self.cell.health = data.cell.health||100;
+      break;
     case 'init':
       if (typeof self.init === 'function') {
         self.init(data);
       } else {
-        self.postMessage({cmd:'echo','msg':'workerGot init' + JSON.stringify(data)});
-        self.postMessage({cmd:'echo','msg':'workerGot init data.cell.position' + JSON.stringify(data.cell.position.x)});
-        self.postMessage({cmd:'echo','msg':'location.host' + JSON.stringify(location)});
+        // self.postMessage({cmd:'echo','msg':'workerGot init' + JSON.stringify(data)});
         self.cell.position = data.cell.position;
         self.cell.id = data.cell.id||0;
         self.url = data.url||'0.0.0.0:9000';
+        self.cell.health = data.cell.health||100;
       }     
       break;
     case 'echo':

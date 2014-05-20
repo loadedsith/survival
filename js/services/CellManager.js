@@ -22,7 +22,7 @@ angular.module('survivalApp')
     cellManager.healthSpriteTexture = new THREE.ImageUtils.loadTexture('textures/healthSprite.jpg');
     
     cellManager.cellListener = function (e) {
-      console.log('listener');
+
       var data = {};
       if (e.data !== undefined) {
         data = e.data;
@@ -37,7 +37,7 @@ angular.module('survivalApp')
           console.log('invalidPlacement');
           break;
         case 'getCellInfo':
-          console.log('GetCellInfo data', data);
+          cellManager.cell(data.cell.id).postInfo();
           break;
         case 'move':
           //positions!
@@ -145,7 +145,6 @@ angular.module('survivalApp')
       return cellManager.cells[cellId];
     };
     cellManager.moveCell = function (cellId, position, data) {
-      console.log('cellId, position, data', cellId, position, data);
       // console.log('cellId,position,data', cellId,position,data);
       /**
        * @ngdoc moveCell
@@ -168,7 +167,7 @@ angular.module('survivalApp')
         cell.invalidPlacement({cmd: 'invalidPlacement', 'message': 'DeadCell'});
         return;
       }
-console.log('Hay merchant King penguin');
+
       if (TileManagerService.land === undefined) {
         console.log('landNotDefined');
         cellPos.x = data.position.x || data.position.x || 0;
@@ -307,6 +306,17 @@ console.log('Hay merchant King penguin');
       }
       return nearestMesh;
     };
+    cellManager.postInfoForCell = function (cellId) {
+      var cell = cellManager.cells[cellId];
+      cellManager.cells[cellId].worker.postMessage({
+        'cmd': 'cellInfo',
+        'cell': {
+          position: cell.mesh.position,
+          health: cell.health,
+          id: cell.id
+        }
+      });
+    };
     cellManager.cell = function (cellId) {
 
       if (cellId === undefined) {
@@ -318,11 +328,13 @@ console.log('Hay merchant King penguin');
       }
       var cell = cellManager.cells[cellId];
       return {
+        postInfo: function () {
+          cellManager.postInfoForCell(cellId);
+        },
         closestMesh: function (meshes, offsetV) {
           return cellManager.meshNearestPos(cell.mesh.position, meshes, offsetV);
         },
         move: function (position, data) {
-          console.log('move: position,data', position,data);
           cellManager.moveCell(cellId, position, data);
         },
         update : function (delta, time) {

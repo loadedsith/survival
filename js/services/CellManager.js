@@ -47,7 +47,21 @@ angular.module('survivalApp')
       }
     };
     
-    
+    cellManager.attachWorker = function (cell,settings) {
+      cell.workerBlobText = settings.workerBlobText || '';
+      if (cell.worker !== undefined) {
+        cell.worker.terminate();
+      }
+      cell.workerBlob = new Blob([cell.workerBlobText])
+      var blobURL = window.URL.createObjectURL( cell.workerBlob );
+      cell.worker = new Worker(blobURL);
+      cell.worker.postMessage({'cmd':'init','cellId':cell.id});
+
+      //attach worker listener
+      cell.cellListener = cellManager.cellListener; 
+      cell.worker.addEventListener('message', cellManager.cells[cell.id].cellListener);//cellManager.cells[cell.id] instead of cell helps, not sure why.
+      
+    }
     cellManager.createCell = function (options) {
 
       var settings = options || {};
@@ -68,6 +82,7 @@ angular.module('survivalApp')
         'id': cellId,
         'health': health,
         'radius':radius,
+        'alive':settings.alive||true,
         'invalidPlacement': settings.invalidPlacement || function (event) {
           // console.log('invalidCell placement: ', this, event);
           this.worker.postMessage({
@@ -79,29 +94,16 @@ angular.module('survivalApp')
       };
 
       var newCell = cellManager.cells[cellId];
-      cellManager.cells[cellId].workerBlobText = settings.workerBlobText || '';
-      
-      if (cellManager.cells[cellId].worker !== undefined) {
-        cellManager.cells[cellId].worker.terminate();
-      }
-      
-      cellManager.cells[cellId].workerBlob = new Blob([cellManager.cells[cellId].workerBlobText])
-
-      var blobURL = window.URL.createObjectURL( cellManager.cells[cellId].workerBlob );
-      
-      cellManager.cells[cellId].worker = new Worker(blobURL);
-      
-      cellManager.cells[cellId].worker.postMessage({'cmd':'init','cellId':cellId});
-
-      cellManager.cells[cellId].cellListener = cellManager.cellListener; 
-      
-      cellManager.cells[cellId].worker.addEventListener('message', cellManager.cells[cellId].cellListener);
       
       cellManager.cells[cellId].mesh = new THREE.Mesh(geometry, material); 
+      
+      cellManager.attachWorker(cellManager.cells[cellId], settings);
 
+      // add health texture settings for sprite updating
     	cellManager.healthSpriteTexture.wrapS = cellManager.healthSpriteTexture.wrapT = THREE.RepeatWrapping; 
     	cellManager.healthSpriteTexture.repeat.set( 10, 10 );
-      // HealthTextureAnimator(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) 
+      
+      //attach health animator
       cellManager.cells[cellId].textureAnimator = new cellManager.HealthTextureAnimator( cellManager.healthSpriteTexture, cellManager.cells[cellId]);
       
       ThreeJSRendererService.onRenderFcts.push(cellManager.cells[cellId].textureAnimator.update);
@@ -149,9 +151,7 @@ angular.module('survivalApp')
       //we start by making a copy of the cell's position
       var orignialCellPos = new THREE.Vector3(0,0,0).copy(cellPos);
 
-      if (cell.health > 0) {
-         cell.health -= 1;
-       }else{
+      if (cell.health < 0) {
          cellPos.copy(orignialCellPos);
 
          cell.lastMove = 'invalid';
@@ -232,7 +232,10 @@ angular.module('survivalApp')
               // TODO: cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
               
               if (cell.health > 0) {
-                cell.health -= 1;
+                cell.health -= 0.6;
+              }
+              if (cell.health <= 0 ) {
+                cell.alive = false;
               }
               
               

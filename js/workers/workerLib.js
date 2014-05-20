@@ -58,7 +58,7 @@ self.addEventListener('message', function (e) {
       if (typeof self.invalidPlacement === 'function') {
         self.invalidPlacement(data);
       } else {
-        self.postMessage({cmd:'echo','msg':'worker got ' + invalidPlacement + ' / ' + data.msg});
+        self.postMessage({cmd:'echo','msg':'InvalidPlacement: worker got: ' + JSON.stringify(data)});
       }     
       break;
     case "move":

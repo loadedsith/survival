@@ -57,6 +57,9 @@ angular.module('survivalApp')
       cellPos.z = cellPos.z + movement.x;
       CellManagerService.cell(0).move([cellPos.x,cellPos.y,cellPos.z], {position:[cellPos.x,cellPos.y,cellPos.z]});
       break;
+    case 'disabled':
+      // console.log('drive nothing');
+      break;
     default:
       camera.position.add(movement);    
       break;

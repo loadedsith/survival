@@ -43,7 +43,7 @@
       </div>
       <div class="row" ng-show="!hideWorker">
         <div class="columns small-12 large-12">
-          <textarea id="workerCode" >
+          <textarea id="workerCode" ng-focus="workerInputHasFocus(true)" ng-blur="workerInputHasFocus(false)"> 
             {{workerBlobText}}
           </textarea>
         </div>

@@ -1,14 +1,21 @@
 angular.module('survivalApp')
   .service('KeyboardService', function () {//$interval, $timeout
     'use strict';
-    var keyboard = this,
+    var keyboardService = this,
       $scope = {},
-      message = 'keyboardMovementEvent',
-      preventDefault = function ($event) {
+      message = 'keyboardMovementEvent';
+    
+    keyboardService.defaultPrevention = false;
+    keyboardService.triggerAction = true;
+    
+    keyboardService.defaults = function ($event) {
+      if (keyboardService.defaultPrevention) {
+        console.log('preventDefault: prevention',keyboardService.defaultPrevention);
         $event.preventDefault();
-      };
+      }
+    };
       
-    keyboard.setScope = function (scope) {
+    keyboardService.setScope = function (scope) {
       $scope = scope;
     };
     
@@ -24,33 +31,39 @@ angular.module('survivalApp')
     
     
     
-    keyboard.keyDown = function ($event) {
-      preventDefault($event);
+    keyboardService.keyDown = function ($event) {
+      keyboardService.defaults($event);
+      if (!keyboardService.triggerAction) {
+        return;
+      }
       return {
         enter: function () {},
-        up :   function () {$scope.$broadcast(message, up); },
-        down:  function () {$scope.$broadcast(message, down); },
-        left:  function () {$scope.$broadcast(message, left); },
-        right: function () {$scope.$broadcast(message, right); },
-        space: function () {$scope.$broadcast(message, space); },
-        e:     function () {$scope.$broadcast(message, e); },
-        f:     function () {$scope.$broadcast(message, f); },
-        c:     function () {$scope.$broadcast(message, c); }
+        up :   function () {$scope.$broadcast(message, up);},
+        down:  function () {$scope.$broadcast(message, down);},
+        left:  function () {$scope.$broadcast(message, left);},
+        right: function () {$scope.$broadcast(message, right);},
+        space: function () {$scope.$broadcast(message, space);},
+        e:     function () {$scope.$broadcast(message, e);},
+        f:     function () {$scope.$broadcast(message, f);},
+        c:     function () {$scope.$broadcast(message, c);}
       };
     };
     
-    keyboard.keyUp = function ($event) {
-      preventDefault($event);
+    keyboardService.keyUp = function ($event) {
+      keyboardService.defaults($event);
+      if (!keyboardService.triggerAction) {
+        return;
+      }
       return {
         enter: function () {},
-        up :   function () {$scope.$broadcast(message, stop); },
-        down:  function () {$scope.$broadcast(message, stop); },
-        left:  function () {$scope.$broadcast(message, stop); },
-        right: function () {$scope.$broadcast(message, stop); },
-        space: function () {$scope.$broadcast(message, stop); },
-        e:     function () {$scope.$broadcast(message, stop); },
-        f:     function () {$scope.$broadcast(message, stop); },
-        c:     function () {$scope.$broadcast(message, stop); }
+        up :   function () {$scope.$broadcast(message, stop);},
+        down:  function () {$scope.$broadcast(message, stop);},
+        left:  function () {$scope.$broadcast(message, stop);},
+        right: function () {$scope.$broadcast(message, stop);},
+        space: function () {$scope.$broadcast(message, stop);},
+        e:     function () {$scope.$broadcast(message, stop);},
+        f:     function () {$scope.$broadcast(message, stop);},
+        c:     function () {$scope.$broadcast(message, stop);}
       };
     };
   });

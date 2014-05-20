@@ -68,6 +68,10 @@ angular.module('survivalApp')
     });
     $scope.drivable = [
       {
+        name:'disabled',
+        type:'disabled'
+      },
+      {
         name:'camera',
         type:'camera'
       },
@@ -91,8 +95,8 @@ angular.module('survivalApp')
         }
       }
       if(!didSet){
-        $scope.driveThis = $scope.drivable[2];        
-        $scope.updateKeyboardBinding($scope.drivable[2]);
+        $scope.driveThis = $scope.drivable[3];        
+        $scope.updateKeyboardBinding($scope.drivable[3]);
       }
     }
     $scope.workerBlobText = LevelManagerService.workerBlobText;
@@ -131,4 +135,16 @@ angular.module('survivalApp')
     $scope.runWorker = function () {
       $scope.$emit('updateWorker', document.getElementById('workerCode').value);
     };
+    $scope.lastDrivable = $scope.driveThis;
+    $scope.workerInputHasFocus = function (hasFocus) {
+      console.log('hasFocus', hasFocus);
+      KeyboardService.defaultPrevention = !hasFocus;
+      if (hasFocus) {
+        $scope.lastDrivable = $scope.driveThis;
+        $scope.updateKeyboardBinding($scope.drivable[0]);
+      } else {
+        
+        $scope.updateKeyboardBinding($scope.lastDrivable);
+      }
+    }
   });

@@ -155,7 +155,7 @@ angular.module('survivalApp')
          cellPos.copy(orignialCellPos);
 
          cell.lastMove = 'invalid';
-         cell.invalidPlacement({'message':'DeadCell', 'cell':cell});
+         cell.invalidPlacement({cmd:'invalidPlacement','message':'DeadCell'});
          return;
        }
 
@@ -233,11 +233,7 @@ angular.module('survivalApp')
               
               if (cell.health > 0) {
                 cell.health -= 0.6;
-              }
-              if (cell.health <= 0 ) {
-                cell.alive = false;
-              }
-              
+              }              
               
               cellPos.x = data.position[0];
               cellPos.y = data.position[1];
@@ -259,7 +255,7 @@ angular.module('survivalApp')
               DebugLessService.msg = cellManager.cells[cellId].hud.mesh.size;
               
               cell.lastMove = 'invalid';
-              cell.invalidPlacement({'message':'DeadCell', 'cell':cell});
+              cell.invalidPlacement({'msg':'DeadCell', 'cell':cell});
               return;
             }
           }

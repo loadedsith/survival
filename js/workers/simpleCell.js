@@ -28,6 +28,12 @@ self.move = function () {
 
 
 self.invalidPlacement = function (data) {
+  //could be an invalid move, or a deadcell
+  if(data.msg==="DeadCell"||data.message==="DeadCell"){
+    clearInterval(self.moveInterval);
+    return;
+  }
+  // console.log('data.msg'+JSON.stringify(data.msg));
   if (data.position !== undefined){
     // lastPos = data.position;
     self.lastPos[0] = Number(data.position.x);
@@ -56,7 +62,7 @@ self.deltaMove = function () {
   }); // Send data to the cellManager.
   self.lastPos = newPos;
 };
-setInterval(function () {
+self.moveInterval = setInterval(function () {
   self.deltaMove();
 }, 125);
 

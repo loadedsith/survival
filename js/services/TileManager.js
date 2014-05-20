@@ -1,19 +1,10 @@
 angular.module('survivalApp')
-  .service('TileManagerService', function ($rootScope, ThreeJSRendererService, DebugLessService) {//$interval, $timeout
+  .service('TileManagerService', function ($rootScope, ThreeJSRendererService) {
     'use strict';
     var tileManager = this;
     
     var continuePositionCallback = true;
     var stopPositionCallback = false;
-    function lerp(a, b, t) {
-        var len = a.length;
-        if(b.length != len) return;
-
-        var x = [];
-        for(var i = 0; i < len; i++)
-            x.push(a[i] + t * (b[i] - a[i]));
-        return x;
-    }
     
     var landColor = function (value) {
       // DebugLessService.msg = value;
@@ -21,19 +12,19 @@ angular.module('survivalApp')
       var rg = Math.random();
       var rb = Math.random();
       return {
-        r: (value * 0.8) + ( rr * 0.03 ) + 0.2,
-        g: (value * 0.6) + ( rg * 0.1 ) + 0.1,
-        b: (value * 0.2) + ( rb * 0.02 ) + 0.1
+        r: (value * 0.8) + (rr * 0.03) + 0.2,
+        g: (value * 0.6) + (rg * 0.1) + 0.1,
+        b: (value * 0.2) + (rb * 0.02) + 0.1
         // r: (lerp(0, 1, value)),
         // g: (lerp(0, 1, value)),
         // b: (lerp(0, 1, value))
-      }
+      };
     };
-    this.tiles = [];
+    tileManager.tiles = [];
     
-    this.shouldAddTilesToRenderUpdates = true;
+    tileManager.shouldAddTilesToRenderUpdates = true;
     
-    this.positionCallbacks = {
+    tileManager.positionCallbacks = {
       smallPerlin : function (delta, time, tile) {
         // #### perlinCallback
         
@@ -94,7 +85,7 @@ angular.module('survivalApp')
     };
 
     
-    this.getTileInfo = function (tile) {
+    tileManager.getTileInfo = function (tile) {
       var object = {
         tileId: tile.id,
         row: tile.row,
@@ -106,7 +97,7 @@ angular.module('survivalApp')
       return JSON.stringify(object);
     };
     
-    this.getTileAtCoord = function (row, column) {
+    tileManager.getTileAtCoord = function (row, column) {
       for (var i = tileManager.tiles.length - 1; i >= 0; i--) {
         var tile = tileManager.tiles[i];
         // console.log('tile.row:' + tile.row + ' === ' + row + ', tile.column:' + tile.column + ' === ' + column);
@@ -119,7 +110,7 @@ angular.module('survivalApp')
       throw 'invalid Tile';
     };
     
-    this.getTileById = function (id) {
+    tileManager.getTileById = function (id) {
       for (var i = tileManager.tiles.length - 1; i >= 0; i--) {
         var tile = tileManager.tiles[i];
         // console.log('tile.id:'+tile.id+' === '+id);
@@ -130,7 +121,7 @@ angular.module('survivalApp')
       }
       throw 'invalid Tile';
     };
-    this.loadTiles = function (tiles) {
+    tileManager.loadTiles = function (tiles) {
       if (typeof tiles !== 'undefined') {
         for (var i = tiles.length - 1; i >= 0; i--) {
           var tile = tiles[i];
@@ -139,7 +130,7 @@ angular.module('survivalApp')
         console.log('Smarty Spur-winged Goose', tiles);
       }
     };
-    this.getTiles = function () {
+    tileManager.getTiles = function () {
       var theTiles = '[';
       for (var i = tileManager.tiles.length - 1; i >= 0; i--) {
         var tile = tileManager.tiles[i];
@@ -195,23 +186,23 @@ angular.module('survivalApp')
     
     */ 
     
-    this.makeTileGrid = function (config) {
+    tileManager.makeTileGrid = function (config) {
       var defaults = {
-        rows : 8,
-        columns : 8,
-        positionOffset:{
-          x:0,
-          y:0,
-          z:0
+        rows: 8,
+        columns: 8,
+        positionOffset: {
+          x: 0,
+          y: 0,
+          z: 0
         },
         gridWidth : 0.1,
         gridHeight : 0.1,
         // tiles : [],
         positionCallback : tileManager.positionCallbacks.original,
         scale: {
-          'x': 0.2,
-          'y': 0.2,
-          'z': 0.3
+          x: 0.2,
+          y: 0.2,
+          z: 0.3
         }
       };
 
@@ -222,8 +213,6 @@ angular.module('survivalApp')
         tiles = [],
         gridWidth = config.gridWidth || defaults.gridWidth,
         gridHeight = config.gridHeight || defaults.gridHeight,
-        // tiles = config.tiles || defaults.tiles,
-        positionOffset = config.positionOffset || defaults.positionOffset,
         positionCallback = config.positionCallback || defaults.positionCallback,
         tileCallback = function (id) {
           var tile = tileManager.getTileById(id);
@@ -231,23 +220,22 @@ angular.module('survivalApp')
             tile.material.color = new THREE.Color('#000000');
           }
         };
-        var customPositionCallback =  function (delta, time, tile) {
-          if(typeof positionCallback === 'function'){
-            return positionCallback(delta, time, tile);
-            
-          } else {
-            console.log('positionCallback is not a function')
-            return false;
-          }
-        };
-
-      defaults.position = function(row, column){
-        return {
-            'x': (column * gridHeight),
-            'y': (row * gridHeight),
-            'z': 0 
-          }
+      var customPositionCallback = function (delta, time, tile) {
+        if (typeof positionCallback === 'function') {
+          return positionCallback(delta, time, tile);
+        } else {
+          console.log('positionCallback is not a function');
+          return false;
         }
+      };
+
+      defaults.position = function (row, column) {
+        return {
+          'x': (column * gridHeight),
+          'y': (row * gridWidth),
+          'z': 0 
+        };
+      };
       var position = config.position || defaults.position;
       
       
@@ -280,7 +268,8 @@ angular.module('survivalApp')
         }
       };
     };
-    this.updateTiles = function (delta, time) {
+    
+    tileManager.updateTiles = function (delta, time) {
       for (var i = tileManager.tiles.length - 1; i >= 0; i--) {
         var tile = tileManager.tiles[i];
         tile.mesh.rotateX(tile.rotation.x * delta);
@@ -289,12 +278,12 @@ angular.module('survivalApp')
         if (typeof tile.positionCallback !== 'undefined' && tile.positionCallbackDisabled !== true) {
           if (tile.positionCallback(delta, time, tile) === false) {
             tile.positionCallbackDisabled = true;
-          };
+          }
         }
       }
-    
     };
-    this.createTile = function (config) {
+    
+    tileManager.createTile = function (config) {
       // console.log('config',config);
       var id = tileManager.tiles.length;
       // console.log('create tile id:' + id, '@ (' + (config.row||0) + ',' + (config.column || 0) + ')');
@@ -373,11 +362,11 @@ angular.module('survivalApp')
     };
 
 
-    this.dumpTiles = function () {
+    tileManager.dumpTiles = function () {
       console.log('Dump', tileManager.getTiles());
     };
   
-    this.saveTiles = function () {
+    tileManager.saveTiles = function () {
       if (typeof tileManager.tileSets === 'undefined') {
         tileManager.tileSets = [tileManager.getTiles()];
       } else {

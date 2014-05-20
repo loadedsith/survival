@@ -1,5 +1,3 @@
-/*global requestAnimationFrame: false */
-
 angular.module('survivalApp')
   .controller('DisplayManagerCtrl', function ($scope, 
     DEBUG, FoodManagerService, CellManagerService,
@@ -16,50 +14,51 @@ angular.module('survivalApp')
  */
     
     console.log('$cookies', $cookies);
-    if ($cookies.hideCells === "true"){
+    if ($cookies.hideCells === 'true') {
       $scope.hideCells = true;
-    }else{
+    } else {
       $scope.hideCells = false;
     }
     
-    if ($cookies.hideDrawer === "true"){
+    if ($cookies.hideDrawer === 'true') {
       $scope.hideDrawer = true;
-    }else{
+    } else {
       $scope.hideDrawer = false;
     }
     
-    if ($cookies.hideWorker === "true"){
+    if ($cookies.hideWorker === 'true') {
       $scope.hideWorker = true;
-    }else{
+    } else {
       $scope.hideWorker = false;
     }
     
-    if ($cookies.hideStats === "true"){
+    if ($cookies.hideStats === 'true') {
       $scope.hideStats = true;
-    }else{
+    } else {
       $scope.hideStats = false;
     }
 
-    $scope.$watch('hideStats',function () {
+    $scope.$watch('hideStats', function () {
       $cookies.hideStats = $scope.hideStats;
-    })
+    });
 
-    $scope.$watch('hideWorker',function () {
+    $scope.$watch('hideWorker', function () {
       $cookies.hideWorker = $scope.hideWorker;
-    })
+    });
 
-    $scope.$watch('hideDrawer',function () {
+    $scope.$watch('hideDrawer', function () {
       $cookies.hideDrawer = $scope.hideDrawer;
-    })
-    $scope.$watch('hideCells',function () {
+    });
+    
+    $scope.$watch('hideCells', function () {
       $cookies.hideCells = $scope.hideCells;
-    })
+    });
     
     $scope.updateKeyboardBinding = function (drivable) {
       console.log('drivable', drivable);
       $scope.$emit('updateKeyboardBinding', drivable.type);
       $cookies.drivableType = drivable.type;
-    }
+    };
     $scope.cells = CellManagerService.cells;
     
     $scope.$on('updateCells', function () {
@@ -68,33 +67,33 @@ angular.module('survivalApp')
     });
     $scope.drivable = [
       {
-        name:'disabled',
-        type:'disabled'
+        name: 'disabled',
+        type: 'disabled'
       },
       {
-        name:'camera',
-        type:'camera'
+        name: 'camera',
+        type: 'camera'
       },
       {
-        name:'food',
-        type:'food'
+        name: 'food',
+        type: 'food'
       },
       {
-        name:'cell',
-        type:'cell'
+        name: 'cell',
+        type: 'cell'
       }
     ];
-    if ($cookies.drivableType !== undefined){
+    if ($cookies.drivableType !== undefined) {
       var didSet = false;
       for (var i = $scope.drivable.length - 1; i >= 0; i--) {
-        if($cookies.drivableType === $scope.drivable[i].type){
+        if ($cookies.drivableType === $scope.drivable[i].type) {
           $scope.driveThis = $scope.drivable[i];
           $scope.updateKeyboardBinding($scope.drivable[i]);
           didSet = true;
           break;
         }
       }
-      if(!didSet){
+      if (!didSet) {
         $scope.driveThis = $scope.drivable[3];        
         $scope.updateKeyboardBinding($scope.drivable[3]);
       }
@@ -102,7 +101,7 @@ angular.module('survivalApp')
     $scope.workerBlobText = LevelManagerService.workerBlobText;
 
     $scope.debug = DEBUG;
-    $scope.$watch('driveThis', function(scope, newValue, oldValue) {
+    $scope.$watch('driveThis', function (scope, newValue, oldValue) {
       console.log(oldValue, newValue);    
     });
     TemplatesService.retrieve().$promise.then(function (data) {
@@ -110,28 +109,28 @@ angular.module('survivalApp')
     });
     $scope.foodSourceCount = function () {
       var count = 0;
-      angular.forEach(FoodManagerService.foodSources, function(value, key){
+      angular.forEach(FoodManagerService.foodSources, function () {
         count ++;
       });
       return count;
-    }
+    };
     $scope.cellCount = function () {
       var count = 0;
-      angular.forEach(CellManagerService.cells, function(value, key){
+      angular.forEach(CellManagerService.cells, function () {
         count ++;
       });
       return count;
-    }
+    };
     $scope.tileCount = function () {
       var count = 0;
-      angular.forEach(TileManagerService.tiles, function(value, key){
+      angular.forEach(TileManagerService.tiles, function () {
         count ++;
       });
       return count;
-    }
+    };
     $scope.renderFunctionCount = function () {
       return ThreeJSRendererService.onRenderFcts.length;
-    }
+    };
     $scope.runWorker = function () {
       $scope.$emit('updateWorker', document.getElementById('workerCode').value);
     };
@@ -146,5 +145,5 @@ angular.module('survivalApp')
         
         $scope.updateKeyboardBinding($scope.lastDrivable);
       }
-    }
+    };
   });

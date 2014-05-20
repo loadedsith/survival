@@ -28,7 +28,9 @@
     "$": false,
     "noise": false,
     "THREE": false,
-	"$scope": true,
-	"importScripts": true
+		"self": true,
+		"$scope": true,
+		"importScripts": true
   }
+	
 }

@@ -1,6 +1,3 @@
-/*global Detector: false, THREEx: false, requestAnimationFrame: false */
-
-
 angular.module('survivalApp')
   .service('LevelManagerService', function ($rootScope, $http, $interval,
                                     DEBUG, FoodManagerService, CellManagerService,
@@ -9,110 +6,91 @@ angular.module('survivalApp')
     'use strict'; 
     console.log('LevelManagerService');
     var levelManager = this;
-    
-    $rootScope.$on('newLimitX',function (e, value) {
 
+    $http({method: 'GET', url: 'js/workers/simpleCell.js'})
+      .success(function (data) {//status, headers, config
+        levelManager.workerBlobText = data;
+      })
+      .error(function () {//data, status, headers, config
+        console.log('failed to get Worker text');
+      });
+
+    
+    $rootScope.$on('newLimitX', function (e, value) {
       if (value < levelManager.gameboard.min.x) {
         levelManager.gameboard.min.x = value;
       }
-      
       if (value > levelManager.gameboard.max.x) {
         levelManager.gameboard.max.x = value;
       }
-      
     });
-    $rootScope.$on('newLimitY',function (e,value) {
 
+    $rootScope.$on('newLimitY', function (e, value) {
       if (value < levelManager.gameboard.min.y) {
         levelManager.gameboard.min.y = value;
       }
       if (value > levelManager.gameboard.max.y) {
         levelManager.gameboard.max.y = value;
       }
-
     });
     
     levelManager.gameboard = {
-     max: {
-       x: 0,
-       y: 0,
-       z: 0
-     },
-     min: {
-       x: 0,
-       y: 0,
-       z: 0
-     }
-    }
+      max: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      min: {
+        x: 0,
+        y: 0,
+        z: 0
+      }
+    };
     
-    levelManager.createLevel = function (id) {
+    levelManager.createLevel = function () {
       levelManager.addCells(3);
       levelManager.addTilesToScene();
       levelManager.addFoodSources(1);
     };
-    levelManager.addFoodSources =function (count) {
+    
+    levelManager.addFoodSources = function (count) {
       var i = 0;
-      while(i<count){
+      while (i < count) {
         CellManagerService.foodSource = FoodManagerService.createFoodSource();
         i++;
       }
-    }
+    };
+    
     levelManager.addCell = function () {
+      CellManagerService.createCell({
+        workerBlobText: levelManager.workerBlobText
+      });
+      if (levelManager.shouldAddCellToRenderUpdates) {
+        levelManager.shouldAddCellToRenderUpdates = false;
+        ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell().update);
+      }
+    };
 
-    
-       var newCell = CellManagerService.createCell({
-         workerBlobText:levelManager.workerBlobText//,
-         // invalidPlacement: function (a,b,c) {
-         //   console.log('custom Invalid placement');
-         //   $scope.cellListener({
-         //     data:{
-         //       cmd:'invalidPlacement',
-         //       'a':a,
-         //       'b':b,
-         //       'c':c
-         //     }
-         //   });
-         // }
-       });
+    $rootScope.$on('updateWorker', function (event, attributes) {
+      console.log('yellow antelope');
 
-    
-       if (levelManager.shouldAddCellToRenderUpdates) {
-         levelManager.shouldAddCellToRenderUpdates = false;
-         ThreeJSRendererService.onRenderFcts.push(CellManagerService.cell().update);
-       }
-     };
-     $rootScope.$on('updateWorker', function (event, attributes) {
-       console.log('yellow antelope');
+      levelManager.workerBlob = new Blob([attributes]);
+      console.log('attributes', attributes);
+      var blobURL = window.URL.createObjectURL(levelManager.workerBlob);
+      if (levelManager.worker !== undefined) {
+        levelManager.worker.terminate();
+      }
+      levelManager.worker = new Worker(blobURL);
+      levelManager.worker.addEventListener('message', CellManagerService.cellListener);
+    });
 
-       levelManager.workerBlob = new Blob([attributes]);
-       console.log('attributes', attributes);
-       var blobURL = window.URL.createObjectURL(levelManager.workerBlob);
-       if (levelManager.worker !== undefined) {
-         levelManager.worker.terminate();
-       }
-       levelManager.worker = new Worker(blobURL);
-       levelManager.worker.addEventListener('message', CellManagerService.cellListener);
-     });
     levelManager.addCells = function (count) {
-      $http({method: 'GET', url: 'js/workers/simpleCell.js'}).
-        success(function(data, status, headers, config) {
-          // this callback will be called asynchronously
-          // when the response is available
-          levelManager.workerBlobText = data;
-          var i = 0;
-          while(i<count){
-            levelManager.addCell()
-            i++;
-          }
-
-        }).
-        error(function(data, status, headers, config) {
-          // called asynchronously if an error occurs
-          // or server returns response with an error status.
-          console.log('failed to get Worker');
-        });
-      
-    }
+      var i = 0;
+      while (i < count) {
+        levelManager.addCell();
+        i++;
+      }
+    };
     levelManager.shouldAddTilesToRenderUpdates = true;
 
     levelManager.addTilesToScene = function () {
@@ -126,13 +104,13 @@ angular.module('survivalApp')
       levelManager.tms.makeTileGrid({
         'rows' : rows,
         'columns' : columns,
-        'scale':{
+        'scale': {
           x: scale,
           y: scale,
           z: scale
         },
-        'gridHeight' : gridHeight,
-        'gridWidth' : gridWidth,
+        'gridHeight': gridHeight,
+        'gridWidth': gridWidth,
         'positionOffset': {
           x: -0.4 * rows * gridHeight,
           y: -0.65 * columns * gridWidth,
@@ -168,7 +146,7 @@ angular.module('survivalApp')
       levelManager.water.makeTileGrid({
         'rows' : rows,
         'columns' : columns,
-        'scale':{
+        'scale': {
           x: scale,
           y: scale,
           z: scale

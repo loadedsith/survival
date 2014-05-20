@@ -26,7 +26,11 @@ self.move = function () {
   self.postMessage({
     'cmd': 'move',
     'cellId': 0,
-    'position': [0, 0, Math.random() * 1]
+    'position': {
+      x: 0,
+      y: 0,
+      z: Math.random() * 1
+    }
   });
 };
 
@@ -42,15 +46,15 @@ self.invalidPlacement = function (data) {
   // console.log('data.msg'+JSON.stringify(data.msg));
   if (data.position !== undefined) {
     // lastPos = data.position;
-    self.lastPos[0] = Number(data.position.x);
-    self.lastPos[1] = Number(data.position.y);
-    self.lastPos[2] = Number(data.position.z);
+    self.lastPos.x = Number(data.position.x);
+    self.lastPos.y = Number(data.position.y);
+    self.lastPos.z = Number(data.position.z);
   } else {
     console.log(['data', JSON.stringify(data)]);
   }
   self.deltaMove();
 };
-self.lastPos = [-0.5 + Math.random(), -0.5 + Math.random(), 0];
+self.lastPos = {x:-0.5 + Math.random(), y: -0.5 + Math.random(),z: 0};
 
 self.lastTimeStamp = (new Date()).getTime();
 self.getDelta = function () {
@@ -64,20 +68,21 @@ self.deltaMove = function () {
 
   var delta = (self.getDelta() + 1) / 1000;
   delta = delta * 2;
-  var newPos = [
-    self.lastPos[0] + ((Math.random() - 0.5) * delta),
-    self.lastPos[1] + ((Math.random() - 0.5) * delta),
-    self.lastPos[2]
-  ];
+  var newPos = {
+    x: self.lastPos.x + ((Math.random() - 0.5) * delta),
+    y: self.lastPos.y + ((Math.random() - 0.5) * delta),
+    z: self.lastPos.z
+  };
 
   self.postMessage({
     'cmd': 'move',
-    'cellId': self.cell.id,
+    'cell': self.cell,
     'position': newPos
   }); // Send data to the cellManager.
   self.lastPos = newPos;
 };
 self.moveInterval = setInterval(function () {
-  // self.deltaMove();
+  self.deltaMove();
   self.getCellInfo();
+  console.log('Orange Model horse');
 }, 125);

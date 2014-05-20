@@ -55,7 +55,7 @@ angular.module('survivalApp')
       cellPos.x = cellPos.x + movement.y;
       cellPos.y = cellPos.y - movement.z;
       cellPos.z = cellPos.z + movement.x;
-      CellManagerService.cell(0).move([cellPos.x,cellPos.y,cellPos.z], {position:[cellPos.x,cellPos.y,cellPos.z]});
+      CellManagerService.cell(0).move({x: cellPos.x, y: cellPos.y, z: cellPos.z}, {position:{x: cellPos.x, y: cellPos.y, z: cellPos.z}});
       break;
     case 'disabled':
       // console.log('drive nothing');

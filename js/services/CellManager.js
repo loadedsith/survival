@@ -22,6 +22,7 @@ angular.module('survivalApp')
     cellManager.healthSpriteTexture = new THREE.ImageUtils.loadTexture('textures/healthSprite.jpg');
     
     cellManager.cellListener = function (e) {
+      console.log('listener');
       var data = {};
       if (e.data !== undefined) {
         data = e.data;
@@ -40,7 +41,7 @@ angular.module('survivalApp')
           break;
         case 'move':
           //positions!
-          cellManager.cell(data.cellId).move(data.position, data);
+          cellManager.cell(data.cell.id).move(data.position, data);
           break;
         default:
           //
@@ -130,7 +131,7 @@ angular.module('survivalApp')
       
       cellManager.cells[cellId].raycaster = new THREE.Raycaster();
       $timeout(function () {
-        cellManager.moveCell(cellId, new THREE.Vector3(-0.57, 0.52, 0.7), {'position': [-0.57, 0.52, 0.7]});
+        cellManager.moveCell(cellId, new THREE.Vector3(-0.57, 0.52, 0.7), {'position': {x: -0.57, y: 0.52, z: 0.7}});
         cellManager.cells[cellId].worker.postMessage({
           'cmd': 'init',
           'url': window.location.host,
@@ -144,6 +145,7 @@ angular.module('survivalApp')
       return cellManager.cells[cellId];
     };
     cellManager.moveCell = function (cellId, position, data) {
+      console.log('cellId, position, data', cellId, position, data);
       // console.log('cellId,position,data', cellId,position,data);
       /**
        * @ngdoc moveCell
@@ -166,12 +168,12 @@ angular.module('survivalApp')
         cell.invalidPlacement({cmd: 'invalidPlacement', 'message': 'DeadCell'});
         return;
       }
-
+console.log('Hay merchant King penguin');
       if (TileManagerService.land === undefined) {
         console.log('landNotDefined');
-        cellPos.x = data.position[0] || data.position.x || 0;
-        cellPos.y = data.position[1] || data.position.y || 0;
-        cellPos.z = data.position[2] || data.position.z || 0;
+        cellPos.x = data.position.x || data.position.x || 0;
+        cellPos.y = data.position.y || data.position.y || 0;
+        cellPos.z = data.position.z || data.position.z || 0;
         
         cellManager.cells[cellId].hud.mesh.position.set(cellPos.x, cellPos.y + 0.2, cellPos.z + 0.3);
         cellManager.cells[cellId].hud.mesh.scale.z = (cellManager.cells[cellId].health + 1) * cellManager.cells[cellId].radius;
@@ -179,9 +181,9 @@ angular.module('survivalApp')
       } else {
         //wheres the nearest land?
         //Temp move the cell to the new position
-        cellPos.x = data.position[0] || data.position.x || 0;
-        cellPos.y = data.position[1] || data.position.y || 0;
-        cellPos.z = data.position[2] || data.position.z || 0;
+        cellPos.x = data.position.x || data.position.x || 0;
+        cellPos.y = data.position.y || data.position.y || 0;
+        cellPos.z = data.position.z || data.position.z || 0;
         //get the nearest land and water for the new position
         
         //check for valid placement, is it on the gameboard?
@@ -245,8 +247,8 @@ angular.module('survivalApp')
                 cell.health -= 0.6;
               }              
               
-              cellPos.x = data.position[0];
-              cellPos.y = data.position[1];
+              cellPos.x = data.position.x;
+              cellPos.y = data.position.y;
               cellPos.z = intersectionsLand[0].object.position.z + 0.1;
               
               cellManager.cells[cellId].hud.mesh.position.set(cellPos.x, cellPos.y + 0.2, intersectionsLand[0].object.position.z + 0.3);
@@ -320,6 +322,7 @@ angular.module('survivalApp')
           return cellManager.meshNearestPos(cell.mesh.position, meshes, offsetV);
         },
         move: function (position, data) {
+          console.log('move: position,data', position,data);
           cellManager.moveCell(cellId, position, data);
         },
         update : function (delta, time) {

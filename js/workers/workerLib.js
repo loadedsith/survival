@@ -67,7 +67,7 @@ self.addEventListener('message', function (e) {
       if (typeof self.move === 'function') {
         self.move(data);
       } else {
-        self.postMessage({cmd:'move','position':[0,0,0.2]});
+        self.postMessage({cmd:'move','position':{x: 0, y: 0, z:0.2 }});
       }     
       break;
     }

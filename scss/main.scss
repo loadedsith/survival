@@ -17,6 +17,13 @@ pre,input{
 .clickable{
   border:none;
   border-bottom:1px solid #2278D6;
+  transition:border-bottom 0.3s ease;
+  &:hover{
+    border-bottom:1px solid #EE529C;
+  }
+  &.disabled:hover{
+    border-bottom:1px solid #666;    
+  }
 }
 input[type="button"],.button,.btn{
   @extend .clickable;

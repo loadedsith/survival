@@ -1,3 +1,4 @@
 [submodule "wiki/survival.wiki"]
 	path = wiki/survival.wiki
 	url = https://github.com/loadedsith/survival.wiki.git
+	branch = master2

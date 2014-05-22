@@ -31,9 +31,9 @@
             <li ng-repeat="cell in cells">
               <ul class="cellProperties">
                 <li>CellId: {{$index}}</li>
-                <li>Health: {{cell.health}}</li>
+                <li>Health: {{cell.health | number: 1}}</li>
                 <li>
-                  Pos: (<span class="positionList" ng-repeat="(key,position) in cell.mesh.position" title="{{key}}">{{position|number: 2}}<span ng-if="!$last">,&nbsp;&nbsp;</span></span>)
+                  Pos: (<span class="positionList" ng-repeat="(key,position) in cell.mesh.position" title="{{key}}">{{position | number: 2}}<span ng-if="!$last">,&nbsp;&nbsp;</span></span>)
                 </li>
                 
               </ul>

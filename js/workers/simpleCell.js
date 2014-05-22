@@ -1,5 +1,3 @@
-
-
 /**
  * @doc module
  * @name survival.Workers:SimpleCell
@@ -39,7 +37,12 @@ self.getCellInfo = function () {
     'cmd': 'getCellInfo',
     'cell': self.cell
   }); // Send data to the cellManager.
-  
+};
+self.getNearestFoodSource = function () {
+  self.postMessage({
+    'cmd': 'getNearestFoodSource',
+    'cell': self.cell
+  }); // Send data to the cellManager.
 };
 self.invalidPlacement = function (data) {
   //could be an invalid move, or a deadcell
@@ -47,7 +50,7 @@ self.invalidPlacement = function (data) {
     clearInterval(self.moveInterval);
     return;
   }
-  // console.log('data.msg'+JSON.stringify(data.msg));
+  console.log('data.msg'+JSON.stringify(data.msg));
   if (data.position !== undefined) {
     // lastPos = data.position;
     self.lastPos.x = Number(data.position.x);
@@ -58,7 +61,7 @@ self.invalidPlacement = function (data) {
   }
   self.deltaMove();
 };
-self.lastPos = {x:-0.5 + Math.random(), y: -0.5 + Math.random(),z: 0};
+self.lastPos = {x: -0.5 + Math.random(), y: -0.5 + Math.random(), z: 0};
 
 self.lastTimeStamp = (new Date()).getTime();
 self.getDelta = function () {
@@ -86,7 +89,37 @@ self.deltaMove = function () {
   self.lastPos = newPos;
 };
 
+
+self.deltaMoveTo = function (pos) {
+
+  var delta = (self.getDelta() + 1) / 1000;
+  delta = delta * 2;
+  var newPos = {
+
+    x:  self.lastPos.x + (pos.x - self.lastPos.x) * delta,
+    y:  self.lastPos.y + (pos.y - self.lastPos.y) * delta,
+    z: self.lastPos.z
+  };
+
+  self.postMessage({
+    'cmd': 'move',
+    'cell': self.cell,
+    'position': newPos
+  }); // Send data to the cellManager.
+  self.lastPos = newPos;
+};
+
+
+
+
 self.moveInterval = setInterval(function () {
-  self.deltaMove();
+  if (self.cell.health > 80) {
+    self.getNearestFoodSource();
+    self.deltaMove();
+  } else if (self.cell.health > 10){
+    self.deltaMoveTo(self.foodSource.position||{x: 0, y: 0, z: 0});
+  } else{
+     //death watch
+  }
   self.getCellInfo();
 }, 125);

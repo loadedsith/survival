@@ -39,6 +39,9 @@ angular.module('survivalApp')
         case 'getCellInfo':
           cellManager.cell(data.cell.id).postInfo();
           break;
+        case 'getNearestFoodSource':
+          cellManager.cell(data.cell.id).nearest.foodSource();
+          break;
         case 'move':
           //positions!
           cellManager.cell(data.cell.id).move(data.position, data);
@@ -317,6 +320,35 @@ angular.module('survivalApp')
         }
       });
     };
+    cellManager.nearestFoodSourceForCell = function (cellId) {
+      var cell = cellManager.cells[cellId];
+      var cellPos = cell.mesh.position;
+      var sources = FoodManagerService.foodSources;
+      var distance = 1000000;
+      var closestFoodSource = {};
+      
+      for (var i = sources.length - 1; i >= 0; i--) {
+        var source = sources[i];
+        var sourcePos = source.mesh.position;
+        var thisDistance = cellPos.distanceTo(sourcePos);
+        if (thisDistance < distance) {
+          distance = thisDistance;
+          closestFoodSource = {
+            distance: thisDistance,
+            position: sourcePos,
+            source: source
+          };
+        }
+      }
+      cellManager.cells[cellId].worker.postMessage({
+        'cmd': 'nearestFoodSource',
+        'foodSource': {
+          distance: closestFoodSource.distance,
+          position: closestFoodSource.source.mesh.position
+        }
+      });
+      return closestFoodSource;
+    };
     cellManager.cell = function (cellId) {
 
       if (cellId === undefined) {
@@ -328,6 +360,20 @@ angular.module('survivalApp')
       }
       var cell = cellManager.cells[cellId];
       return {
+        nearest: {
+          land: function () {
+            //TODO
+            return cellManager.nearestLandForCell(cellId);
+          },
+          water: function () {
+            //TODO
+            return cellManager.nearestWaterForCell(cellId);
+          },
+          foodSource: function () {
+            //TODO
+            return cellManager.nearestFoodSourceForCell(cellId);
+          }
+        },
         postInfo: function () {
           cellManager.postInfoForCell(cellId);
         },

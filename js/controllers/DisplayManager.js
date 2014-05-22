@@ -101,9 +101,7 @@ angular.module('survivalApp')
     $scope.workerBlobText = LevelManagerService.workerBlobText;
 
     $scope.debug = DEBUG;
-    $scope.$watch('driveThis', function (scope, newValue, oldValue) {
-      console.log(oldValue, newValue);    
-    });
+
     TemplatesService.retrieve().$promise.then(function (data) {
       $scope.templates = data.templates;
     });

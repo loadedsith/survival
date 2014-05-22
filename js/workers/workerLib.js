@@ -40,8 +40,16 @@ self.addEventListener('message', function (e) {
     case 'cellInfo':
       // console.log('cellgotGetInfo: ' + JSON.stringify(data));
       self.cell.position = data.cell.position;
-      self.cell.id = data.cell.id||0;
-      self.cell.health = data.cell.health||100;
+      self.cell.id = data.cell.id || 0;
+      self.cell.health = data.cell.health || 100;
+      break;
+    case 'nearestFoodSource':
+      // console.log('cellnearestFoodSource: ' + JSON.stringify(data));
+      if (self.foodSource === undefined) {
+        self.foodSource = {};
+      }
+      self.foodSource.position = data.foodSource.position;
+      self.foodSource.distance = data.foodSource.distance;
       break;
     case 'init':
       if (typeof self.init === 'function') {
@@ -49,30 +57,30 @@ self.addEventListener('message', function (e) {
       } else {
         // self.postMessage({cmd:'echo','msg':'workerGot init' + JSON.stringify(data)});
         self.cell.position = data.cell.position;
-        self.cell.id = data.cell.id||0;
-        self.url = data.url||'0.0.0.0:9000';
-        self.cell.health = data.cell.health||100;
+        self.cell.id = data.cell.id || 0;
+        self.url = data.url || '0.0.0.0:9000';
+        self.cell.health = data.cell.health || 100;
       }     
       break;
     case 'echo':
       if (typeof self.echo === 'function') {
         self.echo(data);
       } else {
-        self.postMessage({cmd:'echo','msg':data.msg});
+        self.postMessage({cmd: 'echo', 'msg': data.msg});
       }     
       break;
     case 'invalidPlacement':
       if (typeof self.invalidPlacement === 'function') {
         self.invalidPlacement(data);
       } else {
-        self.postMessage({cmd:'echo','msg':'InvalidPlacement: worker got: ' + JSON.stringify(data)});
+        self.postMessage({cmd: 'echo', 'msg': 'InvalidPlacement: worker got: ' + JSON.stringify(data)});
       }     
       break;
     case 'move':
       if (typeof self.move === 'function') {
         self.move(data);
       } else {
-        self.postMessage({cmd:'move','position':{x: 0, y: 0, z:0.2 }});
+        self.postMessage({cmd: 'move', 'position': {x: 0, y: 0, z: 0.2}});
       }     
       break;
     }

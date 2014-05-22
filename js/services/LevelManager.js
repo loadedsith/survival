@@ -10,6 +10,7 @@ angular.module('survivalApp')
     $http({method: 'GET', url: 'js/workers/simpleCell.js'})
       .success(function (data) {//status, headers, config
         levelManager.workerBlobText = data;
+        
       })
       .error(function () {//data, status, headers, config
         console.log('failed to get Worker text');
@@ -47,9 +48,24 @@ angular.module('survivalApp')
         z: 0
       }
     };
-    
+    levelManager.getCellWorkerFile = function (callback) {
+      $http({method: 'GET', url: 'js/workers/simpleCell.js'})
+        .success(function (data) {//status, headers, config
+          levelManager.workerBlobText = data;
+          if (typeof callback === 'function'){
+            callback();
+          }
+        })
+        .error(function () {//data, status, headers, config
+          console.log('failed to get Worker text');
+          levelManager.workerBlobText = '';
+        });
+      
+    };
     levelManager.createLevel = function () {
-      levelManager.addCells(3);
+      levelManager.getCellWorkerFile(function () {
+        levelManager.addCells(3);
+      });
       levelManager.addTilesToScene();
       levelManager.addFoodSources(1);
     };

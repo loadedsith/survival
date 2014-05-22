@@ -52,13 +52,13 @@ angular.module('survivalApp')
     };
     
     cellManager.attachWorker = function (cell, settings) {
-      
-      cell.workerBlobText = settings.workerBlobText || '';
-      var includeWorkerLib = 'importScripts(\'http://' + location.host + '/js/workers/workerLib.js\');';
-      
       if (cell.worker !== undefined) {
         cell.worker.terminate();
       }
+      
+      cell.workerBlobText = settings.workerBlobText || '';
+      var includeWorkerLib = 'importScripts(\'http://' + location.host + '/js/workers/workerLib.js\');';
+
       cell.workerBlob = new Blob([cell.workerBlobText + includeWorkerLib]);
       var blobURL = window.URL.createObjectURL(cell.workerBlob);
       cell.worker = new Worker(blobURL);

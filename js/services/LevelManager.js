@@ -13,6 +13,7 @@ angular.module('survivalApp')
       })
       .error(function () {//data, status, headers, config
         console.log('failed to get Worker text');
+        levelManager.workerBlobText = '';
       });
 
     

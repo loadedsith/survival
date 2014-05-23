@@ -46,6 +46,10 @@ angular.module('survivalApp')
           //positions!
           cellManager.cell(data.cell.id).move(data.position, data);
           break;
+        case 'eat':
+          //positions!
+          cellManager.cell(data.cell.id).eat();
+          break;
         default:
           //
           console.log('cellListener', e);
@@ -349,6 +353,14 @@ angular.module('survivalApp')
       });
       return closestFoodSource;
     };
+    cellManager.cellEatFoodSourceIfNear = function (cellId, foodSource) {
+      if (cellManager.cell(cellId).mesh.position.distanceTo(foodSource.position) < 0.33) {
+        // cellManager.cells[cellId].health += 0.6 * 3;
+        cellManager.cells[cellId].health = 100;
+        
+        
+      }
+    };
     cellManager.cell = function (cellId) {
 
       if (cellId === undefined) {
@@ -383,12 +395,13 @@ angular.module('survivalApp')
         move: function (position, data) {
           cellManager.moveCell(cellId, position, data);
         },
+        eat: function (position, data) {
+          cellManager.cellEatFoodSourceIfNear(cellId, cellManager.nearestFoodSourceForCell(cellId));
+        },
         update : function (delta, time) {
           cellManager.cells[cellId].mesh.rotateX(Math.sin(time) * delta);
         },
-        mesh : function () {
-          return cellManager.cells[cellId].mesh;
-        }
+        mesh : cellManager.cells[cellId].mesh
       }; 
     };
   });

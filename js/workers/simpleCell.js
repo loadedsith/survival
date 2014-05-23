@@ -31,7 +31,12 @@ self.move = function () {
     }
   });
 };
-
+self.eat = function () {
+  self.postMessage({
+    'cmd': 'eat',
+    'cell': self.cell
+  }); // Send data to the cellManager.
+};
 self.getCellInfo = function () {
   self.postMessage({
     'cmd': 'getCellInfo',
@@ -113,13 +118,16 @@ self.deltaMoveTo = function (pos) {
 
 
 self.moveInterval = setInterval(function () {
-  if (self.cell.health > 80) {
+  if (self.cell.health > 40) {
     self.getNearestFoodSource();
     self.deltaMove();
   } else if (self.cell.health > 10){
     self.deltaMoveTo(self.foodSource.position||{x: 0, y: 0, z: 0});
+    self.eat();    
   } else{
      //death watch
+     self.eat();
+     
   }
   self.getCellInfo();
 }, 125);

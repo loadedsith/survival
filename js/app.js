@@ -13,7 +13,7 @@ var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ngCookies', 
 
   });
 
-var debug = '/* @echo DEBUG */';
+var debug = 'true';
 if (debug === '' || debug === 'false') {
   debug = false;
 } else {

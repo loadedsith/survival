@@ -1,7 +1,5 @@
 {
 "templates":{
-  "controlPanel" : "/js/views/controlPanel.html",
-  "header" : "/js/views/header.html",
-  "footer" : "/js/views/footer.html"
+  "controlPanel" : "/js/views/controlPanel.html"
   }
 }

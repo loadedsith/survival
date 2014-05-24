@@ -64,7 +64,7 @@ angular.module('survivalApp')
       }
       
       cell.workerBlobText = settings.workerBlobText || '';
-      var includeWorkerLib = 'importScripts(\'http://' + location.host + '/js/workers/workerLib.js\');';
+      var includeWorkerLib = 'importScripts(\'http://' + location.host + '/survival/js/workers/workerLib.js\');';
 
       cell.workerBlob = new Blob([cell.workerBlobText + includeWorkerLib], {type: 'application/javascript'});
       var blobURL = window.URL.createObjectURL(cell.workerBlob);

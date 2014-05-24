@@ -109,20 +109,20 @@ angular.module('survivalApp')
       cellManager.cells[cellId].mesh = new THREE.Mesh(geometry, material); 
       
       cellManager.attachWorker(cellManager.cells[cellId], settings);
-
+      cellManager.cells[cellId].healthSpriteTexture = new THREE.ImageUtils.loadTexture('textures/healthSprite.jpg')
       // add health texture settings for sprite updating
-      cellManager.healthSpriteTexture.wrapS = cellManager.healthSpriteTexture.wrapT = THREE.RepeatWrapping; 
-      cellManager.healthSpriteTexture.repeat.set(10, 10);
+      cellManager.cells[cellId].healthSpriteTexture.wrapS = cellManager.cells[cellId].healthSpriteTexture.wrapT = THREE.RepeatWrapping; 
+      cellManager.cells[cellId].healthSpriteTexture.repeat.set(10, 10);
       
       //attach health animator
-      cellManager.cells[cellId].textureAnimator = new cellManager.HealthTextureAnimator(cellManager.healthSpriteTexture, cellManager.cells[cellId]);
+      cellManager.cells[cellId].textureAnimator = new cellManager.HealthTextureAnimator(cellManager.cells[cellId].healthSpriteTexture, cellManager.cells[cellId]);
       
       ThreeJSRendererService.onRenderFcts.push(cellManager.cells[cellId].textureAnimator.update);
 
       cellManager.cells[cellId].hud = {
         geometry: new THREE.PlaneGeometry(radius, radius / 3.33),
         material: new THREE.MeshBasicMaterial({
-          map: cellManager.healthSpriteTexture,
+          map: cellManager.cells[cellId].healthSpriteTexture,
           side: THREE.DoubleSide
         })
       };
@@ -354,7 +354,7 @@ angular.module('survivalApp')
       return closestFoodSource;
     };
     cellManager.cellEatFoodSourceIfNear = function (cellId, foodSource) {
-      if (cellManager.cell(cellId).mesh.position.distanceTo(foodSource.position) < 0.33) {
+      if (cellManager.cell(cellId).mesh.position.distanceTo(foodSource.position) < 0.1) {
         // cellManager.cells[cellId].health += 0.6 * 3;
         cellManager.cells[cellId].health = 100;
         
@@ -395,7 +395,7 @@ angular.module('survivalApp')
         move: function (position, data) {
           cellManager.moveCell(cellId, position, data);
         },
-        eat: function (position, data) {
+        eat: function () {
           cellManager.cellEatFoodSourceIfNear(cellId, cellManager.nearestFoodSourceForCell(cellId));
         },
         update : function (delta, time) {

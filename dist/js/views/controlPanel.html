@@ -1,0 +1,83 @@
+<div ng-controller="DisplayManagerCtrl">
+  <div class="row">
+    <div class="small-12 columns">
+      <input type="button" id="hideDrawer" class="toggleDrawer" ng-click="hideDrawer = !hideDrawer;" value="{{hideDrawer ? 'Show' : 'Hide'}}"/>
+      <label for="CreateCell">New Cell</label><input type="button" id="CreateCell" ng-click="createCell()" value="Create Cell"/>
+      <label for="AttachWorker">Attach Worker</label><input type="checkbox" id="AttachWorker" ng-click="autoAttachWorker= !autoAttachWorker"/>
+    </div>
+  </div>
+  <div class="row" id="controls" ng-show="!hideDrawer">
+    <div class="small-9 columns">
+      <div class="row">
+        <div class="columns small-12 large-12">
+          <ul class="small-block-grid-3 large-block-grid-4">
+            <li ng-if="!hideStats">
+              <label for="">Food Sources</label><p id="foodSources">{{foodSourceCount()}}</p>
+            </li>
+            <li ng-if="!hideStats">
+              <label for="Cells">Cells</label> <p id="Cells">{{cellCount()}}</p>
+            </li>
+            <li ng-if="!hideStats">
+              <label for="Tiles">Tiles</label> <p id="Tiles">{{tileCount()}}</p>
+            </li>
+            <li ng-if="!hideStats">
+              <label for="renderFunctions">Render Functions</label> <p id="renderFunctions">{{renderFunctionCount()}}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    
+      <div class="row">
+        <div class="columns small-12 large-12">
+          <ul ng-if="!hideCells" class="small-block-grid-2 large-block-grid-3">
+            <li ng-repeat="cell in cells">
+              <ul class="cellProperties">
+                <li>CellId: {{$index}}</li>
+                <li><input value="Attach Worker" type="button" ng-click="attachCurrentWorkerToCell($index)"/>
+                <li>Health: {{cell.health | number: 1}}</li>
+                <li>
+                  Pos: (<span class="positionList" ng-repeat="(key,position) in cell.mesh.position" title="{{key}}">{{position | number: 2}}<span ng-if="!$last">,&nbsp;&nbsp;</span></span>)
+                </li>
+                
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row" ng-show="!hideWorker">
+        <div class="columns small-12 large-12">
+          <textarea id="workerCode" ng-focus="workerInputHasFocus(true)" ng-blur="workerInputHasFocus(false)"> 
+            {{workerBlobText}}
+          </textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns small-3 large-12">
+      <ul class="small-block-grid-1 large-block-grid-8">
+        <li>
+          <label for="controlSelect">Keyboard Control</label>
+          <select
+            id="controlSelect"
+            ng-model="driveThis"
+            ng-options="item as item.name for item in drivable"
+            ng-change="updateKeyboardBinding(driveThis)">
+          </select>
+        </li>
+        <li>
+          <label for="hideCells">Cells</label>
+          <input type="button" id="hideCells" class="toggleCells" ng-click="hideCells = !hideCells" value="{{hideCells ? 'Show' : 'Hide'}}"/>
+        </li>
+        <li>
+          <label for="hideStats">Stats</label>
+          <input type="button" id="hideStats" class="toggleStats" ng-click="hideStats = !hideStats" value="{{hideStats ? 'Show' : 'Hide'}}"/>
+        </li>
+        <li>
+          <label for="updateCellWorker, hideCellWorker">Cell Worker</label>
+          <input id="updateCellWorker" ng-click="runWorker()" type="button" value="Update"/>
+          <input id="hideCellWorker" ng-click="hideWorker = !hideWorker" type="button" value="{{hideWorker ? 'Show' : 'Hide'}}"/>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

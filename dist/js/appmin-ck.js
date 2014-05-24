@@ -1,0 +1,1 @@
+angular.module("threejs",["ngRoute","ngCookies","ngResource","ngSanitize","ui"]).config(function(e){"use strict";e.when("/",{templateUrl:"/js/views/main.html",controller:"MainCtrl"}).otherwise({redirectTo:"/"})});

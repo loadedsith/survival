@@ -1,5 +1,5 @@
 {
 "templates":{
-  "controlPanel" : "/js/views/controlPanel.html"
+  "controlPanel" : "js/views/controlPanel.html"
   }
 }

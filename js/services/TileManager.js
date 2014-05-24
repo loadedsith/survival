@@ -7,7 +7,7 @@ angular.module('survivalApp')
     var stopPositionCallback = false;
     
     var landColor = function (value) {
-      // DebugLessService.msg = value;
+      // DebugLessService.message = value;
       var rr = Math.random();
       var rg = Math.random();
       var rb = Math.random();

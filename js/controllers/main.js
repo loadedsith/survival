@@ -32,7 +32,7 @@ angular.module('survivalApp')
     var movement = new THREE.Vector3($scope.movementVector.y, $scope.movementVector.x, $scope.movementVector.z),
     deltaV = new THREE.Vector3(delta, delta, delta);
     movement.multiply(deltaV);
-    // DebugLessService.msg = ['keyboardMovement', movement];
+    // DebugLessService.message = ['keyboardMovement', movement];
 
     switch ($scope.driveThis) {
     case 'camera':

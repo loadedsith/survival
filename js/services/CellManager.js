@@ -30,7 +30,7 @@ angular.module('survivalApp')
       if (data.cmd !== undefined) {
         switch (data.cmd) {
         case 'echo':
-          console.log('echo: ', data.msg);
+          console.log('echo: ', data.message);
           break;
         case 'invalidPlacement':
           //positions!
@@ -97,7 +97,9 @@ angular.module('survivalApp')
         'radius': radius,
         'alive': settings.alive || true,
         'invalidPlacement': settings.invalidPlacement || function (event) {
-          // console.log('invalidCell placement: ', this, event);
+          if(event.message===undefined){
+            console.log('invalidCell placement: ', this, event);
+          }
           this.worker.postMessage({
             cmd: event.cmd,
             message: event.message,
@@ -247,7 +249,7 @@ angular.module('survivalApp')
               //landFirst
 
               cell.lastMove = 'valid';
-              // TODO: cell.worker.postMessage({cmd:'lastMove',msg:'valid'})?
+              // TODO: cell.worker.postMessage({cmd:'lastMove',message:'valid'})?
               
               if (cell.health > 0) {
                 cell.health -= 0.6;
@@ -268,10 +270,11 @@ angular.module('survivalApp')
               cellManager.cells[cellId].hud.mesh.scale.z = (cellManager.cells[cellId].health + 1) * cellManager.cells[cellId].radius;
 
               
-              DebugLessService.msg = cellManager.cells[cellId].hud.mesh.size;
+              DebugLessService.message = cellManager.cells[cellId].hud.mesh.size;
               
               cell.lastMove = 'invalid';
-              cell.invalidPlacement({'msg': 'DeadCell', 'cell': cell});
+              cell.invalidPlacement({'cmd': 'invalidPlacement', position: orignialCellPos, 'message': 'water'});
+              // cell.invalidPlacement({'message': 'DeadCell', 'cell': cell});
               return;
             }
           }

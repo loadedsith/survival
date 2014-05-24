@@ -5,16 +5,16 @@ angular.module('survivalApp')
 
     debugLess.length = 1000;
     debugLess.interval = undefined;
-    debugLess.msg = undefined;
-    debugLess.lastMsg = 'mockLastMsg';
+    debugLess.message = undefined;
+    debugLess.lastMessage = 'mockLastmessage';
 
     debugLess.init = function () {
       if (debugLess.interval === undefined) {
         $interval(function () {
-          if (debugLess.msg !== undefined) {
-            if (JSON.stringify(debugLess.lastMsg) !== JSON.stringify(debugLess.msg)) {
-              console.log('debugLess.msg: ', debugLess.msg);
-              debugLess.lastMsg = debugLess.msg;
+          if (debugLess.message !== undefined) {
+            if (JSON.stringify(debugLess.lastMessage) !== JSON.stringify(debugLess.message)) {
+              console.log('debugLess.message: ', debugLess.message);
+              debugLess.lastMessage = debugLess.message;
             }
           }
         }, debugLess.length || 1000);

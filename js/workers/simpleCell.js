@@ -51,11 +51,11 @@ self.getNearestFoodSource = function () {
 };
 self.invalidPlacement = function (data) {
   //could be an invalid move, or a deadcell
-  if (data.msg === 'DeadCell' || data.message === 'DeadCell') {
+  if (data.message === 'DeadCell' || data.message === 'DeadCell') {
     clearInterval(self.moveInterval);
     return;
   }
-  console.log('data.msg'+JSON.stringify(data.msg));
+  // console.log('data.message'+JSON.stringify(data.message));
   if (data.position !== undefined) {
     // lastPos = data.position;
     self.lastPos.x = Number(data.position.x);

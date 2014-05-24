@@ -1,0 +1,4 @@
+{
+  "main": "/js/views/main.html",
+  "debug": "/js/views/debugInfo.html"
+}

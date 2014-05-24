@@ -1,0 +1,25 @@
+{
+  "directory": "site/bower_components",
+  "name": "Survival",
+  "version": "0.0.0",
+  "appPath": "./",
+  "dependencies": {
+    "angular": "~1.2.0",
+    "json3": "~3.2.4",
+    "es5-shim": "~2.1.0",
+    "normalize.css": "~3.0.0",
+    "angular-animate": "~1.2.16",
+    "angular-route": "~1.2.16",
+    "angular-cookies": "~1.2.16",
+    "angular-sanitize": "~1.2.16",
+    "angular-ui": "~0.4.0",
+    "angular-resource": "~1.2.16",
+    "jquery": "~1.9",
+    "angular-touch": "~1.2.16"
+    
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.16",
+    "angular-scenario": "~1.2.16"
+  }
+}

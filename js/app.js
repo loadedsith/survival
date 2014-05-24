@@ -4,7 +4,7 @@ var app = angular.module('survivalApp', [ 'ngRoute', 'ngResource', 'ngCookies', 
 
     $routeProvider
       .when('/', {
-        templateUrl: '/js/views/main.html',
+        templateUrl: 'survival/js/views/main.html',
         controller: 'MainCtrl'
       })
       .otherwise({

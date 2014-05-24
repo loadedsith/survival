@@ -146,28 +146,6 @@
 		"outputStyle": 1,
 		"syntaxCheckerStyle": 1
 		},
-	"\/js\/services\/min\/CellManager-ck.js": {
-		"fileType": 64,
-		"ignore": 1,
-		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/js\/services\/min\/CellManager-ck.js",
-		"outputAbbreviatedPath": "\/js\/services\/min\/min\/CellManager-ck-ck.js",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"outputStyle": 1,
-		"syntaxCheckerStyle": 1
-		},
-	"\/js\/services\/min\/LevelManager-ck.js": {
-		"fileType": 64,
-		"ignore": 1,
-		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/js\/services\/min\/LevelManager-ck.js",
-		"outputAbbreviatedPath": "\/js\/services\/min\/min\/LevelManager-ck-ck.js",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"outputStyle": 1,
-		"syntaxCheckerStyle": 1
-		},
 	"\/js\/services\/Strings.js": {
 		"fileType": 64,
 		"ignore": 0,
@@ -249,17 +227,6 @@
 		"outputAbbreviatedPath": "No Output Path",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
-		},
-	"\/js\/workers\/min\/simpleCell-ck.js": {
-		"fileType": 64,
-		"ignore": 1,
-		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/js\/workers\/min\/simpleCell-ck.js",
-		"outputAbbreviatedPath": "\/js\/workers\/min\/min\/simpleCell-ck-ck.js",
-		"outputPathIsOutsideProject": 0,
-		"outputPathIsSetByUser": 0,
-		"outputStyle": 1,
-		"syntaxCheckerStyle": 1
 		},
 	"\/js\/workers\/simpleCell.js": {
 		"fileType": 64,
@@ -474,6 +441,15 @@
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/wiki\/survival.wiki\/Resources.md",
 		"outputAbbreviatedPath": "\/wiki\/survival.wiki\/Resources.html",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/wiki\/survival.wiki\/Road-Map.html": {
+		"fileType": 8192,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/wiki\/survival.wiki\/Road-Map.html",
+		"outputAbbreviatedPath": "No Output Path",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},

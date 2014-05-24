@@ -95,6 +95,7 @@ angular.module('survivalApp')
         'id': cellId,
         'health': health,
         'radius': radius,
+        'workerBlobText':settings.workerBlobText || '',
         'alive': settings.alive || true,
         'invalidPlacement': settings.invalidPlacement || function (event) {
           if(event.message===undefined){

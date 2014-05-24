@@ -83,7 +83,7 @@ angular.module('survivalApp')
       var radius = 0.3;
       
       var geometry = new THREE.CubeGeometry(0.8 * radius, 0.8 * radius, 0.8 * radius, 10, 10, 10);
-      var health = options.health || 100;
+      var health = settings.health || 100;
       var material = new THREE.MeshPhongMaterial({
         ambient: 0x030303,
         color: 0xdddddd,

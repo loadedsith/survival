@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Survival by loadedsith</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Survival</h1>
+        <p>a game you play by simulating a slime mold. Its slick.</p>
+
+        <p class="view"><a href="https://github.com/loadedsith/survival">View the Project on GitHub <small>loadedsith/survival</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/loadedsith/survival/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/loadedsith/survival/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/loadedsith/survival">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="survival-road-map" class="anchor" href="#survival-road-map"><span class="octicon octicon-link"></span></a>Survival Road Map</h1>
+
+<ol>
+<li><del>Fork 3d Perlin Noise With Threejs</del></li>
+<li><del>Re-brand</del></li>
+<li><del>Tile Service</del></li>
+<li><del>Mock a food source</del></li>
+<li><del>Create a Cell</del></li>
+<li><del>A Level with mock food source</del></li>
+<li><del>Add Cell to Level</del></li>
+<li><del>Implement basic web worker</del></li>
+<li><del>Cell movement within level</del></li>
+<li><del>Display Manager investigates managers, renders what it sees</del></li>
+<li><del>Workers for cells</del></li>
+<li><del>Cell manager</del></li>
+<li><del>Ground tiles shouldn't animate, water should but only slightly</del></li>
+<li><del>Cell delta movement within level, Prevent movement off board</del></li>
+<li><del>Food manager</del></li>
+<li><del>Tile position callbacks should be of 2 types, run once, keep going</del></li>
+<li><del>Tile position callbacks should be able to disable themselves after running a conditional.</del></li>
+<li><del>cells belong on land, not in the sky! Ray cast</del></li>
+<li><del>Drive cell to food source, ensure it knows it's there</del></li>
+<li><del>Small group of cells</del></li>
+<li><del>Make the developer UI prettier</del></li>
+<li><del>Cells can become hungry</del></li>
+<li><del>Moving a cell makes it more hungry</del></li>
+<li><del>Color code cells to show hunger</del></li>
+<li><del>Simple GUI to show cells and hunger</del></li>
+<li><del>Show hunger over cells</del></li>
+<li><del>Clean up</del></li>
+<li><del>cellManager getter can ask for cell health by id</del></li>
+<li><del>Worker asks for health on move</del></li>
+<li><del>async message handler updates local var</del></li>
+<li><del>worker use foodLocation to move toward food found (if hungry)</del></li>
+<li><del>Blob transfer as script, not text</del></li>
+<li>
+<del>cellManager.nearestFoodSourceToCell() (also cell.nearest.foodSource())</del>
+
+<ul>
+<li><del>and worker message getter</del></li>
+</ul>
+</li>
+<li>
+<del>worker can get health from food by eating near by food</del>
+
+<ul>
+<li><del>if hungry</del></li>
+</ul>
+</li>
+<li>
+<del>cellManager validates eating</del>
+
+<ul>
+<li><del>food is near enough?</del></li>
+</ul>
+</li>
+<li>Advanced Cell Move Validation
+
+<ul>
+<li>sets interval to feed
+
+<ul>
+<li>sends health status to worker </li>
+<li>on move checks distance, until moves away, cancels interval</li>
+<li>Replicate deltaMove behavior, but cellWorker only sends destination
+
+<ul>
+<li>cellWorker sends destination and "speed"
+
+<ul>
+<li>log of speed * some factor is impact on health. speed of 1 = insta-death (possibly just invalid), speed of 0 = free</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><del>Cell commands in gui, map textbox to input</del></p></li>
+</ol><ul>
+<li>Cells stick together
+
+<ul>
+<li>cellManager.getNeigborCells()</li>
+<li>cellManager maxMoveDistance (could fall back to moveTowards or kick back an invalid move message)</li>
+<li>simpleCell.turnTo</li>
+<li>simpleCell.moveTowards</li>
+<li>simpleCell.getAveragePositionOfCells</li>
+</ul>
+</li>
+<li><del>Level Manager</del></li>
+<li>
+<del>Level Manager answers if a movement takes you off the board</del> Update: The cell does this now, but the level manager and renderer are aware of a global bounds</li>
+<li>Level Manager extends board if movement there is requested</li>
+<li>Level Manager answers if a movement is blocked</li>
+<li>Level Manager answers how difficult a move is</li>
+<li>Key press toggle hunger displayed over cells</li>
+<li><del>Cell Death from hunger</del></li>
+<li>Cell Trait #1: Movement: override, any kind</li>
+<li>Cell Trait #2: Reproduce: override, simple logging of output</li>
+<li>Colony movement</li>
+<li>Log Genetic Inheritance [P. Square] swapping of traits on touch</li>
+<li>Ensure cell triggers correct [P. Square]</li>
+<li>Create cell with correct genetics</li>
+<li>Test for fertility:   Consuming a food, should result in hunger going down &amp; Touching another cell should result in genetic exchange</li>
+<li>Colony Genetics: All cells have all genetic code in the colony</li>
+<li>Death Causes infected state</li>
+<li>Giving food while infected infects</li>
+<li>Being infected harms cell until it dies, comes back as zombie cell</li>
+<li>Shuffle movement genes on death, if one that works after death is found, map that one, otherwise stop moving</li>
+<li>Add second mock food source, dangerously rich</li>
+<li>Cell interact with food source randomly</li>
+<li>Cell can tell features of food sources</li>
+<li>Cell can create own cell manager?</li>
+<li>Cell can poach cells to belong to its manager?</li>
+<li>Colony Genetics: Cells only have genetic code they've been exposed to</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/loadedsith">loadedsith</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

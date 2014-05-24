@@ -12,6 +12,13 @@ angular.module('survivalApp')
  *  The display manager talks directly to the other mangagers,
  *  and creates a hud with the various details.
  */
+    $scope.attachCurrentWorkerToCell = function (cellId) {
+      CellManagerService.attachWorker(CellManagerService.cells[cellId||0],{workerBlobText:LevelManagerService.workerBlobText});
+    };
+    $scope.autoAttachWorker = true;
+    $scope.createCell = function () {
+      CellManagerService.createCell($scope.autoAttachWorker ? {workerBlobText : LevelManagerService.workerBlobText} : undefined);
+    };
     
     console.log('$cookies', $cookies);
     if ($cookies.hideCells === 'true') {

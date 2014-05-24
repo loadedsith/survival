@@ -2,6 +2,8 @@
   <div class="row">
     <div class="small-12 columns">
       <input type="button" id="hideDrawer" class="toggleDrawer" ng-click="hideDrawer = !hideDrawer;" value="{{hideDrawer ? 'Show' : 'Hide'}}"/>
+      <label for="CreateCell">New Cell</label><input type="button" id="CreateCell" ng-click="createCell()" value="Create Cell"/>
+      <label for="AttachWorker">Attach Worker</label><input type="checkbox" id="AttachWorker" ng-click="autoAttachWorker= !autoAttachWorker"/>
     </div>
   </div>
   <div class="row" id="controls" ng-show="!hideDrawer">
@@ -31,6 +33,7 @@
             <li ng-repeat="cell in cells">
               <ul class="cellProperties">
                 <li>CellId: {{$index}}</li>
+                <li><input value="Attach Worker" type="button" ng-click="attachCurrentWorkerToCell($index)"/>
                 <li>Health: {{cell.health | number: 1}}</li>
                 <li>
                   Pos: (<span class="positionList" ng-repeat="(key,position) in cell.mesh.position" title="{{key}}">{{position | number: 2}}<span ng-if="!$last">,&nbsp;&nbsp;</span></span>)

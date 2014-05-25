@@ -1,3 +1,5 @@
+Below is a boilerplate contributing document, if you wanted to contribute, you could fix that, or you could take the below as some general guidelines to making your own.
+
 We love pull requests. Here's a quick guide:
 
 1. Fork the repo.

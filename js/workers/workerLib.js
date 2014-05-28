@@ -29,8 +29,43 @@ if (typeof self.cell === 'undefined') {
   self.cell = {};
 }
 
-self.addEventListener('message', function (e) {
+var defaultCmds = {
+  cellInfo: function (data) {
+    // console.log('cellgotGetInfo: ' + JSON.stringify(data));
+    self.cell.position = data.cell.position;
+    self.cell.id = data.cell.id || 0;
+    self.cell.health = data.cell.health || 100;
+    
+  },
+  nearestFoodSource: function (data) {
+    // console.log('cellnearestFoodSource: ' + JSON.stringify(data));
+    if (self.foodSource === undefined) {
+      self.foodSource = {};
+    }
+    self.foodSource.position = data.foodSource.position;
+    self.foodSource.distance = data.foodSource.distance;
+    
+  },
+  init: function (data) {
+    // self.postMessage({cmd:'echo','message':'workerGot init' + JSON.stringify(data)});
+    self.cell.position = data.cell.position;
+    self.cell.id = data.cell.id || 0;
+    self.url = data.url || '0.0.0.0:9000';
+    self.cell.health = data.cell.health || 100;
+    
+  },
+  echo: function (data) {
+    self.postMessage({cmd: 'echo', 'message': data.message});
+  },
+  invalidPlacement: function (data) {
+    self.postMessage({cmd: 'echo', 'message': 'InvalidPlacement: worker got: ' + JSON.stringify(data)});
+  },
+  move: function (data) {
+    self.postMessage({cmd: 'move', 'position': {x: 0, y: 0, z: 0.2}}); 
+  }
+};
 
+self.addEventListener('message', function (e) {
   var data = {};
   if (e.data !== undefined) {
     data = e.data;
@@ -38,49 +73,45 @@ self.addEventListener('message', function (e) {
   if (data.cmd !== undefined) {
     switch (data.cmd) {
     case 'cellInfo':
-      // console.log('cellgotGetInfo: ' + JSON.stringify(data));
-      self.cell.position = data.cell.position;
-      self.cell.id = data.cell.id || 0;
-      self.cell.health = data.cell.health || 100;
+      if (typeof self.cellInfo === 'function') {
+        self.cellInfo(data);
+      }else{
+        defaultCmds.cellInfo(data);
+      }
       break;
     case 'nearestFoodSource':
-      // console.log('cellnearestFoodSource: ' + JSON.stringify(data));
-      if (self.foodSource === undefined) {
-        self.foodSource = {};
+      if (typeof self.nearestFoodSource === 'function') {
+        self.nearestFoodSource(data);
+      } else {
+        defaultCmds.nearestFoodSource(data);
       }
-      self.foodSource.position = data.foodSource.position;
-      self.foodSource.distance = data.foodSource.distance;
       break;
     case 'init':
       if (typeof self.init === 'function') {
         self.init(data);
       } else {
-        // self.postMessage({cmd:'echo','message':'workerGot init' + JSON.stringify(data)});
-        self.cell.position = data.cell.position;
-        self.cell.id = data.cell.id || 0;
-        self.url = data.url || '0.0.0.0:9000';
-        self.cell.health = data.cell.health || 100;
+        defaultCmds.init(data);
       }     
       break;
     case 'echo':
       if (typeof self.echo === 'function') {
         self.echo(data);
       } else {
-        self.postMessage({cmd: 'echo', 'message': data.message});
+        defaultCmds.echo(data);
       }     
       break;
     case 'invalidPlacement':
       if (typeof self.invalidPlacement === 'function') {
         self.invalidPlacement(data);
       } else {
-        self.postMessage({cmd: 'echo', 'message': 'InvalidPlacement: worker got: ' + JSON.stringify(data)});
-      }     
+        defaultCmds.invalidPlacement(data);
+      }
       break;
     case 'move':
       if (typeof self.move === 'function') {
         self.move(data);
       } else {
-        self.postMessage({cmd: 'move', 'position': {x: 0, y: 0, z: 0.2}});
+        defaultCmds.move(data);
       }     
       break;
     }

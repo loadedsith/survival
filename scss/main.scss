@@ -40,7 +40,7 @@ input[type="button"],.button,.btn{
 }
 .display{
   position: absolute;
-  top: 0px;
+  top: 45px;
   left: 0px;
   max-width:100%;
   padding:15px;
@@ -70,3 +70,6 @@ input[type="button"],.button,.btn{
   }
 }
 
+.dropdown.active{
+  display:block;
+}
